@@ -165,26 +165,28 @@ public:
 		vector<TString> ntupleDirectory; vector<TString> Tag; vector<Double_t> Xsec; vector<Double_t> nEvents;
 		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2(this->SampleType, &ntupleDirectory, &Tag, &Xsec, &nEvents); // -- only DY events -- //
 
-		const Int_t nSample = ntupleDirectory.size();
+		Int_t nSample = ntupleDirectory.size();
 		for(Int_t i_sample = 0; i_sample<nSample; i_sample++)
 		{
 			cout << "\t<" << Tag[i_sample] << ">" << endl;
 
-			// if( !(Tag[i_sample] == "DYMuMu_M100to200") ) continue;
+			// if( !(Tag[i_sample] == "DYEE_M100to200") ) continue;
 
 			TChain *chain = new TChain("recoTree/DYTree");
 			chain->Add(BaseLocation + "/" + ntupleDirectory[i_sample]+"/ntuple_*.root");
 
 			NtupleHandle *ntuple = new NtupleHandle( chain );
 			ntuple->TurnOnBranches_HLT();
-			ntuple->TurnOnBranches_Muon();
 			ntuple->TurnOnBranches_GenLepton();
+			if( this->Flavor == "Muon" ) ntuple->TurnOnBranches_Muon();
+			if( this->Flavor == "Electron") ntuple->TurnOnBranches_Electron();
 
 			Bool_t isMC = kTRUE;
 			analyzer->SetupPileUpReWeighting_76X( isMC );
 
 			Int_t NEvents = chain->GetEntries();
 			cout << "\t[Total Events: " << NEvents << "]" << endl;
+			// NEvents = 100000;
 
 			Double_t norm_2016 = ( Xsec[i_sample] * this->Lumi_2016 ) / nEvents[i_sample];
 			printf("[norm_2016: %lf]\n", norm_2016);
@@ -213,9 +215,9 @@ public:
 				if( ntuple->isTriggered( analyzer->HLT ) && GenFlag )
 				{
 					if( this->Flavor == "Muon" )
-						this->FillHistogram_MuonChannel( ntuple, analyzer, TotWeight );
+						this->FillHistogram_MuonChannel( ntuple, analyzer, Hists, TotWeight );
 					else if( this->Flavor == "Electron" )
-						this->FillHistogram_ElectronChannel( ntuple, analyzer, TotWeight );
+						this->FillHistogram_ElectronChannel( ntuple, analyzer, Hists, TotWeight );
 
 				} //End of if( isTriggered )
 
@@ -229,7 +231,7 @@ public:
 		Hists->Save( f_output );
 	}
 
-	void FillHistogram_ElectronChannel( NtupleHandle* ntuple, DYAnalyzer* analyzer, Double_t TotWeight )
+	void FillHistogram_ElectronChannel( NtupleHandle* ntuple, DYAnalyzer* analyzer, HistContainer* Hists, Double_t TotWeight )
 	{
 		//Collect Reconstruction level information
 		vector< Electron > ElectronCollection;
@@ -238,7 +240,7 @@ public:
 		{
 			Electron elec;
 			elec.FillFromNtuple(ntuple, i_reco);			
-			ElectronCollection.push_back( mu );
+			ElectronCollection.push_back( elec );
 		}
 
 		// -- Event Selection -- //
@@ -273,7 +275,7 @@ public:
 			{
 				Electron Elec_ith = QElectronCollection[i_elec];
 
-				for(Int_t j_elec=i_elec+1, j_elec<nQElectron; j_elec++)
+				for(Int_t j_elec=i_elec+1; j_elec<nQElectron; j_elec++)
 				{
 					Electron Elec_jth = QElectronCollection[j_elec];
 
@@ -326,7 +328,7 @@ public:
 		return Flag;
 	}
 
-	void FillHistogram_MuonChannel(NtupleHandle* ntuple, DYAnalyzer* analyzer, Double_t TotWeight )
+	void FillHistogram_MuonChannel(NtupleHandle* ntuple, DYAnalyzer* analyzer, HistContainer* Hists, Double_t TotWeight )
 	{
 		//Collect Reconstruction level information
 		vector< Muon > MuonCollection;
@@ -340,10 +342,13 @@ public:
 			{
 				float qter = 1.0;
 				
-				if( Tag[i_sample] == "Data" )
-					rmcor->momcor_data(mu.Momentum, mu.charge, 0, qter);
-				else
-					rmcor->momcor_mc(mu.Momentum, mu.charge, mu.trackerLayers, qter);
+				// if( Tag[i_sample] == "Data" )
+				// 	rmcor->momcor_data(mu.Momentum, mu.charge, 0, qter);
+				// else
+				// 	rmcor->momcor_mc(mu.Momentum, mu.charge, mu.trackerLayers, qter);
+
+				// -- only MC! -- //
+				rmcor->momcor_mc(mu.Momentum, mu.charge, mu.trackerLayers, qter);
 
 				// -- Change Muon pT, eta and phi with updated(corrected) one -- //
 				mu.Pt = mu.Momentum.Pt();
