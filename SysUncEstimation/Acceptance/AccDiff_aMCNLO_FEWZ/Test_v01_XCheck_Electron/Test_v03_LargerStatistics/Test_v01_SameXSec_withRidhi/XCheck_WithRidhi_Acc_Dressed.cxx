@@ -1,6 +1,8 @@
 #include <TEfficiency.h>
 #include <Include/PlotTools.h>
 
+void Comparison_MassHist( TH1D* h_KP, TH1D* h_Ridhi );
+
 void XCheck_WithRidhi_Acc_Dressed()
 {
 	if( gSystem->mkdir( "./Local" ) == 0 ) printf("Directory [Local] is created\n");
@@ -37,5 +39,42 @@ void XCheck_WithRidhi_Acc_Dressed()
 	canvas->latex.DrawLatexNDC( 0.15, 0.915, "#scale[0.6]{#font[42]{aMC@NLO}}");	
 	canvas->latex.DrawLatexNDC( 0.15, 0.88, "#scale[0.5]{#font[42]{P_{T}^{lead} > 30 GeV, P_{T}^{sub} > 10 GeV, |#eta| < 2.5}}");
 	canvas->latex.DrawLatexNDC( 0.15, 0.85, "#scale[0.5]{#font[42]{& ECAL gap (1.4442 < |#eta| < 1.566) is excluded}}");
+	canvas->c->SaveAs(".pdf");
+
+
+	// -- mass histogram itself -- //
+	Double_t Lumi_MuonPhys = 2759.017;
+	Double_t Lumi_Golden = 2257.998;
+	Double_t scale = Lumi_Golden / Lumi_MuonPhys;
+	TH1D* h_AccTotal_KP = Get_Hist( FileName_KP, "h_AccTotal" );
+	TH1D* h_AccPass_KP = Get_Hist( FileName_KP, "h_AccPass" );
+	h_AccTotal_KP->Scale( scale );
+	h_AccPass_KP->Scale( scale );
+
+	Comparison_MassHist( h_AccTotal_KP, h_AccTotal );
+	Comparison_MassHist( h_AccPass_KP, h_AccPass );
+}
+
+void Comparison_MassHist( TH1D* h_KP, TH1D* h_Ridhi )
+{
+	TString HistType = "";
+	TString HistName = h_KP->GetName();
+	if( HistName.Contains("AccTotal") )
+		HistType = "AccTotal";
+	if( HistName.Contains("AccPass") )
+		HistType = "AccPass";
+
+	HistInfo *Hist_Ridhi = new HistInfo( kGreen+2, "Ridhi", h_Ridhi );
+	HistInfo *Hist_KP = new HistInfo( kBlue, "KP ", h_KP );
+
+	TString CanvasName = "Local/c_Mass_Dressed_KP_vs_Ridhi_"+HistType;
+	DrawCanvas_TwoHistRatio *canvas = new DrawCanvas_TwoHistRatio(CanvasName, Hist_KP, Hist_Ridhi);
+	canvas->SetTitle("m [GeV]", "# events", "KP/Ridhi");
+	canvas->SetLegendPosition( 0.40, 0.32, 0.97, 0.45 );
+	canvas->SetRatioRange( 0.94, 1.06 );
+	canvas->SetLatex( "Simulation" );
+	canvas->Draw( 1, 1 );
+	canvas->c->cd();
+	canvas->TopPad->cd();
 	canvas->c->SaveAs(".pdf");
 }
