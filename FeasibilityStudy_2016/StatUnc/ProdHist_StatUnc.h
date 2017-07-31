@@ -72,10 +72,10 @@ public:
 		this->Init_Hist();
 	}
 
-	void Fill( Muon mu1, Muon mu2, Double_t weight )
+	void Fill( Object lep1, Object lep2, Double_t weight )
 	{
-		Double_t reco_M = (mu1.Momentum + mu2.Momentum).M();
-		Double_t reco_Rap = (mu1.Momentum + mu2.Momentum).Rapidity();
+		Double_t reco_M = (lep1.Momentum + lep2.Momentum).M();
+		Double_t reco_Rap = (lep1.Momentum + lep2.Momentum).Rapidity();
 
 		this->h_mass->Fill( reco_M, weight );
 
@@ -121,23 +121,49 @@ class HistProducer
 {
 public:
 	Double_t Lumi_2016;
+	TString Flavor;
+	TString SampleType;
+	TString TriggerType;
 
-	HistProducer()
+	rochcor2015 *rmcor;
+
+	HistProducer( TString _Flavor )
 	{
 		this->Lumi_2016 = 35867.060; // -- /pb -- //
+		this->Flavor = _Flavor;
+		if( this->Flavor != "Muon" && this->Flavor != "Electron" )
+		{
+			cout << this->Flavor << "is Wrong flavor!" << endl;
+		}
+
+		this->Setup_Flavor();
+	}
+
+	void Setup_Flavor()
+	{
+		if( this->Flavor == "Muon" )
+		{
+			this->SampleType = "aMCNLO_AdditionalSF";
+			this->TriggerType = "IsoMu20_OR_IsoTkMu20";
+			this->rmcor = new rochcor2015();
+		}
+		else if( this->Flavor == "Electron" )
+		{
+			this->SampleType = "aMCNLO_ee_AdditionalSF";
+			this->TriggerType = "Ele23_WPLoose";
+		}
 	}
 
 	void Produce()
 	{
-		TString HLTname = "IsoMu20_OR_IsoTkMu20";
-		DYAnalyzer *analyzer = new DYAnalyzer( HLTname );
+		DYAnalyzer *analyzer = new DYAnalyzer( this->TriggerType );
 
-		HistContainer *Hists = new HistContainer("DYMuMu");
+		HistContainer *Hists = new HistContainer("DY");
 
 		TString BaseLocation = gSystem->Getenv("KP_DATA_PATH");
 		//Each ntuple directory & corresponding Tags
 		vector<TString> ntupleDirectory; vector<TString> Tag; vector<Double_t> Xsec; vector<Double_t> nEvents;
-		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("aMCNLO_AdditionalSF", &ntupleDirectory, &Tag, &Xsec, &nEvents); // -- only DY events -- //
+		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2(this->SampleType, &ntupleDirectory, &Tag, &Xsec, &nEvents); // -- only DY events -- //
 
 		const Int_t nSample = ntupleDirectory.size();
 		for(Int_t i_sample = 0; i_sample<nSample; i_sample++)
@@ -153,8 +179,6 @@ public:
 			ntuple->TurnOnBranches_HLT();
 			ntuple->TurnOnBranches_Muon();
 			ntuple->TurnOnBranches_GenLepton();
-			
-			rochcor2015 *rmcor = new rochcor2015();
 
 			Bool_t isMC = kTRUE;
 			analyzer->SetupPileUpReWeighting_76X( isMC );
@@ -162,7 +186,7 @@ public:
 			Int_t NEvents = chain->GetEntries();
 			cout << "\t[Total Events: " << NEvents << "]" << endl;
 
-			Double_t norm_2016 = ( Xsec[i_sample] * Lumi_2016 ) / nEvents[i_sample];
+			Double_t norm_2016 = ( Xsec[i_sample] * this->Lumi_2016 ) / nEvents[i_sample];
 			printf("[norm_2016: %lf]\n", norm_2016);
 
 			for(Int_t i=0; i<NEvents; i++)
@@ -181,57 +205,167 @@ public:
 				// -- Pileup-Reweighting -- //
 				Double_t PUWeight = analyzer->PileUpWeightValue_76X( ntuple->nPileUp );
 
+				Double_t TotWeight = GenWeight*PUWeight*norm_2016;
+
 				Bool_t GenFlag = kFALSE;
 				GenFlag = analyzer->SeparateDYLLSample_isHardProcess(Tag[i_sample], ntuple);
 
 				if( ntuple->isTriggered( analyzer->HLT ) && GenFlag )
 				{
-					//Collect Reconstruction level information
-					vector< Muon > MuonCollection;
-					Int_t NLeptons = ntuple->nMuon;
-					for(Int_t i_reco=0; i_reco<NLeptons; i_reco++)
-					{
-						Muon mu;
-						mu.FillFromNtuple(ntuple, i_reco);
-						// -- Apply Rochester momentum scale correction -- //
-						// if( isCorrected == kTRUE )
-						{
-							float qter = 1.0;
-							
-							if( Tag[i_sample] == "Data" )
-								rmcor->momcor_data(mu.Momentum, mu.charge, 0, qter);
-							else
-								rmcor->momcor_mc(mu.Momentum, mu.charge, mu.trackerLayers, qter);
+					if( this->Flavor == "Muon" )
+						this->FillHistogram_MuonChannel( ntuple, analyzer, TotWeight );
+					else if( this->Flavor == "Electron" )
+						this->FillHistogram_ElectronChannel( ntuple, analyzer, TotWeight );
 
-							// -- Change Muon pT, eta and phi with updated(corrected) one -- //
-							mu.Pt = mu.Momentum.Pt();
-							mu.eta = mu.Momentum.Eta();
-							mu.phi = mu.Momentum.Phi();
-						}
-						
-						MuonCollection.push_back( mu );
-					}
-
-					// -- Event Selection -- //
-					vector< Muon > SelectedMuonCollection = this->EventSelection( MuonCollection, ntuple, analyzer );
-
-					if( SelectedMuonCollection.size() == 2 )
-					{
-						Muon mu1 = SelectedMuonCollection[0];
-						Muon mu2 = SelectedMuonCollection[1];
-						Hists->Fill( mu1, mu2, GenWeight*PUWeight*norm_2016 );
-					}
-					
 				} //End of if( isTriggered )
 
 			} //End of event iteration
 		}
 
-		TFile *f_output = TFile::Open("ROOTFile_Histogram_1D2D.root", "RECREATE");
+		TString FileName = "ROOTFile_Histogram_1D2D.root";
+		if( this->Flavor == "Muon" ) FileName.ReplaceAll( ".root", "_Muon.root");
+		if( this->Flavor == "Electron" ) FileName.ReplaceAll( ".root", "_Electron.root");
+		TFile *f_output = TFile::Open(FileName, "RECREATE");
 		Hists->Save( f_output );
 	}
 
-	vector< Muon > EventSelection( vector<Muon>& MuonCollection, NtupleHandle *ntuple, DYAnalyzer *analyzer )
+	void FillHistogram_ElectronChannel( NtupleHandle* ntuple, DYAnalyzer* analyzer, Double_t TotWeight )
+	{
+		//Collect Reconstruction level information
+		vector< Electron > ElectronCollection;
+		Int_t nLepton = ntuple->Nelectrons;
+		for(Int_t i_reco=0; i_reco<nLepton; i_reco++)
+		{
+			Electron elec;
+			elec.FillFromNtuple(ntuple, i_reco);			
+			ElectronCollection.push_back( mu );
+		}
+
+		// -- Event Selection -- //
+		vector< Electron > SelectedElectronCollection = this->EventSelection_ElectronChannel( ElectronCollection, ntuple, analyzer );
+
+		if( SelectedElectronCollection.size() == 2 )
+		{
+			Electron elec1 = SelectedElectronCollection[0];
+			Electron elec2 = SelectedElectronCollection[1];
+			Hists->Fill( elec1, elec2, TotWeight );
+		}
+	}
+
+	vector< Electron > EventSelection_ElectronChannel( vector<Electron>& ElectronCollection, NtupleHandle *ntuple, DYAnalyzer *analyzer )
+	{
+		vector< Electron > vec_ElecSelected;
+
+		// -- Electron ID -- //
+		vector< Electron > QElectronCollection;
+		for(Int_t j=0; j<(int)ElectronCollection.size(); j++)
+		{
+			Electron elec = ElectronCollection[j];
+			if( elec.isMediumElectron_Spring25ns() && elec.ecalDriven == 1 && elec.Pt > 17 )
+				QElectronCollection.push_back( ElectronCollection[j] );
+		}
+
+		Int_t nQElectron = (Int_t)QElectronCollection.size();
+
+		if( nQElectron >= 2 )
+		{
+			for(Int_t i_elec=0; i_elec<nQElectron; i_elec++)
+			{
+				Electron Elec_ith = QElectronCollection[i_elec];
+
+				for(Int_t j_elec=i_elec+1, j_elec<nQElectron; j_elec++)
+				{
+					Electron Elec_jth = QElectronCollection[j_elec];
+
+					if( this->Test_Acc_Electron( Elec_ith, Elec_jth) )
+					{
+						vec_ElecSelected.push_back( Elec_ith );
+						vec_ElecSelected.push_back( Elec_jth );
+					}
+				}
+			}
+
+			if( vec_ElecSelected.size() != 2 ) // -- only 1 pair -- //
+				vec_ElecSelected.clear();
+		}
+
+		return vec_ElecSelected;
+	}
+
+	Bool_t Test_Acc_Electron( Electron elec1, Electron elec2 )
+	{
+		Bool_t Flag = kFALSE;
+
+		Double_t Pt_Lead;
+		Double_t Pt_Sub;
+		Double_t Eta_Lead;
+		Double_t Eta_Sub;
+
+		if( elec1.Pt > elec2.Pt )
+		{
+			Pt_Lead = elec1.Pt;
+			Pt_Sub = elec2.Pt;			
+			Eta_Lead = elec1.eta;
+			Eta_Sub = elec2.eta;
+		}
+		else
+		{
+			Pt_Lead = elec2.Pt;
+			Pt_Sub = elec1.Pt;			
+			Eta_Lead = elec2.eta;
+			Eta_Sub = elec1.eta;
+		}
+
+		if( Pt_Lead > 28 && Pt_Sub > 17 && fabs(Eta_Lead) < 2.5 && fabs(Eta_Sub) < 2.5 )
+		{
+			if( !( fabs(elec1.eta) > 1.4442 && fabs(elec1.eta) < 1.566 )
+			&& !( fabs(elec2.eta) > 1.4442 && fabs(elec2.eta) < 1.566 ) )
+				Flag = kTRUE;
+		}
+
+		return Flag;
+	}
+
+	void FillHistogram_MuonChannel(NtupleHandle* ntuple, DYAnalyzer* analyzer, Double_t TotWeight )
+	{
+		//Collect Reconstruction level information
+		vector< Muon > MuonCollection;
+		Int_t nLepton = ntuple->nMuon;
+		for(Int_t i_reco=0; i_reco<nLepton; i_reco++)
+		{
+			Muon mu;
+			mu.FillFromNtuple(ntuple, i_reco);
+			// -- Apply Rochester momentum scale correction -- //
+			// if( this->Flavor == "Muon" )
+			{
+				float qter = 1.0;
+				
+				if( Tag[i_sample] == "Data" )
+					rmcor->momcor_data(mu.Momentum, mu.charge, 0, qter);
+				else
+					rmcor->momcor_mc(mu.Momentum, mu.charge, mu.trackerLayers, qter);
+
+				// -- Change Muon pT, eta and phi with updated(corrected) one -- //
+				mu.Pt = mu.Momentum.Pt();
+				mu.eta = mu.Momentum.Eta();
+				mu.phi = mu.Momentum.Phi();
+			}
+			
+			MuonCollection.push_back( mu );
+		}
+
+		// -- Event Selection -- //
+		vector< Muon > SelectedMuonCollection = this->EventSelection_MuonChannel( MuonCollection, ntuple, analyzer );
+
+		if( SelectedMuonCollection.size() == 2 )
+		{
+			Muon mu1 = SelectedMuonCollection[0];
+			Muon mu2 = SelectedMuonCollection[1];
+			Hists->Fill( mu1, mu2, TotWeight );
+		}
+	}
+
+	vector< Muon > EventSelection_MuonChannel( vector<Muon>& MuonCollection, NtupleHandle *ntuple, DYAnalyzer *analyzer )
 	{
 		vector< Muon > vec_MuonSelected;
 
@@ -265,7 +399,7 @@ public:
 
 				// -- Check the Accpetance -- //
 				Bool_t isPassAcc = kFALSE;
-				isPassAcc = PassAcc(recolep1, recolep2);
+				isPassAcc = PassAcc_Muon(recolep1, recolep2);
 
 				Double_t reco_M = (recolep1.Momentum + recolep2.Momentum).M();
 
@@ -314,7 +448,7 @@ public:
 							{
 								// -- Check that this pair is within acceptance -- //
 								Bool_t isPassAcc = kFALSE;
-								isPassAcc = PassAcc(Mu, Mu_jth);
+								isPassAcc = PassAcc_Muon(Mu, Mu_jth);
 
 								if( isPassAcc == kTRUE ) // -- Find best pair ONLY for the pairs within acceptance -- //
 								{
@@ -362,7 +496,7 @@ public:
 		return vec_MuonSelected;
 	}
 
-	Bool_t PassAcc( Muon mu1, Muon mu2 )
+	Bool_t PassAcc_Muon( Muon mu1, Muon mu2 )
 	{
 		Bool_t Flag = kFALSE;
 
