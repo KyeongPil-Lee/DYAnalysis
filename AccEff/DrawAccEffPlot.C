@@ -1,4 +1,4 @@
-#include "/home/kplee/CommonCodes/DrellYanAnalysis/MyCanvas.C"
+#include <Include/MyCanvas.C>
 
 void MakeAccEffGraph(TGraphAsymmErrors *g_AccEff, TGraphAsymmErrors *g_Acc, TGraphAsymmErrors *g_Eff);
 void DrawAccEffDist(TString Type, TString Sample, TGraphAsymmErrors* g_Acc, TGraphAsymmErrors* g_Eff_Corr, TGraphAsymmErrors* g_AccEff_Corr);
@@ -11,7 +11,7 @@ void DrawAccEffPlot(TString version = "None")
 	setTDRStyle();
 	gROOT->SetStyle( "tdrStyle" );
 
-	TString FileLocation = "/home/kplee/CommonCodes/DrellYanAnalysis/Results_ROOTFiles_76X/" + version;
+	TString FileLocation = gSystem->Getenv("KP_ROOTFILE_PATH");
 
 	if( version == "None" )
 		FileLocation = ".";
