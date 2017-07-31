@@ -1,7 +1,7 @@
 #include <TEfficiency.h>
 #include <Include/PlotTools.h>
 
-void Comparison_MassHist( TH1D* h_KP, TH1D* h_Ridhi );
+void Comparison_MassHist( TH1D* h_KP, TH1D* h_Ridhi, TString FSRType = "Dressed" );
 
 void XCheck_WithRidhi_Acc_Dressed()
 {
@@ -54,9 +54,21 @@ void XCheck_WithRidhi_Acc_Dressed()
 
 	Comparison_MassHist( h_AccTotal_KP, h_AccTotal );
 	Comparison_MassHist( h_AccPass_KP, h_AccPass );
+
+	TString FileName_postFSR_Ridhi = "DYEE_AccEff_M10to3000_postFSR_Ridhi.root";
+	TH1D* h_AccTotal_postFSR_Ridhi = Get_Hist( FileName_postFSR_Ridhi, "h_mass_AccTotal");
+	TH1D* h_AccPass_postFSR_Ridhi = Get_Hist( FileName_postFSR_Ridhi, "h_mass_AccPass");
+
+	TH1D* h_AccTotal_postFSR_KP = Get_Hist( FileName_KP, "h_AccTotal_postFSR" );
+	TH1D* h_AccPass_postFSR_KP = Get_Hist( FileName_KP, "h_AccPass_postFSR" );
+	h_AccTotal_postFSR_KP->Scale( scale );
+	h_AccPass_postFSR_KP->Scale( scale );
+
+	Comparison_MassHist( h_AccTotal_postFSR_KP, h_AccTotal_postFSR_Ridhi, "postFSR" );
+	Comparison_MassHist( h_AccPass_postFSR_KP, h_AccPass_postFSR_Ridhi, "postFSR" );
 }
 
-void Comparison_MassHist( TH1D* h_KP, TH1D* h_Ridhi )
+void Comparison_MassHist( TH1D* h_KP, TH1D* h_Ridhi, TString FSRType = "Dressed" )
 {
 	TString HistType = "";
 	TString HistName = h_KP->GetName();
@@ -68,7 +80,7 @@ void Comparison_MassHist( TH1D* h_KP, TH1D* h_Ridhi )
 	HistInfo *Hist_Ridhi = new HistInfo( kGreen+2, "Ridhi", h_Ridhi );
 	HistInfo *Hist_KP = new HistInfo( kBlue, "KP ", h_KP );
 
-	TString CanvasName = "Local/c_Mass_Dressed_KP_vs_Ridhi_"+HistType;
+	TString CanvasName = "Local/c_Mass_Dressed_KP_vs_Ridhi_"+HistType + "_" + FSRType;
 	DrawCanvas_TwoHistRatio *canvas = new DrawCanvas_TwoHistRatio(CanvasName, Hist_KP, Hist_Ridhi);
 	canvas->SetTitle("m [GeV]", "# events", "KP/Ridhi");
 	canvas->SetLegendPosition( 0.40, 0.32, 0.97, 0.45 );
