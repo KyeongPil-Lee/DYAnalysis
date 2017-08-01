@@ -193,8 +193,8 @@ public:
 		vector< TString > ntupleDirectory; vector< TString > Tag; vector< Double_t > Xsec; vector< Double_t > nEvents;
 		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2(this->SampleName, &ntupleDirectory, &Tag, &Xsec, &nEvents);
 
-		HistContainer* Hists_All = HistContainer( "All" );
-		HistContainer* Hists_All_postFSR = HistContainer( "All_postFSR" );
+		HistContainer* Hists_All = new HistContainer( "All" );
+		HistContainer* Hists_All_postFSR = new HistContainer( "All_postFSR" );
 
 		const Int_t Ntup = ntupleDirectory.size();
 		for(Int_t i_tup = 0; i_tup<Ntup; i_tup++)
@@ -204,8 +204,8 @@ public:
 
 			cout << "\t<" << Tag[i_tup] << ">" << endl;
 
-			HistContainer* Hists = HistContainer( Tag[i_tup] );
-			HistContainer* Hists_postFSR = HistContainer( Tag[i_tup]+"_postFSR" );
+			HistContainer* Hists = new HistContainer( Tag[i_tup] );
+			HistContainer* Hists_postFSR = new HistContainer( Tag[i_tup]+"_postFSR" );
 
 			// if( Tag[i_tup].Contains("M50to100") )
 			// 	ntupleDirectory[i_tup] = "76X/v20160304_76X_MINIAODv2_DYLL_M50toInf_25ns"; // -- a sample with usual statistics -- //
@@ -360,44 +360,6 @@ public:
 	}
 
 protected:
-	void Fill_SingleMuonHist( Bool_t Flag_Acc, GenLepton genlep_dressed1, GenLepton genlep_dressed2, Double_t TotWeight )
-	{
-		Double_t Pt_Lead;
-		Double_t Eta_Lead;
-		Double_t Pt_Sub;
-		Double_t Eta_Sub;
-
-		if( genlep_dressed1.Pt > genlep_dressed2.Pt )
-		{
-			Pt_Lead = genlep_dressed1.Pt;
-			Eta_Lead = genlep_dressed1.eta;
-
-			Pt_Sub = genlep_dressed2.Pt;
-			Eta_Sub = genlep_dressed2.eta;
-		}
-		else
-		{
-			Pt_Lead = genlep_dressed2.Pt;
-			Eta_Lead = genlep_dressed2.eta;
-
-			Pt_Sub = genlep_dressed1.Pt;
-			Eta_Sub = genlep_dressed1.eta;
-		}
-
-		this->h_AccTotal_Pt_Lead->Fill( Pt_Lead, TotWeight );
-		this->h_AccTotal_Pt_Sub->Fill( Pt_Sub, TotWeight );
-		this->h_AccTotal_Eta_Lead->Fill( Eta_Lead, TotWeight );
-		this->h_AccTotal_Eta_Sub->Fill( Eta_Sub, TotWeight );
-
-		if( Flag_Acc )
-		{
-			this->h_AccPass_Pt_Lead->Fill( Pt_Lead, TotWeight );
-			this->h_AccPass_Pt_Sub->Fill( Pt_Sub, TotWeight );
-			this->h_AccPass_Eta_Lead->Fill( Eta_Lead, TotWeight );
-			this->h_AccPass_Eta_Sub->Fill( Eta_Sub, TotWeight );
-		}
-	}
-
 	Bool_t Test_Acc( GenLepton genlep1, GenLepton genlep2 )
 	{
 		Bool_t Flag = kFALSE;

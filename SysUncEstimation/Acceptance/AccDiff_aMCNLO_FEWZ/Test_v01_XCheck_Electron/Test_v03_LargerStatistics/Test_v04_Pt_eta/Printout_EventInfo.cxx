@@ -38,7 +38,7 @@ public:
 
 	Int_t nEvent_Test;
 
-	AccTool( TString _TStr_Channel )
+	EventInfoTool( TString _TStr_Channel )
 	{
 		this->TStr_Channel = _TStr_Channel;
 
@@ -97,9 +97,10 @@ public:
 			Double_t norm = ( Xsec[i_tup] * this->Luminosity ) / (Double_t)nEvents[i_tup];
 			cout << "\t[Normalization factor: " << norm << "]" << endl;
 
+			Int_t nEvent_Printed = 0;
 			for(Int_t i=0; i<nTotEvent; i++)
 			{
-				loadBar(i+1, nTotEvent, 100, 100);
+				// loadBar(i+1, nTotEvent, 100, 100);
 
 				ntuple->GetEvent(i);
 
@@ -147,11 +148,25 @@ public:
 					vector< GenOthers > GenPhotonCollection2;
 					analyzer->PostToPreFSR_byDressedLepton_AllPhotons(ntuple, &genlep_postFSR2, dRCut, &genlep_dressed2, &GenPhotonCollection2);
 
-					this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
+					Double_t Pt_Lead = 0;
+					Double_t Pt_Sub = 0;
+					if( genlep_dressed1.Pt > genlep_dressed2.Pt )
+					{
+						Pt_Lead = genlep_dressed1.Pt;
+						Pt_Sub = genlep_dressed2.Pt;
+					}
+					else
+					{
+						Pt_Lead = genlep_dressed2.Pt;
+						Pt_Sub = genlep_dressed1.Pt;
+					}
+					if( Pt_Sub > 40 && Pt_Sub < 60 )
+					{
+						nEvent_Printed++;
+						this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
 
-
-
-
+						if( nEvent_Printed == 1000 ) break;
+					}
 				} // -- GenFlag == kTRUE -- //
 
 			} // -- end of event iteration -- //
@@ -170,20 +185,23 @@ protected:
 	{
 		printf("=========================================================================================\n");
 		printf("[run, lumi, event] = (%d, %d, %d)\n", ntuple->runNum, ntuple->lumiBlock, ntuple->evtNum );
-
+		cout << endl;
 		printf("[genlep_postFSR1] (Pt, eta, phi) = (%9.3lf, %9.3lf, %9.3lf)\n", genlep_postFSR1.Pt, genlep_postFSR1.eta, genlep_postFSR1.phi );
 		printf("[genlep_postFSR2] (Pt, eta, phi) = (%9.3lf, %9.3lf, %9.3lf)\n", genlep_postFSR2.Pt, genlep_postFSR2.eta, genlep_postFSR2.phi );
+		cout << endl;
 
-		GenLepton genlep_postFSR1 = GenLeptonCollection[0];
+		Double_t dRCut = 0.1;
+
 		GenLepton genlep_dressed1 = genlep_postFSR1; // -- Copy the values of member variables -- // 
 		vector< GenOthers > GenPhotonCollection1;
+		printf("##### Dressing post-FSR1 #####\n");
 		this->PostToPreFSR_byDressedLepton_AllPhotons_Print(ntuple, &genlep_postFSR1, dRCut, &genlep_dressed1, &GenPhotonCollection1);
 
-		GenLepton genlep_postFSR2 = GenLeptonCollection[1];
 		GenLepton genlep_dressed2 = genlep_postFSR2; // -- Copy the values of member variables -- // 
 		vector< GenOthers > GenPhotonCollection2;
+		printf("##### Dressing post-FSR2 #####\n");
 		this->PostToPreFSR_byDressedLepton_AllPhotons_Print(ntuple, &genlep_postFSR2, dRCut, &genlep_dressed2, &GenPhotonCollection2);
-
+		cout << endl;
 		printf("[dressed lepton1] (Pt, eta, phi) = (%9.3lf, %9.3lf, %9.3lf)\n", genlep_dressed1.Pt, genlep_dressed1.eta, genlep_dressed1.phi );
 		printf("[dressed lepton2] (Pt, eta, phi) = (%9.3lf, %9.3lf, %9.3lf)\n", genlep_dressed2.Pt, genlep_dressed2.eta, genlep_dressed2.phi );
 		printf("=========================================================================================\n\n");
@@ -308,7 +326,7 @@ protected:
 			if( fabs(genlep.ID) == 22 )
 			{
 				
-				Double_t dR = Calc_dR_GenLepton_GenOthers(*genlep_postFSR, genlep);
+				Double_t dR = this->Calc_dR_GenLepton_GenOthers(*genlep_postFSR, genlep);
 
 				// -- Sum of all photon's momentum near the post-FSR muon -- //
 				if( dR < dRCut )
@@ -334,12 +352,27 @@ protected:
 		printf("[dressed lepton] (Pt, eta, phi) = (%9.3lf, %9.3lf, %9.3lf)\n", genlep_preFSR->Momentum.Pt(), genlep_preFSR->Momentum.Eta(), genlep_preFSR->Momentum.Phi() );
 		cout << endl;
 	}
+
+	Double_t Calc_dR_GenLepton_GenOthers( GenLepton genlep1, GenOthers genlep2 )
+	{
+		Double_t eta1 = genlep1.eta;
+		Double_t phi1 = genlep1.phi;
+
+		Double_t eta2 = genlep2.eta;
+		Double_t phi2 = genlep2.phi;
+
+		Double_t diff_eta = eta1 - eta2;
+		Double_t diff_phi = phi1 - phi2;
+
+		Double_t dR = sqrt( diff_eta * diff_eta + diff_phi * diff_phi );
+		return dR;
+	}
 };
 
 void Printout_EventInfo()
 {
-	EventInfoTool *tool = new EventInfoTool();
-	tool->Set_nEvent_Test( 100 );
+	EventInfoTool *tool = new EventInfoTool( "Electron" );
+	// tool->Set_nEvent_Test( 100 );
 	tool->Analyze();
 }
 
