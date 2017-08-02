@@ -160,17 +160,24 @@ public:
 						Pt_Lead = genlep_dressed2.Pt;
 						Pt_Sub = genlep_dressed1.Pt;
 					}
-					if( Pt_Sub > 40 && Pt_Sub < 60 )
-					{
-						nEvent_Printed++;
-						this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
 
-						if( nEvent_Printed == 1000 ) break;
-					}
+					// if( Pt_Sub > 40 && Pt_Sub < 60 )
+					// {
+					// 	nEvent_Printed++;
+					// 	if( genlep_postFSR1.Pt > genlep_postFSR2.Pt )
+					// 		this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
+					// 	else
+					// 		this->Print_EventInfo( ntuple, genlep_postFSR2, genlep_postFSR1 );
+
+					// 	if( nEvent_Printed == 1000 ) break;
+					// }
 
 					if( ntuple->evtNum == 43936 )
 					{
-						this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
+						if( genlep_postFSR1.Pt > genlep_postFSR2.Pt )
+							this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
+						else
+							this->Print_EventInfo( ntuple, genlep_postFSR2, genlep_postFSR1 );
 						break;
 					}
 				} // -- GenFlag == kTRUE -- //
