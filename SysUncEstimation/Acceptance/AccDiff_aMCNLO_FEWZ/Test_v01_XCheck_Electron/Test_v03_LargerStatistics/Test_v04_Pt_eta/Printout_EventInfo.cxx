@@ -167,6 +167,12 @@ public:
 
 						if( nEvent_Printed == 1000 ) break;
 					}
+
+					if( ntuple->evtNum == 43936 )
+					{
+						this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
+						break;
+					}
 				} // -- GenFlag == kTRUE -- //
 
 			} // -- end of event iteration -- //
@@ -325,17 +331,17 @@ protected:
 			// if( fabs(genlep.ID) == 22 && fabs(genlep.Mother) == 13)
 			if( fabs(genlep.ID) == 22 )
 			{
-				
 				Double_t dR = this->Calc_dR_GenLepton_GenOthers(*genlep_postFSR, genlep);
+				printf("\t[Photon (dR=%5.3lf)] (Pt, eta, phi, Status, mother) = (%9.3lf, %9.3lf, %9.3lf, %d, %.0lf)", dR, genlep.Momentum.Pt(), genlep.Momentum.Eta(), genlep.Momentum.Phi(), genlep.Status, genlep.Mother);
 
 				// -- Sum of all photon's momentum near the post-FSR muon -- //
 				if( dR < dRCut )
 				{
 					SumPhotonMom  = SumPhotonMom + genlep.Momentum;
 					GenPhotonCollection->push_back( genlep );
-					printf("\t[Photon (dR=%5.3lf)] (Pt, eta, phi) = (%9.3lf, %9.3lf, %9.3lf) -> Sum of photon momentum: (Pt, eta, phi) = (%9.3lf, %9.3lf, %9.3lf)\n",
-						dR, genlep.Momentum.Pt(), genlep.Momentum.Eta(), genlep.Momentum.Phi(), SumPhotonMom.Pt(), SumPhotonMom.Eta(), SumPhotonMom.Phi() );
+					printf("\t-> Sum of photon momentum: (Pt, eta, phi) = (%9.3lf, %9.3lf, %9.3lf)", SumPhotonMom.Pt(), SumPhotonMom.Eta(), SumPhotonMom.Phi() );
 				}
+				cout << endl;
 			}
 		}
 
