@@ -161,25 +161,25 @@ public:
 						Pt_Sub = genlep_dressed1.Pt;
 					}
 
-					// if( Pt_Sub > 40 && Pt_Sub < 60 )
-					// {
-					// 	nEvent_Printed++;
-					// 	if( genlep_postFSR1.Pt > genlep_postFSR2.Pt )
-					// 		this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
-					// 	else
-					// 		this->Print_EventInfo( ntuple, genlep_postFSR2, genlep_postFSR1 );
-
-					// 	if( nEvent_Printed == 1000 ) break;
-					// }
-
-					if( ntuple->evtNum == 43936 )
+					if( Pt_Sub > 40 && Pt_Sub < 60 )
 					{
+						nEvent_Printed++;
 						if( genlep_postFSR1.Pt > genlep_postFSR2.Pt )
 							this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
 						else
 							this->Print_EventInfo( ntuple, genlep_postFSR2, genlep_postFSR1 );
-						break;
+
+						if( nEvent_Printed == 1000 ) break;
 					}
+
+					// if( ntuple->evtNum == 43936 )
+					// {
+					// 	if( genlep_postFSR1.Pt > genlep_postFSR2.Pt )
+					// 		this->Print_EventInfo( ntuple, genlep_postFSR1, genlep_postFSR2 );
+					// 	else
+					// 		this->Print_EventInfo( ntuple, genlep_postFSR2, genlep_postFSR1 );
+					// 	break;
+					// }
 				} // -- GenFlag == kTRUE -- //
 
 			} // -- end of event iteration -- //
