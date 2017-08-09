@@ -161,7 +161,7 @@ public:
 						Pt_Sub = genlep_dressed1.Pt;
 					}
 
-					if( Pt_Sub > 40 && Pt_Sub < 60 )
+					if( Pt_Sub > 86 && Pt_Sub < 93 )
 					{
 						nEvent_Printed++;
 						if( genlep_postFSR1.Pt > genlep_postFSR2.Pt )
@@ -169,7 +169,7 @@ public:
 						else
 							this->Print_EventInfo( ntuple, genlep_postFSR2, genlep_postFSR1 );
 
-						if( nEvent_Printed == 1000 ) break;
+						// if( nEvent_Printed == 1000 ) break;
 					}
 
 					// if( ntuple->evtNum == 43936 )
