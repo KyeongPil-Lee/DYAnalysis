@@ -163,14 +163,14 @@ public:
 
 		DYAnalyzer *analyzer = new DYAnalyzer( "None" );
 
-		TFile *f = new TFile("ROOTFile_Hists_ForPDFUnc_XSec_aMCNLO_"+this->Flavor+".root", "RECREATE");
+		TFile *f_output = new TFile("ROOTFile_Hists_ForPDFUnc_XSec_aMCNLO_"+this->Flavor+".root", "RECREATE");
 
 		HistContainer* Hists_CV_All = new HistContainer( "CV_All" );
 		HistContainer* Hists_Weighted_All[nWeight];
-		for(Int_t i=0; i<nWeight; i++)
+		for(Int_t i_weight=0; i_weight<nWeight; i_weight++)
 		{
-			TString TStr_Number = TString::Format("%03d", i);
-			Hists_Weighted = new HistContainer( TStr_Number+"_All" );
+			TString TStr_Number = TString::Format("%03d", i_weight);
+			Hists_Weighted_All[i_weight] = new HistContainer( TStr_Number+"_All" );
 		}
 
 		vector< TString > ntupleDirectory; vector< TString > Tag; vector< Double_t > Xsec; vector< Double_t > nEvents;
@@ -202,10 +202,10 @@ public:
 			// -- Histograms for this sample -- //
 			HistContainer* Hists_CV = new HistContainer( "CV_"+Tag[i_tup] );
 			HistContainer* Hists_Weighted[nWeight];
-			for(Int_t i=0; i<nWeight; i++)
+			for(Int_t i_weight=0; i_weight<nWeight; i_weight++)
 			{
-				TString TStr_Number = TString::Format("%03d", i);
-				Hists_Weighted = new HistContainer( TStr_Number+"_"++Tag[i_tup] );
+				TString TStr_Number = TString::Format("%03d", i_weight);
+				Hists_Weighted[i_weight] = new HistContainer( TStr_Number+"_"+Tag[i_tup] );
 			}
 
 			Double_t SumWeights_CV = 0;
@@ -293,9 +293,8 @@ public:
 			cout << "\tLoop RunTime(" << Tag[i_tup] << "): " << LoopRunTime << " seconds\n" << endl;
 		} //end of i_tup iteration
 
-		f->cd();
 		Hists_CV_All->Save( f_output );
-		for(Int_t i_weight=0; i_weight<nWeight; i_weight++) Hists_Weighted_All->Save( f_output );
+		for(Int_t i_weight=0; i_weight<nWeight; i_weight++) Hists_Weighted_All[i_weight]->Save( f_output );
 
 		Double_t TotalRunTime = totaltime.CpuTime();
 		cout << "Total RunTime: " << TotalRunTime << " seconds" << endl;
