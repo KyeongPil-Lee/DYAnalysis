@@ -52,6 +52,75 @@ static inline void loadBar(int x, int n, int r, int w)
 
 }
 
+class HistContainer
+{
+public:
+	TString Type;
+
+	TH1D* h_mass_withinAcc;
+	TH1D* h_mass_postFSR;
+	TH1D* h_mass_dressed;
+
+	HistContainer( TString _Type )
+	{
+		this->Type = _Type;
+		this->Init_Hist();
+	}
+
+	void Fill( Bool_t Flag_Acc, GenLepton GenLep_postFSR1, GenLepton GenLep_postFSR2, GenLepton GenLep_Dressed1, GenLepton GenLep_Dressed2, Double_t weight )
+	{
+		Double_t M_postFSR = (GenLep_postFSR1.Momentum + GenLep_postFSR2.Momentum).M();
+		Double_t M_Dressed = (GenLep_Dressed1.Momentum + GenLep_Dressed2.Momentum).M();
+
+		this->h_mass_postFSR->Fill( M_postFSR, weight );
+		if( Flag_Acc ) this->h_mass_withinAcc->Fill( M_postFSR, weight );
+
+		this->h_mass_dressed->Fill( M_Dressed, weight );
+	}
+
+	void Scale( Double_t _scale )
+	{
+		h_mass_withinAcc->Scale( _scale );
+		h_mass_postFSR->Scale( _scale );
+		h_mass_dressed->Scale( _scale );
+	}
+
+	void Add( HistContainer* Hists )
+	{
+		this->h_mass_withinAcc->Add( Hists->h_mass_withinAcc );
+		this->h_mass_postFSR->Add( Hists->h_mass_postFSR );
+		this->h_mass_dressed->Add( Hists->h_mass_dressed );
+	}
+
+	void Save( TFile *f_output )
+	{
+		f_output->cd();
+		h_mass_withinAcc->Write();
+		h_mass_postFSR->Write();
+		h_mass_dressed->Write();
+	}
+
+protected:
+	void Init_Hist()
+	{
+		Double_t MassBinEdges[nMassBin+1] = 
+		{
+			15, 20, 25, 30, 35, 40, 45, 50, 55, 60,
+			64, 68, 72, 76, 81, 86, 91, 96, 101, 106,
+			110, 115, 120, 126, 133, 141, 150, 160, 171, 185,
+			200, 220, 243, 273, 320, 380, 440, 510, 600, 700,
+			830, 1000, 1500, 3000
+		};
+
+	 	this->h_mass_withinAcc = new TH1D("h_mass_withinAcc_"+this->Type, "", nMassBin, MassBinEdges);		 
+	 	this->h_mass_postFSR = new TH1D("h_mass_postFSR_"+this->Type, "", nMassBin, MassBinEdges);
+		this->h_mass_dressed = new TH1D("h_mass_dressed_"+this->Type, "", nMassBin, MassBinEdges);
+
+		this->h_mass_withinAcc->Sumw2();
+		this->h_mass_postFSR->Sumw2();
+		this->h_mass_dressed->Sumw2();
+	}
+};
 
 class HistProducer
 {
@@ -96,27 +165,12 @@ public:
 
 		TFile *f = new TFile("ROOTFile_Hists_ForPDFUnc_XSec_aMCNLO_"+this->Flavor+".root", "RECREATE");
 
-		// const Int_t nMassBin = 43;
-		Double_t MassBinEdges[nMassBin+1] = {15, 20, 25, 30, 35, 40, 45, 50, 55, 60,
-											 64, 68, 72, 76, 81, 86, 91, 96, 101, 106,
-											 110, 115, 120, 126, 133, 141, 150, 160, 171, 185,
-											 200, 220, 243, 273, 320, 380, 440, 510, 600, 700,
-											 830, 1000, 1500, 3000};
-
-
-	 	TH1D *h_mass_withinAcc = new TH1D("h_mass_withinAcc", "", nMassBin, MassBinEdges);		 
-	 	TH1D *h_mass_postFSR = new TH1D("h_mass_postFSR", "", nMassBin, MassBinEdges);
-		TH1D *h_mass_dressed = new TH1D("h_mass_dressed", "", nMassBin, MassBinEdges);
-
-		TH1D *h_mass_withinAcc_Weighted[nWeight];
-	 	TH1D *h_mass_postFSR_Weighted[nWeight];
-		TH1D *h_mass_dressed_Weighted[nWeight];
+		HistContainer* Hists_CV_All = new HistContainer( "CV_All" );
+		HistContainer* Hists_Weighted_All[nWeight];
 		for(Int_t i=0; i<nWeight; i++)
 		{
 			TString TStr_Number = TString::Format("%03d", i);
-			h_mass_withinAcc_Weighted[i] = new TH1D("h_mass_withinAcc_"+TStr_Number, "", nMassBin, MassBinEdges);
-			h_mass_postFSR_Weighted[i] = new TH1D("h_mass_postFSR_"+TStr_Number, "", nMassBin, MassBinEdges);
-			h_mass_dressed_Weighted[i] = new TH1D("h_mass_dressed_"+TStr_Number, "", nMassBin, MassBinEdges);
+			Hists_Weighted = new HistContainer( TStr_Number+"_All" );
 		}
 
 		vector< TString > ntupleDirectory; vector< TString > Tag; vector< Double_t > Xsec; vector< Double_t > nEvents;
@@ -145,14 +199,20 @@ public:
 			chain->SetBranchStatus("PDFWeights", 1);
 			chain->SetBranchAddress("PDFWeights", &PDFWeights);
 
-			Double_t SumWeights = 0;
-			Double_t SumWeights_Separated = 0;
+			// -- Histograms for this sample -- //
+			HistContainer* Hists_CV = new HistContainer( "CV_"+Tag[i_tup] );
+			HistContainer* Hists_Weighted[nWeight];
+			for(Int_t i=0; i<nWeight; i++)
+			{
+				TString TStr_Number = TString::Format("%03d", i);
+				Hists_Weighted = new HistContainer( TStr_Number+"_"++Tag[i_tup] );
+			}
+
+			Double_t SumWeights_CV = 0;
+			Double_t SumWeights_Weighted[nWeight] = {0};
 
 			Int_t nTotEvent = chain->GetEntries();
 			cout << "\t[Total Events: " << nTotEvent << "]" << endl; 
-
-			Double_t norm = ( Xsec[i_tup] * this->Luminosity ) / (Double_t)nEvents[i_tup];
-			cout << "\t[Normalization factor: " << norm << "]" << endl;
 
 			// nTotEvent = 1000;
 			// -- Event loop starts -- //
@@ -162,20 +222,22 @@ public:
 
 				ntuple->GetEvent(i);
 
-				//Bring weights for NLO MC events
-				Double_t GenWeight = 0;
-				ntuple->GENEvt_weight < 0 ? GenWeight = -1 : GenWeight = 1;
-
-				SumWeights += GenWeight;
-
-				Double_t TotWeight = norm * GenWeight;
-
 				Bool_t GenFlag = kFALSE;
 				GenFlag = analyzer->SeparateDYLLSample_isHardProcess(Tag[i_tup], ntuple);
 
-				if( GenFlag == kTRUE )
+				if( GenFlag == kTRUE ) // -- DY->mumu events -- //
 				{
-					SumWeights_Separated += GenWeight;
+					// -- Bring weights for NLO MC events -- //
+					Double_t GenWeight = 0;
+					ntuple->GENEvt_weight < 0 ? GenWeight = -1 : GenWeight = 1;
+					SumWeights_CV += GenWeight;
+
+					Double_t GenWeight_Weighted[nWeight];
+					for(Int_t i_weight=0; i_weight<nWeight; i_weight++)
+					{
+						GenWeight_Weighted[i_weight] = GenWeight*PDFWeights->at(i_weight);
+						SumWeights_Weighted[i_weight] += GenWeight_Weighted[i_weight];
+					}
 
 					// -- Collect gen-level information -- //
 					vector<GenLepton> GenLeptonCollection;
@@ -187,65 +249,53 @@ public:
 						if( fabs(genlep.ID) == this->LeptonID && genlep.fromHardProcessFinalState )
 							GenLeptonCollection.push_back( genlep );
 					}
-					GenLepton genlep1 = GenLeptonCollection[0];
-					GenLepton genlep2 = GenLeptonCollection[1];
-					Double_t M_postFSR = (genlep1.Momentum + genlep2.Momentum).M();
 
-					// -- post-FSR mass distribution -- //
-					h_mass_postFSR->Fill( M_postFSR, TotWeight );
-					for(Int_t i_weight=0; i_weight<nWeight; i_weight++)
-						h_mass_postFSR_Weighted[i_weight]->Fill( M_postFSR, TotWeight*PDFWeights->at(i_weight) );
-
-					// -- post-FSR distribution within acceptance -- //
-					Bool_t Flag_PassAcc = this->Test_Acc( genlep1, genlep2 );
-					if( Flag_PassAcc )
-					{
-						h_mass_withinAcc->Fill( M_postFSR, TotWeight );
-						for(Int_t i_weight=0; i_weight<nWeight; i_weight++)
-							h_mass_withinAcc_Weighted[i_weight]->Fill( M_postFSR, TotWeight*PDFWeights->at(i_weight) );
-					}
+					GenLepton genlep_postFSR1 = GenLeptonCollection[0];
+					GenLepton genlep_postFSR2 = GenLeptonCollection[1];
+					Bool_t Flag_PassAcc = this->Test_Acc( genlep_postFSR1, genlep_postFSR2 );
 
 					// -- construct dressed leptons -- //
 					Double_t dRCut = 0.1;
-					GenLepton genlep_postFSR1 = GenLeptonCollection[0];
 					GenLepton genlep_dressed1 = genlep_postFSR1; // -- Copy the values of member variables -- // 
 					vector< GenOthers > GenPhotonCollection1;
 					analyzer->PostToPreFSR_byDressedLepton_AllPhotons(ntuple, &genlep_postFSR1, dRCut, &genlep_dressed1, &GenPhotonCollection1);
 
-					GenLepton genlep_postFSR2 = GenLeptonCollection[1];
 					GenLepton genlep_dressed2 = genlep_postFSR2; // -- Copy the values of member variables -- // 
 					vector< GenOthers > GenPhotonCollection2;
 					analyzer->PostToPreFSR_byDressedLepton_AllPhotons(ntuple, &genlep_postFSR2, dRCut, &genlep_dressed2, &GenPhotonCollection2);
 
-					// -- dressed level mass distribution -- //
-					Double_t M_dressed = (genlep_dressed1.Momentum + genlep_dressed2.Momentum).M();
-					h_mass_dressed->Fill( M_dressed, TotWeight );
+					// -- fill the histograms -- //
+					Hists_CV->Fill( Flag_PassAcc, genlep_postFSR1, genlep_postFSR2, genlep_dressed1, genlep_dressed2, GenWeight );
 					for(Int_t i_weight=0; i_weight<nWeight; i_weight++)
-						h_mass_dressed_Weighted[i_weight]->Fill( M_dressed, TotWeight*PDFWeights->at(i_weight) );
+						Hists_Weighted[i_weight]->Fill( Flag_PassAcc, genlep_postFSR1, genlep_postFSR2, genlep_dressed1, genlep_dressed2, GenWeight_Weighted[i_weight] );
 
 				} // -- End of if( GenFlag == kTRUE )
 
 			} // -- End of event iteration
 
-			cout << "Total Sum of Weight: " << SumWeights << endl;
-			cout << "\tSum of Weights of Separated Events: " << SumWeights_Separated << endl;
+			if( SumWeights_CV != (Double_t)nEvents[i_tup] )
+				cout << "Sum of weights in DYAnalyzer (" << (Double_t)nEvents[i_tup] << ") is different with the direct calculation in this code (" << SumWeights_CV << ")!" << endl;
+
+			Double_t Norm_CV = ( Xsec[i_tup] * this->Luminosity ) / SumWeights_CV;
+			printf("[Central value] Sum of weights: %.1lf -> norm.factor = %lf\n", SumWeights_CV, Norm_CV);
+			Hists_CV->Scale( Norm_CV );
+			Hists_CV_All->Add( Hists_CV );
+	
+			for(Int_t i_weight=0; i_weight<nWeight; i_weight++)
+			{
+				Double_t Norm_Weighted = ( Xsec[i_tup] * this->Luminosity ) / SumWeights_Weighted[i_weight];
+				printf("\t[%03d-th PDF weight] Sum of weights: %.1lf -> norm.factor = %lf\n", i_weight, SumWeights_Weighted[i_weight], Norm_Weighted );
+				Hists_Weighted[i_weight]->Scale( Norm_Weighted );
+				Hists_Weighted_All[i_weight]->Add( Hists_Weighted[i_weight] );
+			}
 
 			Double_t LoopRunTime = looptime.CpuTime();
 			cout << "\tLoop RunTime(" << Tag[i_tup] << "): " << LoopRunTime << " seconds\n" << endl;
 		} //end of i_tup iteration
 
 		f->cd();
-
-		h_mass_withinAcc->Write();
-		h_mass_postFSR->Write();
-		h_mass_dressed->Write();
-
-		for(Int_t i=0; i<nWeight; i++)
-		{
-			h_mass_withinAcc_Weighted[i]->Write();
-			h_mass_postFSR_Weighted[i]->Write();
-			h_mass_dressed_Weighted[i]->Write();
-		}
+		Hists_CV_All->Save( f_output );
+		for(Int_t i_weight=0; i_weight<nWeight; i_weight++) Hists_Weighted_All->Save( f_output );
 
 		Double_t TotalRunTime = totaltime.CpuTime();
 		cout << "Total RunTime: " << TotalRunTime << " seconds" << endl;
