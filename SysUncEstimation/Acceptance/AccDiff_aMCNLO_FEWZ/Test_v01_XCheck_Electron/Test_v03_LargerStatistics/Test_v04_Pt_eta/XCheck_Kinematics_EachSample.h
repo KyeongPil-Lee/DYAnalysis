@@ -115,7 +115,7 @@ protected:
 
 		// SampleType_Ridhi.push_back( "M10to50" );
 		// SampleType_Ridhi.push_back( "M50to100" );
-		// SampleType_Ridhi.push_back( "M100to200" );
+		SampleType_Ridhi.push_back( "M100to200" );
 		// SampleType_Ridhi.push_back( "M200to400" );
 		// SampleType_Ridhi.push_back( "M400to500" );
 		// SampleType_Ridhi.push_back( "M500to700" );
@@ -123,7 +123,7 @@ protected:
 		// SampleType_Ridhi.push_back( "M800to1000" );
 		// SampleType_Ridhi.push_back( "M1000to1500" );
 		// SampleType_Ridhi.push_back( "M1500to2000" );
-		SampleType_Ridhi.push_back( "M2000to3000" );
+		// SampleType_Ridhi.push_back( "M2000to3000" );
 
 		for(const auto& SampleType : SampleType_Ridhi )
 			SampleType_KP.push_back( "DYEE_" + SampleType );
@@ -174,6 +174,8 @@ protected:
 		}
 		canvas->Draw( 0, 1 );
 		canvas->c->SaveAs(".pdf");
+
+		// if( HistName.Contains("h_AccTotal_Pt") && HistName.Contains("Sub") && !HistName.Contains("postFSR") ) Print_Histogram( Hist_KP->h_ratio );
 	}
 
 };

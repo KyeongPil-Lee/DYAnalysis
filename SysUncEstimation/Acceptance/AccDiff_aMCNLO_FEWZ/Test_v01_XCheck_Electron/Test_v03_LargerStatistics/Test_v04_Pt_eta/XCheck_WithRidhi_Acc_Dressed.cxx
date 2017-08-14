@@ -8,7 +8,8 @@ void XCheck_WithRidhi_Acc_Dressed()
 	if( gSystem->mkdir( "./Local" ) == 0 ) printf("Directory [Local] is created\n");
 
 	TString AnalyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
-	TString FileName_Ridhi = AnalyzerPath+"/SysUncEstimation/Acceptance/AccDiff_aMCNLO_FEWZ/Test_v01_XCheck_Electron/Test_v01_XCheck_Ridhi/DYEE_AccEff_M10to3000.root";
+	// TString FileName_Ridhi = AnalyzerPath+"/SysUncEstimation/Acceptance/AccDiff_aMCNLO_FEWZ/Test_v01_XCheck_Electron/Test_v01_XCheck_Ridhi/DYEE_AccEff_M10to3000.root";
+	TString FileName_Ridhi = "ROOTFile_DYEE_AccTest_Input_Electron_Ridhi_v2.root";
 	TString HistName_AccTotal = "h_mass_AccTotal";
 	TString HistName_AccPass = "h_mass_AccPass";
 
@@ -44,28 +45,28 @@ void XCheck_WithRidhi_Acc_Dressed()
 
 
 	// -- mass histogram itself -- //
-	Double_t Lumi_MuonPhys = 2759.017;
-	Double_t Lumi_Golden = 2257.998;
-	Double_t scale = Lumi_Golden / Lumi_MuonPhys;
+	// Double_t Lumi_MuonPhys = 2759.017;
+	// Double_t Lumi_Golden = 2257.998;
+	// Double_t scale = Lumi_Golden / Lumi_MuonPhys;
 	TH1D* h_AccTotal_KP = Get_Hist( FileName_KP, "h_AccTotal" );
 	TH1D* h_AccPass_KP = Get_Hist( FileName_KP, "h_AccPass" );
-	h_AccTotal_KP->Scale( scale );
-	h_AccPass_KP->Scale( scale );
+	// h_AccTotal_KP->Scale( scale );
+	// h_AccPass_KP->Scale( scale );
 
 	Comparison_MassHist( h_AccTotal_KP, h_AccTotal );
 	Comparison_MassHist( h_AccPass_KP, h_AccPass );
 
-	TString FileName_postFSR_Ridhi = "DYEE_AccEff_M10to3000_postFSR_Ridhi.root";
-	TH1D* h_AccTotal_postFSR_Ridhi = Get_Hist( FileName_postFSR_Ridhi, "h_mass_AccTotal");
-	TH1D* h_AccPass_postFSR_Ridhi = Get_Hist( FileName_postFSR_Ridhi, "h_mass_AccPass");
+	// TString FileName_postFSR_Ridhi = "DYEE_AccEff_M10to3000_postFSR_Ridhi.root";
+	// TH1D* h_AccTotal_postFSR_Ridhi = Get_Hist( FileName_postFSR_Ridhi, "h_mass_AccTotal");
+	// TH1D* h_AccPass_postFSR_Ridhi = Get_Hist( FileName_postFSR_Ridhi, "h_mass_AccPass");
 
-	TH1D* h_AccTotal_postFSR_KP = Get_Hist( FileName_KP, "h_AccTotal_postFSR" );
-	TH1D* h_AccPass_postFSR_KP = Get_Hist( FileName_KP, "h_AccPass_postFSR" );
-	h_AccTotal_postFSR_KP->Scale( scale );
-	h_AccPass_postFSR_KP->Scale( scale );
+	// TH1D* h_AccTotal_postFSR_KP = Get_Hist( FileName_KP, "h_AccTotal_postFSR" );
+	// TH1D* h_AccPass_postFSR_KP = Get_Hist( FileName_KP, "h_AccPass_postFSR" );
+	// // h_AccTotal_postFSR_KP->Scale( scale );
+	// // h_AccPass_postFSR_KP->Scale( scale );
 
-	Comparison_MassHist( h_AccTotal_postFSR_KP, h_AccTotal_postFSR_Ridhi, "postFSR" );
-	Comparison_MassHist( h_AccPass_postFSR_KP, h_AccPass_postFSR_Ridhi, "postFSR" );
+	// Comparison_MassHist( h_AccTotal_postFSR_KP, h_AccTotal_postFSR_Ridhi, "postFSR" );
+	// Comparison_MassHist( h_AccPass_postFSR_KP, h_AccPass_postFSR_Ridhi, "postFSR" );
 }
 
 void Comparison_MassHist( TH1D* h_KP, TH1D* h_Ridhi, TString FSRType = "Dressed" )

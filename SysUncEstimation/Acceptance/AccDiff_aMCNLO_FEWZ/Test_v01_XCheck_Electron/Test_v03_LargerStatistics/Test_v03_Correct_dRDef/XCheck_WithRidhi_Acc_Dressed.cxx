@@ -8,7 +8,8 @@ void XCheck_WithRidhi_Acc_Dressed()
 	if( gSystem->mkdir( "./Local" ) == 0 ) printf("Directory [Local] is created\n");
 
 	TString AnalyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
-	TString FileName_Ridhi = AnalyzerPath+"/SysUncEstimation/Acceptance/AccDiff_aMCNLO_FEWZ/Test_v01_XCheck_Electron/Test_v01_XCheck_Ridhi/DYEE_AccEff_M10to3000.root";
+	// TString FileName_Ridhi = AnalyzerPath+"/SysUncEstimation/Acceptance/AccDiff_aMCNLO_FEWZ/Test_v01_XCheck_Electron/Test_v01_XCheck_Ridhi/DYEE_AccEff_M10to3000.root";
+	TString FileName_Ridhi = AnalyzerPath+"/SysUncEstimation/Acceptance/AccDiff_aMCNLO_FEWZ/Test_v01_XCheck_Electron/Test_v03_LargerStatistics/Test_v04_Pt_eta/ROOTFile_DYEE_AccTest_Input_Electron_Ridhi_v2.root";
 	TString HistName_AccTotal = "h_mass_AccTotal";
 	TString HistName_AccPass = "h_mass_AccPass";
 
@@ -43,7 +44,7 @@ void XCheck_WithRidhi_Acc_Dressed()
 	canvas->c->SaveAs(".pdf");
 
 
-	// -- mass histogram itself -- //
+	// // -- mass histogram itself -- //
 	Double_t Lumi_MuonPhys = 2759.017;
 	Double_t Lumi_Golden = 2257.998;
 	Double_t scale = Lumi_Golden / Lumi_MuonPhys;
