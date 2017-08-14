@@ -61,7 +61,19 @@ public:
 
 	void Save( TFile *f_output )
 	{
+		f_output->cd();
+		this->h_Acc_aMCNLO->SetName("h_Acc_aMCNLO_"+this->TStr_Channel);
+		this->h_Acc_aMCNLO->Write();
+		this->h_Acc_FEWZ->SetName("h_Acc_FEWZ_"+this->TStr_Channel);
+		this->h_Acc_FEWZ->Write();
 
+		this->h_Acc_aMCNLO_ByFit->SetName("h_Acc_aMCNLO_ByFit_"+this->TStr_Channel);
+		this->h_Acc_aMCNLO_ByFit->Write();
+		this->h_Acc_FEWZ_ByFit->SetName("h_Acc_FEWZ_ByFit_"+this->TStr_Channel);
+		this->h_Acc_FEWZ_ByFit->Write();
+
+		this->h_AccDiff_ByFit->SetName("h_AccDiff_ByFit_"+this->TStr_Channel);
+		this->h_AccDiff_ByFit->Write();
 	}
 
 protected:
