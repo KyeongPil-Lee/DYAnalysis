@@ -10,6 +10,7 @@ public:
 	TString XTitle;
 	TString YTitle;
 
+	Bool_t Flag_Rebin;
 	Int_t nRebin;
 
 	Bool_t Flag_XRange;
@@ -43,7 +44,7 @@ public:
 		this->YTitle = _YTitle;
 	}
 
-	void Set_nRebin( Int_t _nRebin ) { this->nRebin = _nRebin; }
+	void Set_nRebin( Int_t _nRebin ) { this->Flag_Rebin = kTRUE; this->nRebin = _nRebin; }
 
 	void Set_XRange( Double_t _Min, Double_t _Max )
 	{
@@ -68,6 +69,8 @@ private:
 
 		Flag_LogX = kFALSE;
 		Flag_LogY = kFALSE;
+
+		Flag_Rebin = kFALSE;
 	}
 
 };
@@ -152,8 +155,15 @@ public:
 	HistInfo* Hist_Signal;
 	vector< HistInfo* > vec_Hist_Bkg;
 
+	Int_t nCanvas;
+
 	DrawingTool()
 	{
+		this->Hist_Data = NULL;
+		this->Hist_Signal = NULL;
+		this->vec_Hist_Bkg.clear();
+		this->nCanvas = 1;
+
 		this->Set_SampleInfo();
 		this->Set_HistStyle();
 		TH1::AddDirectory(kFALSE);
@@ -179,13 +189,11 @@ private:
 		THStack* hs_MC = this->Make_MCStack();
 
 		TCanvas *c; TPad *TopPad; TPad *BottomPad;
-		TString CanvasName = "c_"+HS->Tag;
+		TString CanvasName = TString::Format("Local/c%02d_"+HS->Tag, nCanvas); nCanvas++;
 		SetCanvas_Ratio( c, CanvasName, TopPad, BottomPad, HS->Flag_LogX, HS->Flag_LogY );
 
 		c->cd();
 		TopPad->cd();
-
-		// Print_Histogram( this->Hist_Data->h );
 
 		TH1D* h_format = (TH1D*)this->Hist_Data->h->Clone();
 		h_format->Reset("ICES");
@@ -194,8 +202,6 @@ private:
 		hs_MC->Draw("HISTSAME");
 		this->Hist_Data->Draw("EPSAME");
 		h_format->Draw("AXISSAME");
-
-		// Print_Histogram( this->Hist_Data->h );
 
 		SetHistFormat_TopPad( h_format, HS->YTitle );
 		if( HS->Flag_XRange ) h_format->GetXaxis()->SetRangeUser( HS->xMin, HS->xMax );
@@ -222,6 +228,7 @@ private:
 
 		h_ratio->Draw("EPSAME");
 		SetHistFormat_BottomPad( h_ratio, HS->XTitle, "Data/MC", 0.4, 1.6 );
+		if( HS->Flag_XRange ) h_ratio->GetXaxis()->SetRangeUser( HS->xMin, HS->xMax );
 
 		TF1 *f_line;
 		DrawLine( f_line );
@@ -232,15 +239,14 @@ private:
 	void Set_HistInfo( HistStyle *HS )
 	{
 		// -- initialization -- //
-		// delete Hist_Data;
-		// delete Hist_Signal;
-		this->Hist_Data = NULL;
-		this->Hist_Signal = NULL;
+		delete Hist_Data;
+		delete Hist_Signal;
+		// this->Hist_Data = NULL;
+		// this->Hist_Signal = NULL;
 		vec_Hist_Bkg.clear();
 
 		// -- data -- //
 		TH1D* h_Data = this->Make_Hist( HS, this->DataInfo );
-		Print_Histogram( h_Data );
 		this->Hist_Data = new HistInfo( this->DataInfo->Color, this->DataInfo->Name, h_Data );
 
 		// -- signal MC -- //
@@ -327,6 +333,9 @@ private:
 
 			h = (TH1D*)h->Rebin(nMassBin, h->GetName(), MassBinEdges);
 		}
+
+		if( HS->Flag_Rebin )
+			h->Rebin( HS->nRebin );
 
 		return h;
 	}
@@ -522,11 +531,20 @@ private:
 
 	void Set_HistStyle()
 	{
-		HistStyle *Hist_OSMass = new HistStyle( "h_mass_OS", "Dilepton mass (opposite sign, DY Bin)" );
-		Hist_OSMass->Set_LogX();
-		Hist_OSMass->Set_LogY();
-		Hist_OSMass->Set_YRange(5e-2, 2e6);
-		Hist_OSMass->Set_Titles( "m [GeV]", "Entries per bins");
-		this->vec_HistStyle.push_back( Hist_OSMass );
+		HistStyle *Hist_Mass_DYBin = new HistStyle( "h_mass_OS", "Dilepton mass (opposite sign, DY Bin)" );
+		Hist_Mass_DYBin->Set_LogX();
+		Hist_Mass_DYBin->Set_LogY();
+		Hist_Mass_DYBin->Set_YRange(5e-2, 2e6);
+		Hist_Mass_DYBin->Set_Titles( "m [GeV]", "Entries per bins");
+		this->vec_HistStyle.push_back( Hist_Mass_DYBin );
+
+		HistStyle *Hist_Mass = new HistStyle( "h_mass_OS", "Dilepton mass (opposite sign)" );
+		// Hist_Mass->Set_LogX();
+		Hist_Mass->Set_LogY();
+		Hist_Mass->Set_XRange(100, 3000);
+		Hist_Mass->Set_YRange(5e-2, 2e6);
+		Hist_Mass->Set_nRebin( 50 );
+		Hist_Mass->Set_Titles( "m [GeV]", "Entries / 50 GeV");
+		this->vec_HistStyle.push_back( Hist_Mass );
 	}
 };
