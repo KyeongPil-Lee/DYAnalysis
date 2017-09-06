@@ -208,6 +208,9 @@ public:
 				Hists_Weighted[i_weight] = new HistContainer( TStr_Number+"_"+Tag[i_tup] );
 			}
 
+			// -- for x-check -- //
+			TH1D* h_RelDiff_SumWeights = new TH1D("h_RelDiff_SumWeights_"+Tag[i_tup], "", 10000, -10, 10);
+
 			Double_t SumWeights_CV = 0;
 			Double_t SumWeights_Weighted[nWeight] = {0};
 
@@ -288,6 +291,15 @@ public:
 				Hists_Weighted[i_weight]->Scale( Norm_Weighted );
 				Hists_Weighted_All[i_weight]->Add( Hists_Weighted[i_weight] );
 			}
+
+			for(Int_t i_weight=0; i_weight<nWeight; i_weight++)
+			{
+				Double_t RelDiff = (SumWeights_Weighted[i_weight] - SumWeights_CV) / SumWeights_CV;
+				h_RelDiff_SumWeights->Fill( RelDiff );
+			}
+
+			f_output->cd();
+			h_RelDiff_SumWeights->Write();
 
 			Double_t LoopRunTime = looptime.CpuTime();
 			cout << "\tLoop RunTime(" << Tag[i_tup] << "): " << LoopRunTime << " seconds\n" << endl;
