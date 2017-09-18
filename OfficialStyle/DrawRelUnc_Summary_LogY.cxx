@@ -26,7 +26,8 @@ public:
 	{
 		this->Get_Histograms();
 
-		this->c = new TCanvas("Muon_SysUnc_All", "",0,0,800,700);
+		TString CanvasName = "Muon_SysUnc_All";
+		this->c = new TCanvas(CanvasName, "",0,0,800,700);
 		this->Setup_Canvas();
 		this->c->cd();
 
@@ -67,10 +68,10 @@ public:
 
 		// Hist_RelStatUnc->h->GetYaxis()->SetRangeUser(4e-2, 250);
 
-		c->SaveAs(".pdf");
+		c->SaveAs("Local/"+CanvasName+".pdf");
 
 		TString PlotPath = gSystem->Getenv("KP_PLOT_PATH");
-		c->SaveAs(PlotPath+"/Muon_SysUnc_All.pdf");
+		c->SaveAs(PlotPath+"/"+CanvasName+".pdf");
 	}
 protected:
 	void Get_Histograms()

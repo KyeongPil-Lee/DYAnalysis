@@ -88,9 +88,17 @@ void SysUnc_Acc()
 	TH1D *h_RelSysUnc_Alpha_Percent = (TH1D*)h_xSec_alpha_0118->Clone("h_RelSysUnc_Alpha_Percent");
 	Calc_RelSysUnc_Alpha( h_xSec_alpha_0118, h_xSec_alpha_0117, h_xSec_alpha_0119, h_RelSysUnc_Alpha_Percent );
 
+	////////////////////////////////////////////////////////////////////////
+	// -- Uncertainty from acceptance difference between aMC@NLO and FEWZ //
+	////////////////////////////////////////////////////////////////////////
 	TString AnalyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
-	TString FileName_AccDiff = AnalyzerPath+"/SysUncEstimation/Acceptance/AccDiff_aMCNLO_FEWZ/ROOTFile_SysUnc_DiffWithFEWZ.root";
-	TH1D* h_RelSysUnc_AccDiff_Percent = Get_Hist(FileName_AccDiff, "h_RelUnc", "h_RelSysUnc_AccDiff_Percent");
+	// TString FileName_AccDiff = AnalyzerPath+"/SysUncEstimation/Acceptance/AccDiff_aMCNLO_FEWZ/ROOTFile_SysUnc_DiffWithFEWZ.root";
+	// TH1D* h_RelSysUnc_AccDiff_Percent = Get_Hist(FileName_AccDiff, "h_RelUnc", "h_RelSysUnc_AccDiff_Percent");
+	// h_RelSysUnc_AccDiff_Percent->Scale( 100 );
+	TString ROOTFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
+	TString FileName_AccDiff = ROOTFilePath+"/ROOTFile_Unc_AccDiff_aMCNLO_FEWZ_ByFit.root";
+	TString HistName_AccDiff = "h_AccDiff_ByFit_Muon";
+	TH1D* h_RelSysUnc_AccDiff_Percent = Get_Hist( FileName_AccDiff, HistName_AccDiff);
 	h_RelSysUnc_AccDiff_Percent->Scale( 100 );
 
 	// -- save -- //
