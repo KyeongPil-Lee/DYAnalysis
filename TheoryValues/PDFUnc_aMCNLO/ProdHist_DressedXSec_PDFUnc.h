@@ -286,8 +286,10 @@ public:
 	
 			for(Int_t i_weight=0; i_weight<nWeight; i_weight++)
 			{
-				Double_t Norm_Weighted = ( Xsec[i_tup] * this->Luminosity ) / SumWeights_Weighted[i_weight];
-				printf("\t[%03d-th PDF weight] Sum of weights: %.1lf -> norm.factor = %lf\n", i_weight, SumWeights_Weighted[i_weight], Norm_Weighted );
+				// Double_t Norm_Weighted = ( Xsec[i_tup] * this->Luminosity ) / SumWeights_Weighted[i_weight];
+				// printf("\t[%03d-th PDF weight] Sum of weights: %.1lf -> norm.factor = %lf\n", i_weight, SumWeights_Weighted[i_weight], Norm_Weighted );
+
+				Double_t Norm_Weighted = Norm_CV; // -- same normalization factor with central value -- //
 				Hists_Weighted[i_weight]->Scale( Norm_Weighted );
 				Hists_Weighted_All[i_weight]->Add( Hists_Weighted[i_weight] );
 			}
