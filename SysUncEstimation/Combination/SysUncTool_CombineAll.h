@@ -339,8 +339,29 @@ public:
 			this->h_aMCNLO = (TH1D*)f_data->Get("h_DiffXsec_aMCNLO")->Clone();
 		}
 
-		this->AssignScaleUnc_3Percent( this->h_aMCNLO );
+		TString Type_DXSec = "dressed";
+		if( Type.Contains("FpoF") ) Type_DXSec = "withinAcc";
+		this->AssignTheoryUnc_aMCNLO( this->h_aMCNLO, Type_DXSec );
+		// this->AssignScaleUnc_3Percent( this->h_aMCNLO );
 		// this->Add_PIContribution( this->h_aMCNLO );		
+	}
+
+	void AssignTheoryUnc_aMCNLO( TH1D* h_aMCNLO, TString Type_DXSec )
+	{
+		TString Tag = "Muon_"+Type_DXSec;
+		TString FileName_TheoUnc = this->FileLocation+"/ROOTFile_TheoryUnc_aMCNLO.root";
+		// -- quad.sum of scale, alphas, PDF replica uncertainty -- //
+		TH1D* h_RelUnc_Tot = Get_Hist( FileName_TheoUnc, Tag+"/h_RelUnc_Tot");
+
+		Int_t nBin = h_aMCNLO->GetNbinsX();
+		for(Int_t i=0; i<nBin; i++)
+		{
+			Int_t i_bin = i+1;
+			Double_t DXSec = h_aMCNLO->GetBinContent(i_bin);
+			Double_t RelUnc = h_RelUnc_Tot->GetBinContent(i_bin);
+			Double_t AbsUnc = DXSec * RelUnc;
+			h_aMCNLO->SetBinError(i_bin, AbsUnc);
+		}
 	}
 
 	void DrawCanvas_DiffXsec_All( TString Type )
@@ -583,7 +604,7 @@ public:
 		legend_ratio->SetFillStyle(0);
 		legend_ratio->SetBorderSize(0);
 		legend_ratio->SetTextFont(62);
-		legend_ratio->AddEntry( h_ratio, "Stat.+Syst.", "f");
+		legend_ratio->AddEntry( h_ratio, "Total", "f");
 		legend_ratio->AddEntry( h_ratio_StatUnc, "Stat.", "f");
 		legend_ratio->Draw();
 
@@ -811,7 +832,7 @@ public:
 		legend_ratio->SetFillStyle(0);
 		legend_ratio->SetBorderSize(0);
 		legend_ratio->SetTextFont(62);
-		legend_ratio->AddEntry( h_ratio1, "Stat.+Syst.", "f");
+		legend_ratio->AddEntry( h_ratio1, "Total", "f");
 		legend_ratio->AddEntry( h_ratio1_StatUnc, "Stat.", "f");
 		legend_ratio->Draw();
 
@@ -1107,7 +1128,7 @@ public:
 		TLegend *legend_ratio = new TLegend(0.15, 0.75, 0.55, 0.95);
 		legend_ratio->SetFillStyle(0);
 		legend_ratio->SetBorderSize(0);
-		legend_ratio->AddEntry( h_ratio, "Stat.+Syst.");
+		legend_ratio->AddEntry( h_ratio, "Total");
 		legend_ratio->AddEntry( h_ratio_StatUnc, "Stat.");
 		legend_ratio->Draw();
 
