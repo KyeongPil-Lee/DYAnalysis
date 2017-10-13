@@ -1,7 +1,9 @@
 #include <Include/PlotTools.h>
 
-enum TheoryColor
+enum ColorCode
 {
+	kStat = kBlack,
+	kStatSyst = kGray+1,
 	kFEWZ = kBlue,
 	kaMCNLO = kRed
 };
@@ -85,9 +87,9 @@ public:
 		this->h_FpoF_aMCNLO->SetStats(kFALSE);
 
 		// -- Setting for h1 -- //
-		this->h_FpoF_data->SetLineColor(kBlack);
+		this->h_FpoF_data->SetLineColor(kStat);
 		this->h_FpoF_data->SetLineWidth(1);
-		this->h_FpoF_data->SetMarkerColor(kBlack);
+		this->h_FpoF_data->SetMarkerColor(kStat);
 		this->h_FpoF_data->SetMarkerSize(1);
 		this->h_FpoF_data->SetMarkerStyle(20);
 		this->h_FpoF_data->SetFillColorAlpha(kWhite, 0);
@@ -254,9 +256,9 @@ public:
 		this->h_aMCNLO->SetStats(kFALSE);
 
 		// -- Setting for h1 -- //
-		this->h_data->SetLineColor(kBlack);
+		this->h_data->SetLineColor(kStat);
 		this->h_data->SetLineWidth(1);
-		this->h_data->SetMarkerColor(kBlack);
+		this->h_data->SetMarkerColor(kStat);
 		this->h_data->SetMarkerSize(1);
 		this->h_data->SetMarkerStyle(20);
 		this->h_data->SetFillColorAlpha(kWhite, 0);
@@ -452,13 +454,13 @@ private:
 		// -- Set styles -- //
 		this->h_Ratio_StatUnc->SetMarkerStyle(20);
 		this->h_Ratio_StatUnc->SetMarkerSize(0.8);
-		this->h_Ratio_StatUnc->SetMarkerColor(kBlack);
-		this->h_Ratio_StatUnc->SetLineColor(kBlack);
+		this->h_Ratio_StatUnc->SetMarkerColor(kStat);
+		this->h_Ratio_StatUnc->SetLineColor(kStat);
 		this->h_Ratio_StatUnc->SetFillColorAlpha(kWhite, 0);
 
 		this->h_Ratio_TotUnc->SetMarkerColorAlpha(kWhite, 0);
 		this->h_Ratio_TotUnc->SetLineColorAlpha(kWhite, 0);
-		this->h_Ratio_TotUnc->SetFillColorAlpha( kBlack, 1 );
+		this->h_Ratio_TotUnc->SetFillColorAlpha( kStatSyst, 1 );
 		this->h_Ratio_TotUnc->SetFillStyle( 3354 );
 
 		this->h_Ratio_FEWZ->SetMarkerColorAlpha(kWhite, 0);
@@ -484,13 +486,13 @@ private:
 		// -- Set styles -- //
 		this->h_FpoF_Ratio_StatUnc->SetMarkerStyle(20);
 		this->h_FpoF_Ratio_StatUnc->SetMarkerSize(0.8);
-		this->h_FpoF_Ratio_StatUnc->SetMarkerColor(kBlack);
-		this->h_FpoF_Ratio_StatUnc->SetLineColor(kBlack);
+		this->h_FpoF_Ratio_StatUnc->SetMarkerColor(kStat);
+		this->h_FpoF_Ratio_StatUnc->SetLineColor(kStat);
 		this->h_FpoF_Ratio_StatUnc->SetFillColorAlpha(kWhite, 0);
 
 		this->h_FpoF_Ratio_TotUnc->SetMarkerColorAlpha(kWhite, 0);
 		this->h_FpoF_Ratio_TotUnc->SetLineColorAlpha(kWhite, 0);
-		this->h_FpoF_Ratio_TotUnc->SetFillColorAlpha( kBlack, 1 );
+		this->h_FpoF_Ratio_TotUnc->SetFillColorAlpha( kStatSyst, 1 );
 		this->h_FpoF_Ratio_TotUnc->SetFillStyle( 3354 );
 
 		this->h_FpoF_Ratio_aMCNLO->SetMarkerColorAlpha(kWhite, 0);
