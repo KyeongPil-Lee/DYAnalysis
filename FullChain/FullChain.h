@@ -73,6 +73,12 @@ public:
 		this->h_data_4p3 = (TH1D*)(_h_data_4p3)->Clone();
 	}
 
+	void Setup_Bkg( TH1D* _h_bkg_4p2, TH1D* _h_bkg_4p3 )
+	{
+		this->h_bkg_4p2 = (TH1D*)(_h_bkg_4p2)->Clone();
+		this->h_bkg_4p3 = (TH1D*)(_h_bkg_4p3)->Clone();
+	}
+
 	// -- calc. final cross section with current setting -- //
 	void Run_FullChain()
 	{
@@ -82,6 +88,11 @@ public:
 		this->Get_Yield_EffSF();
 		this->Get_Yield_FSR();
 		this->Get_DXSec();
+	}
+
+	TH1D* FinalResult()
+	{
+		return h_DiffXSec;
 	}
 
 protected:
