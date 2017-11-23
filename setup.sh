@@ -19,13 +19,21 @@ if [ $HOSTNAME == "tamsa2.snu.ac.kr" ]; # -- 147.47.242.67 -- #
 then 
 	KP_DATA_PATH="/data4/Users/kplee/DYntuple"
 
-	# -- cmssw setup (for ROOT6 & compatible with RooUnfold in tamsa2) -- #
-	export SCRAM_ARCH=slc6_amd64_gcc493
+	# # -- cmssw setup (for ROOT6 & compatible with RooUnfold in tamsa2) -- #
+	# export SCRAM_ARCH=slc6_amd64_gcc493
+	# export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
+	# source $VO_CMS_SW_DIR/cmsset_default.sh
+
+	# # cd /share_home/kplee/ntupleMaker/DYntupleMaker/v20160421_1st_76X/CMSSW_7_6_3_patch2
+	# cd /share_home/kplee/CMSSW/CMSSW_7_6_3_patch2
+	# eval `scramv1 runtime -sh` # -- equivalent to cmsenv (cmsenv doesn't work. why?) -- #
+
+	export SCRAM_ARCH=slc6_amd64_gcc491
 	export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
 	source $VO_CMS_SW_DIR/cmsset_default.sh
+	cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_1 # -- has ROOT 6.02/05, and unfolding package was compiled under this version! -- #
+	eval `scramv1 runtime -sh`
 
-	cd /share_home/kplee/ntupleMaker/DYntupleMaker/v20160421_1st_76X/CMSSW_7_6_3_patch2
-	eval `scramv1 runtime -sh` # -- equivalent to cmsenv (cmsenv doesn't work. why?) -- #
 	cd $KP_ANALYZER_PATH
 		
 elif [ $HOSTNAME == "cms.snu.ac.kr" ]; then
