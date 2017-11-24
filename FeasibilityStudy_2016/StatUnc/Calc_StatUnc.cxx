@@ -18,20 +18,20 @@ TH1D* MakeHist_StatUnc( TH1D* h )
 	return h_RelStatUnc;
 }
 
-void Calc_StatUnc()
+void Calc_StatUnc( TString Flavor )
 {
-	TFile *f_output = TFile::Open("ROOTFile_RelStatUnc_2016.root", "RECREATE");
+	TFile *f_output = TFile::Open("ROOTFile_RelStatUnc_2016_"+Flavor+".root", "RECREATE");
 
-	TString FileName = "ROOTFile_Histogram_1D2D.root";
+	TString FileName = "ROOTFile_Histogram_1D2D_"+Flavor+".root";
 	vector< TString > vec_HistName =
 	{
-		"h_mass_DYMuMu",
-		"h_absdiRap_M20to30_DYMuMu",
-		"h_absdiRap_M30to45_DYMuMu",
-		"h_absdiRap_M45to60_DYMuMu",
-		"h_absdiRap_M60to120_DYMuMu",
-		"h_absdiRap_M120to200_DYMuMu",
-		"h_absdiRap_M200to1500_DYMuMu",
+		"h_mass_DY",
+		"h_absdiRap_M20to30_DY",
+		"h_absdiRap_M30to45_DY",
+		"h_absdiRap_M45to60_DY",
+		"h_absdiRap_M60to120_DY",
+		"h_absdiRap_M120to200_DY",
+		"h_absdiRap_M200to1500_DY",
 	};
 
 	for(const auto& HistName : vec_HistName )
@@ -46,4 +46,10 @@ void Calc_StatUnc()
 		f_output->cd();
 		h_StatUnc->Write();
 	}
+}
+
+void Calc_StatUnc()
+{
+	Calc_StatUnc( "Electron" );
+	Calc_StatUnc( "Muon" );
 }
