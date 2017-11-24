@@ -30,8 +30,8 @@ void MakeInputFile_Cov()
 	h_RelStatUnc->SetYTitle("");
 	h_RelStatUnc->Scale( 0.01 );
 
-	TH1D* h_RelUnc_Stat_BkgEst = Get_Hist( BasePath+"/ROOTFile_RelUnc_Stat_Syst_Tot_BkgEst.root", "h_RelUnc_Stat", HistName_RelUnc_Stat_BkgEst );
-	TH1D* h_RelUnc_Syst_BkgEst = Get_Hist( BasePath+"/ROOTFile_RelUnc_Stat_Syst_Tot_BkgEst.root", "h_RelUnc_Syst", HistName_RelUnc_Syst_BkgEst );
+	TH1D* h_RelUnc_Stat_BkgEst = Get_Hist( BasePath+"/ROOTFile_SysUnc_BkgEst.root", "h_RelUnc_Stat_Total", HistName_RelUnc_Stat_BkgEst );
+	TH1D* h_RelUnc_Syst_BkgEst = Get_Hist( BasePath+"/ROOTFile_SysUnc_BkgEst.root", "h_RelUnc_Syst_Total", HistName_RelUnc_Syst_BkgEst );
 	h_RelUnc_Stat_BkgEst->Scale( 0.01 ); h_RelUnc_Stat_BkgEst->SetYTitle("");
 	h_RelUnc_Syst_BkgEst->Scale( 0.01 ); h_RelUnc_Syst_BkgEst->SetYTitle("");
 
