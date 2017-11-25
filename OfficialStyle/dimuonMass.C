@@ -68,7 +68,7 @@ void dimuonMass()
    TH1D* hZZ = new TH1D("hZZ", "hZZ", 43, xAxis);
    TH1D* htW = new TH1D("htW", "htW", 43, xAxis);
    TH1D* hWJets = new TH1D("hWJets", "hWJets", 43, xAxis);
-   TH1D* hdijet = new TH1D("hdijet", "hdijet", 43, xAxis);
+   TH1D* hFakes = new TH1D("hFakes", "hFakes", 43, xAxis);
    TH1D* htotal = new TH1D("htotal", "htotal", 43, xAxis);
    TH1D* hratio = new TH1D("hratio", "hratio", 43, xAxis);
 
@@ -86,7 +86,6 @@ void dimuonMass()
 
    htW = (TH1D*) h_tW_emu->Clone();
    hWJets = (TH1D*) h_WJets_FR->Clone();
-   hdijet = (TH1D*) h_diJet_FR->Clone();
 
    hdata->Sumw2();
    hDY->Sumw2();
@@ -95,13 +94,15 @@ void dimuonMass()
    hdiboson->Sumw2();
    htW->Sumw2();
    hWJets->Sumw2();
-   hdijet->Sumw2();
+   hFakes->Sumw2();
 
    TH1D* hTop = (TH1D*) httbar->Clone();
    hTop->Add(htW);
    TH1D* hEW = (TH1D*) hdiboson->Clone();
    hEW->Add(hDYtautau);
-   hEW->Add(hWJets);
+   // hEW->Add(hWJets);
+   hFakes = (TH1D*) h_diJet_FR->Clone();
+   hFakes->Add( hWJets );
 
    hDY->SetFillColor(kOrange-2);
    hDY->SetLineColor(kOrange+3);
@@ -109,16 +110,16 @@ void dimuonMass()
    hTop->SetLineColor(kRed+4);
    hEW->SetFillColor(kOrange+10);
    hEW->SetLineColor(kOrange+3);
-   hdijet->SetFillColor(kViolet-5);
-   hdijet->SetLineColor(kOrange+3);
+   hFakes->SetFillColor(kViolet-5);
+   hFakes->SetLineColor(kOrange+3);
 
    THStack* hstack = new THStack("hstack", "hstack");
-   hstack->Add(hdijet, "hist");
+   hstack->Add(hFakes, "hist");
    hstack->Add(hEW, "hist");
    hstack->Add(hTop, "hist");
    hstack->Add(hDY, "hist");
 
-   htotal->Add(hdijet);
+   htotal->Add(hFakes);
    htotal->Add(hEW);
    htotal->Add(hTop);
    htotal->Add(hDY);
@@ -175,7 +176,7 @@ void dimuonMass()
    entry=leg->AddEntry(hDY,"#gamma* /#font[122]{Z} #rightarrow #mu#mu","f");
    entry=leg->AddEntry(hTop,"t#bar{t}+tW+#bar{t}W","f");
    entry=leg->AddEntry(hEW,"EW","f");
-   entry=leg->AddEntry(hdijet,"QCD","f");
+   entry=leg->AddEntry(hFakes,"Fakes","f");
    leg->Draw();
 
    TPaveText *pave = new TPaveText(1200,5000000,2000,7000000); // CHANGE
