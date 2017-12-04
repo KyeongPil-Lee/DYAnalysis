@@ -101,20 +101,21 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 	TH1D* h_RelStatUnc = Get_Hist( FileName, HistName_RelStatUnc );
 	AssignErrors( Hist_Data_StatUnc->h, h_RelStatUnc, kFALSE);
 	AssignErrors( Hist_Data_StatUnc->h_ratio, h_RelStatUnc, kFALSE);
-	Hist_Data_StatUnc->h_ratio->SetMarkerSize(0.1);
+	Hist_Data_StatUnc->h_ratio->SetMarkerStyle(20);
+	Hist_Data_StatUnc->h_ratio->SetMarkerSize(0.8);
 	Hist_Data_StatUnc->h_ratio->SetLineWidth(1);
 	
 	// Print_Histogram( Hist_Data_StatUnc->h_ratio );
 
 	// -- data x-section with stat. + syst. unc. without lumi. -- //
-	HistInfo *Hist_Data_TotUnc = new HistInfo( kBlack, "Data", h_DXSec );
+	HistInfo *Hist_Data_TotUnc = new HistInfo( kGray+1, "Data", h_DXSec );
 	Hist_Data_TotUnc->CalcRatio_DEN( Hist_Data_TotUnc->h ); // -- ratio = 1 -- //
 
 	TH1D* h_RelTotUnc = Get_Hist( FileName, HistName_RelTotUnc );
 	AssignErrors( Hist_Data_TotUnc->h, h_RelTotUnc, kFALSE);
 	AssignErrors( Hist_Data_TotUnc->h_ratio, h_RelTotUnc, kFALSE );
-	Hist_Data_TotUnc->h_ratio->SetMarkerColorAlpha( kBlack, 0 );
-	Hist_Data_TotUnc->h_ratio->SetFillColorAlpha( kBlack, 1 );
+	Hist_Data_TotUnc->h_ratio->SetMarkerColorAlpha( kGray+1, 0 );
+	Hist_Data_TotUnc->h_ratio->SetFillColorAlpha( kGray+1, 1 );
 	gStyle->SetHatchesSpacing( 1.5 );
 	Hist_Data_TotUnc->h_ratio->SetFillStyle( 3354 );
 	
