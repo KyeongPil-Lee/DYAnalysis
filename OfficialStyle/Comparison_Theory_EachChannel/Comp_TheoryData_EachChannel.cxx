@@ -1,3 +1,4 @@
+#include <Include/DYAnalyzer.h>
 #include <Include/PlotTools.h>
 
 enum ColorCode
@@ -128,15 +129,23 @@ public:
 
 		// -- write down some sentences -- //
 		TLatex latex;
-		latex.SetTextSize(0.03);
-		latex.DrawLatexNDC(0.79, 0.96, "2.8 fb^{#font[122]{\55}1} (13 TeV)");
 		latex.SetTextSize(0.035);
 		latex.DrawLatexNDC(0.15, 0.91, "CMS Preliminary");
-		latex.SetTextSize(0.045);
+		
 		if( this->Type_Channel == "Muon" )
+		{
+			latex.SetTextSize(0.03);
+			latex.DrawLatexNDC(0.79, 0.96, "2.8 fb^{#font[122]{\55}1} (13 TeV)");
+			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow #mu#mu");
+		}
 		else if( this->Type_Channel == "Electron" )
+		{
+			latex.SetTextSize(0.03);
+			latex.DrawLatexNDC(0.79, 0.96, "2.3 fb^{#font[122]{\55}1} (13 TeV)");
+			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow ee");
+		}
 
 		//////////////////////
 		// -- Bottom Pad -- //
@@ -305,15 +314,23 @@ public:
 
 		// -- write down some sentences -- //
 		TLatex latex;
-		latex.SetTextSize(0.03);
-		latex.DrawLatexNDC(0.79, 0.96, "2.8 fb^{#font[122]{\55}1} (13 TeV)");
 		latex.SetTextSize(0.035);
 		latex.DrawLatexNDC(0.15, 0.91, "CMS Preliminary");
-		latex.SetTextSize(0.045);
+		
 		if( this->Type_Channel == "Muon" )
+		{
+			latex.SetTextSize(0.03);
+			latex.DrawLatexNDC(0.79, 0.96, "2.8 fb^{#font[122]{\55}1} (13 TeV)");
+			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow #mu#mu");
+		}
 		else if( this->Type_Channel == "Electron" )
+		{
+			latex.SetTextSize(0.03);
+			latex.DrawLatexNDC(0.79, 0.96, "2.3 fb^{#font[122]{\55}1} (13 TeV)");
+			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow ee");
+		}
 
 		/////////////////////////////////////
 		// -- Bottom Pad1: Data/aMC@NLO -- //
@@ -434,6 +451,35 @@ private:
 			this->h_FpoF_data = Get_Hist(FileName_FpoF_Data, "h_FpoF_DiffXsec_Data");
 			this->h_FpoF_data_StatOnly = Get_Hist(FileName_FpoF_Data, "h_FpoF_DiffXsec_Data_StatOnly");
 			this->h_FpoF_aMCNLO = Get_Hist(FileName_FpoF_Data, "h_FpoF_DiffXsec_aMCNLO");
+		}
+		else if( this->Type_Channel == "Electron" )
+		{
+			TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v8.root";
+			this->h_data = Get_Hist(FileName_Data, "h_DiffXSec");
+
+			TH1D* h_RelUnc_Stat = Get_Hist(FileName_Data, "h_RelUnc_Stat"); h_RelUnc_Stat->Scale( 0.01 );
+			TH1D* h_RelUnc_Syst = Get_Hist(FileName_Data, "h_RelUnc_Syst"); h_RelUnc_Syst->Scale( 0.01 );
+			TH1D* h_RelUnc_Lumi = this->MakeHist_RelLumiUnc( 0.023 );
+			this->AssignTotalError( this->h_data, h_RelUnc_Stat, h_RelUnc_Syst, h_RelUnc_Lumi );
+
+			this->h_data_StatOnly = this->MakeHist_DXSecStatOnly( this->h_data, h_RelUnc_Stat );
+			this->h_aMCNLO = this->MakeHist_aMCNLO_Electron("dressed");
+			this->h_FEWZ = Get_Hist( FileName_Data, "h_DiffXSec_FEWZ" );
+
+			// -- fiducial, post-FSR -- //
+			this->h_FpoF_data = Get_Hist( FileName_Data, "h_DiffXSec_Fiducial" );
+
+			TH1D* h_FpoF_RelUnc_Stat = Get_Hist( FileName_Data, "h_RelUnc_Stat_Fiducial" ); h_FpoF_RelUnc_Stat->Scale( 0.01 );
+			TH1D* h_FpoF_RelUnc_Syst = Get_Hist( FileName_Data, "h_RelUnc_Syst_Fiducial" ); h_FpoF_RelUnc_Syst->Scale( 0.01 );
+			this->AssignTotalError( this->h_FpoF_data, h_FpoF_RelUnc_Stat, h_FpoF_RelUnc_Syst, h_RelUnc_Lumi );
+
+			this->h_FpoF_data_StatOnly = this->MakeHist_DXSecStatOnly( this->h_FpoF_data, h_FpoF_RelUnc_Stat );
+			// this->h_FpoF_aMCNLO = this->MakeHist_aMCNLO_Electron("FpoF"); // -- it gives inconsistent central value with the data: why? -- //
+			this->h_FpoF_aMCNLO = Get_Hist( FileName_Data, "h_DiffXSec_MCNLO_Fiducial" );
+			TString FileName_RelUnc = this->ROOTFilePath+"/ROOTFile_TheoryUnc_aMCNLO.root";
+			TString HistName_RelUnc = "Electron_withinAcc/h_RelUnc_Tot";
+			TH1D* h_FpoF_RelUnc_aMCNLO = Get_Hist( FileName_RelUnc, HistName_RelUnc );
+			AssignErrors( this->h_FpoF_aMCNLO, h_FpoF_RelUnc_aMCNLO );
 		}
 
 		this->Set_RatioHistogram();
@@ -565,6 +611,88 @@ private:
 		pad->SetFrameFillStyle(0);
 		pad->SetFrameBorderMode(0);
 	}
+
+	TH1D* MakeHist_DXSecStatOnly( TH1D* h_CV, TH1D* h_RelUnc_Stat )
+	{
+		TH1D* h_DXSecStatOnly = (TH1D*)h_CV->Clone();
+		Int_t nBin = h_DXSecStatOnly->GetNbinsX();
+		for(Int_t i=0; i<nBin; i++)
+		{
+			Int_t i_bin = i+1;
+			Double_t DXSec = h_CV->GetBinContent(i_bin);
+			Double_t RelUnc_Stat = h_RelUnc_Stat->GetBinContent(i_bin);
+
+			h_DXSecStatOnly->SetBinError( i_bin, DXSec*RelUnc_Stat );
+		}
+
+		return h_DXSecStatOnly;
+	}
+
+	TH1D* MakeHist_aMCNLO_Electron( TString type )
+	{
+		TString AnalyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
+		TString FileName_CV = AnalyzerPath+"/TheoryValues/PDFUnc_aMCNLO/ROOTFile_Hists_ForPDFUnc_XSec_aMCNLO_Electron.root";
+		TString FileName_RelUnc = this->ROOTFilePath+"/ROOTFile_TheoryUnc_aMCNLO.root";
+
+		TString HistName_CV = "";
+		TString HistName_RelUnc = "";
+		if( type == "dressed" )
+		{
+			HistName_CV = "h_mass_dressed_CV_All";
+			HistName_RelUnc = "Electron_dressed/h_RelUnc_Tot";
+		}
+		else if( type == "FpoF" )
+		{
+			HistName_CV = "h_mass_withinAcc_CV_All";
+			HistName_RelUnc = "Electron_withinAcc/h_RelUnc_Tot";
+		}
+
+		TH1D* h_CV = Get_Hist( FileName_CV, HistName_CV );
+		h_CV->Scale( 1.0 / Lumi_Elec );
+		h_CV = DivideEachBin_ByBinWidth( h_CV ); // -- make diff. x-section -- //
+		TH1D* h_RelUnc = Get_Hist( FileName_RelUnc, HistName_RelUnc );
+
+		AssignErrors( h_CV, h_RelUnc );
+
+		return h_CV;
+	}
+
+	TH1D* MakeHist_RelLumiUnc( Double_t RelLumiUnc )
+	{
+		if( this->h_data == NULL )
+		{
+			cout << "[MakeHist_RelLumiUnc] h_data should be set first (to have same binning)" << endl;
+			return NULL;
+		}
+
+		TH1D* h_RelLumiUnc = (TH1D*)this->h_data->Clone();
+		Int_t nBin = h_RelLumiUnc->GetNbinsX();
+		for(Int_t i=0; i<nBin; i++)
+		{
+			Int_t i_bin = i+1;
+			h_RelLumiUnc->SetBinContent(i_bin, RelLumiUnc );
+			h_RelLumiUnc->SetBinError(i_bin, 0);
+		}
+
+		return h_RelLumiUnc;
+	}
+
+	void AssignTotalError( TH1D* h_CV, TH1D* h_RelUnc_Stat, TH1D* h_RelUnc_Syst, TH1D* h_RelUnc_Lumi )
+	{
+		Int_t nBin = h_CV->GetNbinsX();
+		for(Int_t i=0; i<nBin; i++)
+		{
+			Int_t i_bin = i+1;
+
+			Double_t RelUnc_Stat = h_RelUnc_Stat->GetBinContent(i_bin);
+			Double_t RelUnc_Syst = h_RelUnc_Syst->GetBinContent(i_bin);
+			Double_t RelUnc_Lumi = h_RelUnc_Lumi->GetBinContent(i_bin);
+			Double_t RelUnc_Tot = sqrt( RelUnc_Stat*RelUnc_Stat + RelUnc_Syst*RelUnc_Syst + RelUnc_Lumi*RelUnc_Lumi );
+
+			Double_t DXSec = h_CV->GetBinContent(i_bin);
+			h_CV->SetBinError(i_bin, DXSec*RelUnc_Tot);
+		}
+	}
 };
 
 void Comp_TheoryData_EachChannel()
@@ -575,4 +703,9 @@ void Comp_TheoryData_EachChannel()
 	tool->Set_Channel( "Muon" );
 	tool->Draw_Dressed();
 	tool->Draw_FpoF();
+
+	DrawingTool *tool_Elec = new DrawingTool();
+	tool_Elec->Set_Channel( "Electron" );
+	tool_Elec->Draw_Dressed();
+	tool_Elec->Draw_FpoF();
 }

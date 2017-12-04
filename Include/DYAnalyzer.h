@@ -19,6 +19,7 @@ using namespace std;
 
 #define Lumi 2759.017 
 #define Lumi_HLTv4p2 843.404 // -- integrated luminosity before Run 257933 -- //
+#define Lumi_Elec 2257.998 // -- Golden JSON -- //
 #define nMassBin 43
 
 
