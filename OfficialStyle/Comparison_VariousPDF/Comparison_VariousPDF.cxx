@@ -90,7 +90,7 @@ void DrawOnPad_Data_vs_MC( TVirtualPad *Pad, HistInfo *Hist_Data_StatUnc, HistIn
 
 void Comparison_VariousPDF(TString TStr_Channel = "LL")
 {
-	TString FileName = TString::Format("ROOTFile_Input_Comparison_VariousPDF_%s.root", TStr_Channel.Data() );
+	TString FileName = TString::Format("./Local/ROOTFile_Input_Comparison_VariousPDF_%s.root", TStr_Channel.Data() );
 	printf( "[FileName = %s]\n", FileName.Data() );
 
 	// -- data x-section with stat. unc. only -- //
@@ -183,7 +183,7 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 	// -- Draw Canvas -- //
 	TCanvas *c;
 	TString CanvasName = "c_Comparison_VariousPDF_"+TStr_Channel;
-	SetCanvas_Square( c, CanvasName );
+	SetCanvas_Square( c, "./Local/"+CanvasName );
 
 	gStyle->SetPadBorderMode(0);
 	gStyle->SetFrameBorderMode(0);

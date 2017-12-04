@@ -2,7 +2,7 @@
 
 void InputFileMaker()
 {
-	TString FileName_Base = "ROOTFile_Input_Comparison_VariousPDF";
+	TString FileName_Base = "./Local/ROOTFile_Input_Comparison_VariousPDF";
 
 	TString FileName_MM = FileName_Base + "_MM.root";
 	TFile *f_output_MM = TFile::Open(FileName_MM, "RECREATE");

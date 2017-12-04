@@ -70,12 +70,15 @@ protected:
 		TH1D* h_RelStatUnc = Get_Hist( FileName_MM, "h_RelStatUnc_Percent", HistName_RelStatUnc );
 		h_RelStatUnc->Scale( 0.01 );
 		
-		TH1D* h_RelExpSystUnc = Get_Hist( FileName_MM, "h_RelSysUnc_Tot_Percent" );
-		TH1D* h_RelAccUnc = Get_Hist( FileName_MM, "h_RelSysUnc_Acc._Percent" );
-		TH1D* h_RelSystUnc = QuadSum_NoError( h_RelExpSystUnc, h_RelAccUnc );
-		h_RelSystUnc->Scale( 0.01 );
+		// TH1D* h_RelExpSystUnc = Get_Hist( FileName_MM, "h_RelSysUnc_Tot_Percent" );
+		// TH1D* h_RelAccUnc = Get_Hist( FileName_MM, "h_RelSysUnc_Acc._Percent" );
+		// TH1D* h_RelSystUnc = QuadSum_NoError( h_RelExpSystUnc, h_RelAccUnc );
+		// h_RelSystUnc->Scale( 0.01 );
 
-		TH1D* h_RelTotUnc = QuadSum_NoError( h_RelSystUnc, h_RelStatUnc );
+		// TH1D* h_RelTotUnc = QuadSum_NoError( h_RelSystUnc, h_RelStatUnc );
+		// h_RelTotUnc->SetName( HistName_RelTotUnc );
+
+		TH1D* h_RelTotUnc = Extract_RelUnc( h_DXSec ); // -- include stat. + syst. + lumi -- //
 		h_RelTotUnc->SetName( HistName_RelTotUnc );
 
 		h_DXSec = this->Rebin_MassBinEdges_Above200( h_DXSec );
@@ -91,10 +94,16 @@ protected:
 
 	void FillROOTFile_Data_EE( TFile *f_output )
 	{
-		TString FileName = this->ROOTFilePath + "/DiffXsec_Electron.root";
+		TString FileName = this->ROOTFilePath + "/DiffXsec_Electron_v8.root";
 		TH1D* h_DXSec = Get_Hist( FileName, "h_DiffXSec", HistName_Data );
 		TH1D* h_RelStatUnc = Get_Hist( FileName, "h_RelUnc_Stat", HistName_RelStatUnc ); h_RelStatUnc->Scale( 0.01 );
-		TH1D* h_RelTotUnc = Get_Hist( FileName, "h_RelUnc_Total", HistName_RelTotUnc ); h_RelTotUnc->Scale( 0.01 );
+		// TH1D* h_RelTotUnc = Get_Hist( FileName, "h_RelUnc_Total", HistName_RelTotUnc ); h_RelTotUnc->Scale( 0.01 );
+
+		TH1D* h_RelSystUnc = Get_Hist( FileName, "h_RelUnc_Syst" ); h_RelSystUnc->Scale(0.01);
+		TH1D* h_RelTotUnc = QuadSum_NoError( h_RelStatUnc, h_RelSystUnc );
+		TH1D* h_RelLumiUnc = this->MakeHist_RelLumiUnc( h_DXSec, 0.023 );
+		h_RelTotUnc = QuadSum_NoError( h_RelTotUnc, h_RelLumiUnc ); // -- add up lumi. uncertainty -- //
+		h_RelTotUnc->SetName( HistName_RelTotUnc );
 
 		h_DXSec = this->Rebin_MassBinEdges_Above200( h_DXSec );
 		h_RelStatUnc = this->Rebin_MassBinEdges_Above200( h_RelStatUnc );
@@ -286,5 +295,19 @@ protected:
 			h_DXSec->SetBinContent(i_bin, NNLOXSec_DYPI);
 			h_DXSec->SetBinError(i_bin, RelErr_total * NNLOXSec_DYPI); // -- absolute error -- //
 		}
+	}
+
+	TH1D* MakeHist_RelLumiUnc( TH1D* h_format, Double_t RelLumiUnc )
+	{
+		TH1D* h_RelLumiUnc = (TH1D*)h_format->Clone();
+		Int_t nBin = h_RelLumiUnc->GetNbinsX();
+		for(Int_t i=0; i<nBin; i++)
+		{
+			Int_t i_bin = i+1;
+			h_RelLumiUnc->SetBinContent(i_bin, RelLumiUnc );
+			h_RelLumiUnc->SetBinError(i_bin, 0);
+		}
+
+		return h_RelLumiUnc;
 	}
 };
