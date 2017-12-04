@@ -51,7 +51,8 @@ public:
 		this->g_CenV_Shifted = Get_Graph( "ROOTFile_Histograms_XDataPoint.root", "g_DiffXSec_xShifted", this->GraphName_CenV_Shifted );
 
 		TString FileName_Data = GetBasePath() + "Include/Results_ROOTFiles_76X/ROOTFile_DiffXSec_FullUnc.root";
-		this->h_CenV = Get_Hist( FileName_Data, "h_DiffXsec_FSRCorr_woLumi", this->HistName_CenV );
+		// this->h_CenV = Get_Hist( FileName_Data, "h_DiffXsec_FSRCorr_woLumi", this->HistName_CenV );
+		this->h_CenV = Get_Hist( FileName_Data, "h_DiffXsec_FSRCorr", this->HistName_CenV );
 		this->h_RelStatUnc = Get_Hist( FileName_Data, "h_RelStatUnc_Percent", this->HistName_RelStatUnc );
 		this->h_RelStatUnc->Scale( 0.01 );
 		this->h_RelTotUnc = Extract_RelUnc( this->h_CenV, this->HistName_RelTotUnc );
@@ -89,7 +90,7 @@ public:
 	{
 		this->Load_TheoryHistograms();
 
-		TString FileName = GetBasePath() + "Include/Results_ROOTFiles_76X/DiffXsec_Electron.root";
+		TString FileName = GetBasePath() + "Include/Results_ROOTFiles_76X/DiffXsec_Electron_v7.root";
 
 		this->h_CenV = Get_Hist( FileName, "h_DiffXSec", this->HistName_CenV );
 		// Print_Histogram( this->h_CenV );
@@ -97,6 +98,8 @@ public:
 
 		TH1D* h_RelSystUnc = Get_Hist( FileName, "h_RelUnc_Syst" ); h_RelSystUnc->Scale(0.01);
 		this->h_RelTotUnc = QuadSum_NoError( this->h_RelStatUnc, h_RelSystUnc );
+		TH1D* h_RelLumiUnc = this->MakeHist_RelLumiUnc( 0.023 );
+		this->h_RelTotUnc = QuadSum_NoError( this->h_RelTotUnc, h_RelLumiUnc ); // -- add up lumi. uncertainty -- //
 		this->h_RelTotUnc->SetName( this->HistName_RelTotUnc );
 
 		AssignErrors( this->h_CenV, this->h_RelTotUnc );
@@ -246,12 +249,14 @@ public:
 		g_ratio->SetFillStyle( 1001 );
 
 		gStyle->SetHatchesSpacing( 1.5 );
-		g_TotUnc->SetFillColorAlpha( kBlack, 1 );
+		g_TotUnc->SetFillColorAlpha( kGray+1, 1 );
 		g_TotUnc->SetFillStyle( 3354 );
 		g_TotUnc->SetMarkerColorAlpha(kBlack, 0);
-		g_TotUnc->SetLineColorAlpha(kBlack, 0);
+		g_TotUnc->SetLineColorAlpha(kGray+1, 0);
 		
-		g_StatUnc->SetMarkerColorAlpha(kBlack, 0);
+		g_StatUnc->SetMarkerStyle(20);
+		g_StatUnc->SetMarkerColor(kBlack);
+		g_StatUnc->SetMarkerSize(0.8);
 		g_StatUnc->SetLineColor(kBlack);
 		g_StatUnc->SetLineWidth(1);
 
@@ -405,5 +410,25 @@ protected:
 			g_data->SetPointEYlow( i, Err_DiffXSec );
 			g_data->SetPointEYhigh( i, Err_DiffXSec );
 		}
+	}
+
+	TH1D* MakeHist_RelLumiUnc( Double_t RelLumiUnc )
+	{
+		if( this->h_CenV == NULL )
+		{
+			cout << "[MakeHist_RelLumiUnc] h_CenV should be set first (to have same binning)" << endl;
+			return NULL;
+		}
+
+		TH1D* h_RelLumiUnc = (TH1D*)this->h_CenV->Clone();
+		Int_t nBin = h_RelLumiUnc->GetNbinsX();
+		for(Int_t i=0; i<nBin; i++)
+		{
+			Int_t i_bin = i+1;
+			h_RelLumiUnc->SetBinContent(i_bin, RelLumiUnc );
+			h_RelLumiUnc->SetBinError(i_bin, 0);
+		}
+
+		return h_RelLumiUnc;
 	}
 };
