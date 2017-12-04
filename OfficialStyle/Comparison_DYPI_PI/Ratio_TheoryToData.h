@@ -133,8 +133,8 @@ protected:
 		this->Set_Histograms_Theory();
 
 		TString FileName_Data = ROOTFilePath + "/ROOTFile_DiffXSec_FullUnc.root";
-		this->h_data = Get_Hist(FileName_Data, "h_DiffXsec_FSRCorr_woLumi");
-		this->h_RelTotUnc = Extract_RelUnc( h_data, "h_RelTotUnc_woLumi" );
+		this->h_data = Get_Hist(FileName_Data, "h_DiffXsec_FSRCorr");
+		this->h_RelTotUnc = Extract_RelUnc( h_data, "h_RelTotUnc" );
 		this->h_RelStatUnc = Get_Hist( FileName_Data, "h_RelStatUnc_Percent" ); this->h_RelStatUnc->Scale( 1.0 / 100 );
 		this->Set_Histograms_Ratio();
 	}
@@ -143,10 +143,16 @@ protected:
 	{
 		this->Set_Histograms_Theory();
 
-		TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron.root";
+		TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v7.root";
 		this->h_data = Get_Hist(FileName_Data, "h_DiffXSec");
-		this->h_RelTotUnc = Get_Hist( FileName_Data, "h_RelUnc_Total" ); this->h_RelTotUnc->Scale( 1.0 / 100 );
 		this->h_RelStatUnc = Get_Hist( FileName_Data, "h_RelUnc_Stat" ); this->h_RelStatUnc->Scale( 1.0 / 100 );
+
+		// this->h_RelTotUnc = Get_Hist( FileName_Data, "h_RelUnc_Total" ); this->h_RelTotUnc->Scale( 1.0 / 100 );
+		TH1D* h_RelSystUnc = Get_Hist( FileName_Data, "h_RelUnc_Syst" ); h_RelSystUnc->Scale(0.01);
+		this->h_RelTotUnc = QuadSum_NoError( this->h_RelStatUnc, h_RelSystUnc );
+		TH1D* h_RelLumiUnc = this->MakeHist_RelLumiUnc( 0.023 );
+		this->h_RelTotUnc = QuadSum_NoError( this->h_RelTotUnc, h_RelLumiUnc ); // -- add up lumi. uncertainty -- //
+
 		this->Set_Histograms_Ratio();
 	}
 
@@ -186,7 +192,7 @@ protected:
 		AssignErrors( this->h_Ratio_TotUnc, h_RelTotUnc );
 		this->h_Ratio_TotUnc->SetMarkerColorAlpha(kWhite, 0);
 		this->h_Ratio_TotUnc->SetLineColorAlpha(kWhite, 0);
-		this->h_Ratio_TotUnc->SetFillColorAlpha( kBlack, 1 );
+		this->h_Ratio_TotUnc->SetFillColorAlpha( kGray+1, 1 );
 		this->h_Ratio_TotUnc->SetFillStyle( 3354 );
 
 		this->h_Ratio_noPI = (TH1D*)this->h_DY->Clone();
@@ -259,5 +265,25 @@ protected:
 			latex.DrawLatexNDC(0.48, 0.96, TString::Format("#font[42]{#scale[0.7]{%.1lf fb^{-1} (ee) %.1lf fb^{-1} (#mu#mu)} #scale[0.8]{(13 TeV)}}", lumi_EE, lumi_MM) );
 			latex.DrawLatexNDC(0.16, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow e^{+}e^{-}, #mu^{+}#mu^{-}}}");
 		}
+	}
+
+	TH1D* MakeHist_RelLumiUnc( Double_t RelLumiUnc )
+	{
+		if( this->h_data == NULL )
+		{
+			cout << "[MakeHist_RelLumiUnc] h_data should be set first (to have same binning)" << endl;
+			return NULL;
+		}
+
+		TH1D* h_RelLumiUnc = (TH1D*)this->h_data->Clone();
+		Int_t nBin = h_RelLumiUnc->GetNbinsX();
+		for(Int_t i=0; i<nBin; i++)
+		{
+			Int_t i_bin = i+1;
+			h_RelLumiUnc->SetBinContent(i_bin, RelLumiUnc );
+			h_RelLumiUnc->SetBinError(i_bin, 0);
+		}
+
+		return h_RelLumiUnc;
 	}
 };
