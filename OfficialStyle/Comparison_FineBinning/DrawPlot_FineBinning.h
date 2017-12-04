@@ -115,7 +115,7 @@ public:
 		this->InitPointers_AfterUse();
 
 		this->ChannelType = _ChannelType;
-		TString FileName = "ROOTFile_Input_"+this->ChannelType+".root";
+		TString FileName = "./Local/ROOTFile_Input_"+this->ChannelType+".root";
 
 		this->g_CenV_Shifted = Get_Graph(FileName, this->GraphName_CenV_Shifted );
 		this->h_CenV = Get_Hist(FileName, this->HistName_CenV );
@@ -129,7 +129,7 @@ public:
 	void DrawCanvas( Double_t xMin = 15, Double_t xMax = 3000 )
 	{
 		TString CanvasName = TString::Format("Comp_%s_vs_NNLO_%.0lfto%.0lf", this->ChannelType.Data(), xMin, xMax);
-		TCanvas *c = new TCanvas(CanvasName, "", 800, 800);
+		TCanvas *c = new TCanvas("./Local/"+CanvasName, "", 800, 800);
 		c->cd();
 
 		TPad *TopPad = new TPad("TopPad", "TopPad", 0.01, 0.01, 0.99, 0.99);
@@ -316,7 +316,7 @@ protected:
 
 	void MakeInputFile( TString ChannelType )
 	{
-		TFile *f_output = TFile::Open("ROOTFile_Input_"+ChannelType+".root", "RECREATE");
+		TFile *f_output = TFile::Open("./Local/ROOTFile_Input_"+ChannelType+".root", "RECREATE");
 		f_output->cd();
 
 		this->g_CenV_Shifted->Write();
