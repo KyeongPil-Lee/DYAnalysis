@@ -280,6 +280,7 @@ public:
 		g_ratio->Draw("EPSAME");
 
 		c->SaveAs(".pdf");
+		// c->SaveAs(".C");
 		TString PlotPath = gSystem->Getenv("KP_PLOT_PATH");
 		c->SaveAs(PlotPath+"/"+CanvasName+".pdf");
 	}

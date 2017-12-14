@@ -215,6 +215,7 @@ public:
 		h_FpoF_Ratio_aMCNLO->GetYaxis()->SetRangeUser( 0.25, 1.75 );
 
 		c->SaveAs(".pdf");
+		// c->SaveAs(".C");
 	}
 
 	void Draw_Dressed()
@@ -417,6 +418,7 @@ public:
 		h_Ratio_FEWZ->GetYaxis()->SetRangeUser( 0.25, 1.75 );
 
 		c->SaveAs(".pdf");
+		// c->SaveAs(".C");
 	}
 
 private:
