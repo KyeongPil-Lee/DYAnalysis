@@ -501,7 +501,7 @@ private:
 
 		// -- Set styles -- //
 		this->h_Ratio_StatUnc->SetMarkerStyle(20);
-		this->h_Ratio_StatUnc->SetMarkerSize(0.8);
+		this->h_Ratio_StatUnc->SetMarkerSize(0);
 		this->h_Ratio_StatUnc->SetMarkerColor(kStat);
 		this->h_Ratio_StatUnc->SetLineColor(kStat);
 		this->h_Ratio_StatUnc->SetFillColorAlpha(kWhite, 0);
@@ -533,7 +533,7 @@ private:
 
 		// -- Set styles -- //
 		this->h_FpoF_Ratio_StatUnc->SetMarkerStyle(20);
-		this->h_FpoF_Ratio_StatUnc->SetMarkerSize(0.8);
+		this->h_FpoF_Ratio_StatUnc->SetMarkerSize(0);
 		this->h_FpoF_Ratio_StatUnc->SetMarkerColor(kStat);
 		this->h_FpoF_Ratio_StatUnc->SetLineColor(kStat);
 		this->h_FpoF_Ratio_StatUnc->SetFillColorAlpha(kWhite, 0);

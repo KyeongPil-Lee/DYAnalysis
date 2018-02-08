@@ -185,6 +185,7 @@ protected:
 		this->h_Ratio_StatUnc->Divide( this->h_Ratio_StatUnc, this->h_Ratio_StatUnc ); // -- ratio = 1 line -- //
 		AssignErrors( this->h_Ratio_StatUnc, this->h_RelStatUnc );
 		this->h_Ratio_StatUnc->SetMarkerStyle(20);
+		this->h_Ratio_StatUnc->SetMarkerSize(0);
 		this->h_Ratio_StatUnc->SetMarkerColor(kBlack);
 		this->h_Ratio_StatUnc->SetLineColor(kBlack);
 

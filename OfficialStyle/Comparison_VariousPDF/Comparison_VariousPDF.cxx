@@ -102,7 +102,8 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 	AssignErrors( Hist_Data_StatUnc->h, h_RelStatUnc, kFALSE);
 	AssignErrors( Hist_Data_StatUnc->h_ratio, h_RelStatUnc, kFALSE);
 	Hist_Data_StatUnc->h_ratio->SetMarkerStyle(20);
-	Hist_Data_StatUnc->h_ratio->SetMarkerSize(0.8);
+	// Hist_Data_StatUnc->h_ratio->SetMarkerSize(0.8);
+	Hist_Data_StatUnc->h_ratio->SetMarkerSize(0);
 	Hist_Data_StatUnc->h_ratio->SetLineWidth(1);
 	
 	// Print_Histogram( Hist_Data_StatUnc->h_ratio );

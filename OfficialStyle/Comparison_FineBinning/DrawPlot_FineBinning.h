@@ -131,7 +131,16 @@ public:
 
 	void DrawCanvas( Double_t xMin = 15, Double_t xMax = 3000 )
 	{
-		TString CanvasName = TString::Format("Comp_%s_vs_NNLO_%.0lfto%.0lf", this->ChannelType.Data(), xMin, xMax);
+		// TString CanvasName = TString::Format("Comp_%s_vs_NNLO_%.0lfto%.0lf", this->ChannelType.Data(), xMin, xMax);
+		TString channelType2 = "";
+		if( this->ChannelType == "Dimuon") channelType2 = "Muon";
+		if( this->ChannelType == "Dielectron") channelType2 = "Electron";
+		if( this->ChannelType == "Combined") channelType2 = "Comb";
+
+		TString CanvasName = TString::Format("%s_data_xShifted_vs_NNLO", channelType2.Data() );
+		if( !(xMin == 15 && xMax == 3000) )
+			CanvasName = CanvasName + TString::Format("_%.0lfto%.0lf", xMin, xMax);
+
 		TCanvas *c = new TCanvas("./Local/"+CanvasName, "", 800, 800);
 		c->cd();
 
@@ -256,7 +265,7 @@ public:
 		
 		g_StatUnc->SetMarkerStyle(20);
 		g_StatUnc->SetMarkerColor(kBlack);
-		g_StatUnc->SetMarkerSize(0.8);
+		g_StatUnc->SetMarkerSize(0);
 		g_StatUnc->SetLineColor(kBlack);
 		g_StatUnc->SetLineWidth(1);
 
