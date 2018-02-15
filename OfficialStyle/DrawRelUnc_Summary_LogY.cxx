@@ -3,6 +3,7 @@
 class Tool_DrawRelUnc
 {
 public:
+	TString channel;
 	TCanvas *c;
 
 	TString FileLocation;
@@ -16,8 +17,9 @@ public:
 	HistInfo* Hist_RelTheoUnc_Acc;
 	HistInfo* Hist_RelLumiUnc;
 
-	Tool_DrawRelUnc()
+	Tool_DrawRelUnc( TString _channel )
 	{
+		this->channel = _channel;
 		this->FileLocation = gSystem->Getenv("KP_ROOTFILE_PATH");
 	}
 	
@@ -26,7 +28,7 @@ public:
 	{
 		this->Get_Histograms();
 
-		TString CanvasName = "Muon_SysUnc_All";
+		TString CanvasName = this->channel+"_SysUnc_All";
 		this->c = new TCanvas(CanvasName, "",0,0,800,700);
 		this->Setup_Canvas();
 		this->c->cd();
@@ -76,7 +78,11 @@ public:
 protected:
 	void Get_Histograms()
 	{
-		TString FileName = FileLocation + "/ROOTFile_DiffXSec_FullUnc.root";
+		TString FileName = "";
+		if( this->channel == "Muon" )
+			FileName = FileLocation + "/ROOTFile_DiffXSec_FullUnc.root";
+		else if( this->channel == "Electron" )
+			FileName = FileLocation + "/ROOTFile_RelUnc_All_Electron.root";
 
 		TString HistName_RelStatUnc = "h_RelStatUnc_Percent";
 		TString HistName_RelSystUnc_Tot = "h_RelSysUnc_Tot_Percent";
@@ -87,40 +93,47 @@ protected:
 		TString HistName_RelTheoUnc_Acc = "h_RelSysUnc_Acc._Percent";
 		TString HistName_RelLumiUnc = "h_RelLumiUnc_Percent";
 
-
 		// -- stat. unc -- //
 		TH1D* h_RelStatUnc = Get_Hist( FileName, HistName_RelStatUnc );
 		this->Hist_RelStatUnc = new HistInfo(kBlack, "Statistical", h_RelStatUnc );
 		this->Hist_RelStatUnc->h->SetMarkerStyle(20);
+		this->Hist_RelStatUnc->h->SetMarkerSize(1);
 
 		TH1D* h_RelSystUnc_Tot = Get_Hist( FileName, HistName_RelSystUnc_Tot );
 		this->Hist_RelSystUnc_Tot = new HistInfo(kRed, "Total Systematic", h_RelSystUnc_Tot );
 		this->Hist_RelSystUnc_Tot->h->SetMarkerStyle(kFullSquare);
+		this->Hist_RelSystUnc_Tot->h->SetMarkerSize(1);
 
 		TH1D* h_RelSystUnc_EffSF = Get_Hist( FileName, HistName_RelSystUnc_EffSF );
 		this->Hist_RelSystUnc_EffSF = new HistInfo( TColor::GetColor("#0000ff"), "Efficiency SF", h_RelSystUnc_EffSF );
 		this->Hist_RelSystUnc_EffSF->h->SetMarkerStyle(25);
+		this->Hist_RelSystUnc_EffSF->h->SetMarkerSize(1);
 
 		TH1D* h_RelSystUnc_DetRes = Get_Hist( FileName, HistName_RelSystUnc_DetRes );
 		this->Hist_RelSystUnc_DetRes = new HistInfo( TColor::GetColor("#cc00ff"), "Detector Res.", h_RelSystUnc_DetRes );
 		this->Hist_RelSystUnc_DetRes->h->SetMarkerStyle(26);
+		this->Hist_RelSystUnc_DetRes->h->SetMarkerSize(1);
 
 		TH1D* h_RelSystUnc_Bkg = Get_Hist( FileName, HistName_RelSystUnc_Bkg );
 		this->Hist_RelSystUnc_Bkg = new HistInfo( TColor::GetColor("#00cc00"), "Background", h_RelSystUnc_Bkg );
 		this->Hist_RelSystUnc_Bkg->h->SetMarkerStyle(27);
+		this->Hist_RelSystUnc_Bkg->h->SetMarkerSize(1);
 		this->Hist_RelSystUnc_Bkg->h->SetMinimum(0.001);
 
 		TH1D* h_RelSystUnc_FSR = Get_Hist( FileName, HistName_RelSystUnc_FSR );
 		this->Hist_RelSystUnc_FSR = new HistInfo( TColor::GetColor("#9999ff"), "FSR", h_RelSystUnc_FSR );
 		this->Hist_RelSystUnc_FSR->h->SetMarkerStyle(28);
+		this->Hist_RelSystUnc_FSR->h->SetMarkerSize(1);
 
 		TH1D* h_RelTheoUnc_Acc = Get_Hist( FileName, HistName_RelTheoUnc_Acc );
 		this->Hist_RelTheoUnc_Acc = new HistInfo( TColor::GetColor("#99ff99"), "Acceptance", h_RelTheoUnc_Acc );
 		this->Hist_RelTheoUnc_Acc->h->SetMarkerStyle(24);
+		this->Hist_RelTheoUnc_Acc->h->SetMarkerSize(1);
 
 		TH1D* h_RelLumiUnc = Get_Hist( FileName, HistName_RelLumiUnc );
 		this->Hist_RelLumiUnc = new HistInfo( TColor::GetColor("#ff9933"), "Luminosity", h_RelLumiUnc );
 		this->Hist_RelLumiUnc->h->SetMarkerStyle(22);
+		this->Hist_RelLumiUnc->h->SetMarkerSize(1);
 
 		// this->Hist_RelStatUnc = new HistInfo(kBlack, "Statistical");
 		// this->Hist_RelStatUnc->Set_FileName_ObjectName( FileName, "h_RelStatUnc_Percent");
@@ -246,29 +259,34 @@ protected:
 	void DrawLatex( TLatex &latex )
 	{
 		latex.DrawLatexNDC(0.14, 0.935, "#font[62]{#scale[1]{CMS}}");
-		latex.DrawLatexNDC(0.72, 0.935, "#font[62]{#scale[0.8]{2.8 fb^{-1} (13 TeV)}}");
+		if( this->channel == "Muon" )
+			latex.DrawLatexNDC(0.72, 0.935, "#font[62]{#scale[0.8]{2.8 fb^{-1} (13 TeV)}}");
+		else if( this->channel == "Electron" )
+			latex.DrawLatexNDC(0.72, 0.935, "#font[62]{#scale[0.8]{2.3 fb^{-1} (13 TeV)}}");
 	}
 
-	void RemoveNegativeBin( TH1D* h)
-	{
-		Int_t nBin = h->GetNbinsX();
-		for(Int_t i=0; i<nBin; i++)
-		{
-			Int_t i_bin = i+1;
-			Double_t value = h->GetBinContent(i_bin);
-			if( value < 0 )
-			{
-				printf("Find negative value! ... value = %lf\n", value);
-				h->SetBinContent(i_bin, 1e-10);
-			}
-		}
-	}
+	// void RemoveNegativeBin( TH1D* h)
+	// {
+	// 	Int_t nBin = h->GetNbinsX();
+	// 	for(Int_t i=0; i<nBin; i++)
+	// 	{
+	// 		Int_t i_bin = i+1;
+	// 		Double_t value = h->GetBinContent(i_bin);
+	// 		if( value < 0 )
+	// 		{
+	// 			printf("Find negative value! ... value = %lf\n", value);
+	// 			h->SetBinContent(i_bin, 1e-10);
+	// 		}
+	// 	}
+	// }
 
 };
 
 void DrawRelUnc_Summary_LogY()
 {
-	Tool_DrawRelUnc *tool = new Tool_DrawRelUnc();
-	tool->DrawCanvas();
-}
+	Tool_DrawRelUnc *tool_Muon = new Tool_DrawRelUnc("Muon");
+	tool_Muon->DrawCanvas();
 
+	Tool_DrawRelUnc *tool_Electron = new Tool_DrawRelUnc("Electron");
+	tool_Electron->DrawCanvas();
+}

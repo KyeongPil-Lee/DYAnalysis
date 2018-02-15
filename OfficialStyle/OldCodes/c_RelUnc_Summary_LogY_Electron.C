@@ -826,4 +826,14 @@ void c_RelUnc_Summary_LogY_Electron()
    c_RelUnc_Summary_LogY->SetSelected(c_RelUnc_Summary_LogY);
    c_RelUnc_Summary_LogY->SaveAs("Electron_SysUncAll.pdf");
 
+   TFile *f_output = TFile::Open("ROOTFile_RelUnc_All_Electron.root", "RECREATE");
+   h_RelUnc_Stat1->Write( "h_RelStatUnc_Percent" );
+   h_RelLumiUnc_Percent2->Write( "h_RelLumiUnc_Percent" );
+   h_RelSysUnc_Tot_Percent8->Write( "h_RelSysUnc_Tot_Percent" );
+   h_RelSysUnc_Tot4->Write( "h_RelSysUnc_Eff.SF._Percent" );
+   h_RelSysUnc_DetRes_Percent5->Write( "h_RelSysUnc_Det.Res_Percent" );
+   h_SysUnc_BkgEst_Percent6->Write( "h_RelSysUnc_Bkg.Est._Percent" );
+   h_SysUnc_Tot_Percent7->Write( "h_RelSysUnc_FSR_Percent" );
+   h_RelSysUnc_Tot_Percent3->Write( "h_RelSysUnc_Acc._Percent" );
+   f_output->Close();
 }
