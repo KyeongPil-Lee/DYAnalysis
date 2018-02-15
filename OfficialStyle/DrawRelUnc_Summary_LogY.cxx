@@ -189,7 +189,7 @@ protected:
 
 	TLegend* Get_Legend1()
 	{
-		TLegend *legtot = new TLegend(0.18,0.77,0.43,0.85,NULL,"brNDC");
+		TLegend *legtot = new TLegend(0.15,0.83,0.40,0.91,NULL,"brNDC");
 		legtot->SetBorderSize(0);
 		legtot->SetLineColor(1);
 		legtot->SetLineStyle(1);
@@ -204,7 +204,7 @@ protected:
 
 	TLegend* Get_Legend2()
 	{
-		TLegend *leg = new TLegend(0.37,0.61,0.67,0.85,NULL,"brNDC");
+		TLegend *leg = new TLegend(0.35,0.67,0.60,0.91,NULL,"brNDC");
 		leg->SetBorderSize(0);
 		leg->SetLineColor(1);
 		leg->SetLineStyle(1);

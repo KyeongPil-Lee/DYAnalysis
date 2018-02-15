@@ -31,19 +31,29 @@ public:
 		g_eff->Draw("PSAME");
 		g_accEff->Draw("PSAME");
 
+		g_acc->SetTitle("");
+		g_eff->SetTitle("");
+		g_accEff->SetTitle("");
+
 		// -- set colors -- //
 		Int_t ci;
 		ci = TColor::GetColor("#0000ff");
 		g_acc->SetLineColor(ci);
 		g_acc->SetMarkerColor(ci);
+		g_acc->SetMarkerStyle(20);
+		g_acc->SetFillColorAlpha(kWhite, 0);
 
 		ci = TColor::GetColor("#ff0000");
 		g_eff->SetLineColor(ci);
 		g_eff->SetMarkerColor(ci);
+		g_eff->SetMarkerStyle(20);
+		g_eff->SetFillColorAlpha(kWhite, 0);
 
 		ci = TColor::GetColor(kBlack); // CHANGE
 		g_accEff->SetLineColor(ci);
 		g_accEff->SetMarkerColor(ci);
+		g_accEff->SetMarkerStyle(20);
+		g_accEff->SetFillColorAlpha(kWhite, 0);
 
 		g_acc->SetMinimum(0);
 		g_acc->SetMaximum(1.1);
@@ -88,9 +98,9 @@ public:
 private:
 	void Init()
 	{
+		TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
 		if( this->channel == "Muon" )
 		{
-			TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
 			TString fileName = rootFilePath+"/ROOTFile_AccEff.root";
 
 			this->g_acc = Get_Graph( fileName, "g_Acc" );
@@ -99,7 +109,11 @@ private:
 		}
 		else if( this->channel == "Electron" )
 		{
+			TString fileName = rootFilePath+"/ROOTFile_AccEff_Electron.root";
 
+			this->g_acc = Get_Graph( fileName, "g_acc" );
+			this->g_eff = Get_Graph( fileName, "g_eff" );
+			this->g_accEff = Get_Graph( fileName, "g_accEff" );
 		}
 		else
 			cout << this->channel << " is wrong type!" << endl;
@@ -112,4 +126,6 @@ void DrawAccEff()
 	DrawingTool *tool_Muon = new DrawingTool( "Muon" );
 	tool_Muon->Draw();
 
+	DrawingTool *tool_Electron = new DrawingTool( "Electron" );
+	tool_Electron->Draw();
 }
