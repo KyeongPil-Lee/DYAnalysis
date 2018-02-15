@@ -62,14 +62,6 @@ public:
 		TLatex latex;
 		this->DrawLatex( latex );
 
-		// Hist_RelStatUnc->h->GetYaxis()->SetRangeUser(1e-2, 1);
-		// c->SaveAs(".pdf");
-		// c->SetLogy();
-		// this->RemoveNegativeBin ( this->Hist_RelSystUnc_Bkg->h );
-		// c->SaveAs(".pdf");
-
-		// Hist_RelStatUnc->h->GetYaxis()->SetRangeUser(4e-2, 250);
-
 		c->SaveAs("Local/"+CanvasName+".pdf");
 
 		TString PlotPath = gSystem->Getenv("KP_PLOT_PATH");
@@ -134,54 +126,6 @@ protected:
 		this->Hist_RelLumiUnc = new HistInfo( TColor::GetColor("#ff9933"), "Luminosity", h_RelLumiUnc );
 		this->Hist_RelLumiUnc->h->SetMarkerStyle(22);
 		this->Hist_RelLumiUnc->h->SetMarkerSize(1);
-
-		// this->Hist_RelStatUnc = new HistInfo(kBlack, "Statistical");
-		// this->Hist_RelStatUnc->Set_FileName_ObjectName( FileName, "h_RelStatUnc_Percent");
-		// this->Hist_RelStatUnc->Set();
-		// this->Hist_RelStatUnc->h->SetMarkerStyle(20);
-
-		// // -- total systematic uncertainty -- //
-		// this->Hist_RelSystUnc_Tot = new HistInfo(kRed, "Total Systematic");
-		// this->Hist_RelSystUnc_Tot->Set_FileName_ObjectName( FileName, "h_RelSysUnc_Tot_Percent");
-		// this->Hist_RelSystUnc_Tot->Set();
-		// this->Hist_RelSystUnc_Tot->h->SetMarkerStyle(kFullSquare);
-
-		// // -- uncertainty from efficiency scale factor -- //
-		// this->Hist_RelSystUnc_EffSF = new HistInfo( TColor::GetColor("#0000ff"), "Efficiency SF");
-		// this->Hist_RelSystUnc_EffSF->Set_FileName_ObjectName( FileName, "h_RelSysUnc_Eff.SF._Percent");
-		// this->Hist_RelSystUnc_EffSF->Set();
-		// this->Hist_RelSystUnc_EffSF->h->SetMarkerStyle(25);
-
-		// // -- uncertainty from detector resolution -- //
-		// this->Hist_RelSystUnc_DetRes = new HistInfo( TColor::GetColor("#cc00ff"), "Detector Res.");
-		// this->Hist_RelSystUnc_DetRes->Set_FileName_ObjectName( FileName, "h_RelSysUnc_Det.Res_Percent");
-		// this->Hist_RelSystUnc_DetRes->Set();
-		// this->Hist_RelSystUnc_DetRes->h->SetMarkerStyle(26);
-
-		// // -- uncertainty from backgrounds -- //
-		// this->Hist_RelSystUnc_Bkg = new HistInfo( TColor::GetColor("#00cc00"), "Background");
-		// this->Hist_RelSystUnc_Bkg->Set_FileName_ObjectName( FileName, "h_RelSysUnc_Bkg.Est._Percent");
-		// this->Hist_RelSystUnc_Bkg->Set();
-		// this->Hist_RelSystUnc_Bkg->h->SetMarkerStyle(27);
-		// this->Hist_RelSystUnc_Bkg->h->SetMinimum(0.001);
-
-		// // -- uncertainty from FSR correction -- //
-		// this->Hist_RelSystUnc_FSR = new HistInfo( TColor::GetColor("#9999ff"), "FSR");
-		// this->Hist_RelSystUnc_FSR->Set_FileName_ObjectName( FileName, "h_RelSysUnc_FSR_Percent");
-		// this->Hist_RelSystUnc_FSR->Set();
-		// this->Hist_RelSystUnc_FSR->h->SetMarkerStyle(28);
-
-		// // -- uncertainty from acceptance correction -- //
-		// this->Hist_RelTheoUnc_Acc = new HistInfo( TColor::GetColor("#99ff99"), "Acceptance");
-		// this->Hist_RelTheoUnc_Acc->Set_FileName_ObjectName( FileName, "h_RelSysUnc_Acc._Percent");
-		// this->Hist_RelTheoUnc_Acc->Set();
-		// this->Hist_RelTheoUnc_Acc->h->SetMarkerStyle(24);
-
-		// // -- uncertainty from luminosity -- //
-		// this->Hist_RelLumiUnc = new HistInfo( TColor::GetColor("#ff9933"), "Luminosity");
-		// this->Hist_RelLumiUnc->Set_FileName_ObjectName( FileName, "h_RelLumiUnc_Percent");
-		// this->Hist_RelLumiUnc->Set();
-		// this->Hist_RelLumiUnc->h->SetMarkerStyle(22);
 	}
 
 	void Setup_Canvas()
@@ -264,21 +208,6 @@ protected:
 		else if( this->channel == "Electron" )
 			latex.DrawLatexNDC(0.72, 0.935, "#font[62]{#scale[0.8]{2.3 fb^{-1} (13 TeV)}}");
 	}
-
-	// void RemoveNegativeBin( TH1D* h)
-	// {
-	// 	Int_t nBin = h->GetNbinsX();
-	// 	for(Int_t i=0; i<nBin; i++)
-	// 	{
-	// 		Int_t i_bin = i+1;
-	// 		Double_t value = h->GetBinContent(i_bin);
-	// 		if( value < 0 )
-	// 		{
-	// 			printf("Find negative value! ... value = %lf\n", value);
-	// 			h->SetBinContent(i_bin, 1e-10);
-	// 		}
-	// 	}
-	// }
 
 };
 
