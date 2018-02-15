@@ -130,12 +130,13 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 
 	TH1D* h_NNPDF_RelUnc = Get_Hist( FileName, HistName_NNPDF_RelUnc );
 	AssignErrors( Hist_NNPDF->h_ratio, h_NNPDF_RelUnc, kFALSE ); // -- uncertainty on the ratio: theo. unc. only -- //
-	Hist_NNPDF->h_ratio->SetMarkerColorAlpha( color_NNPDF, 0 );
+	// Hist_NNPDF->h_ratio->SetMarkerColorAlpha( color_NNPDF, 0 );
+	Hist_NNPDF->h_ratio->SetMarkerStyle( kOpenTriangleDown );
+ 	Hist_NNPDF->h_ratio->SetMarkerColor( color_NNPDF );
 	Hist_NNPDF->h_ratio->SetLineColorAlpha( color_NNPDF, 0 );
-	Hist_NNPDF->h_ratio->SetFillColorAlpha( color_NNPDF, 0.7 );
+	Hist_NNPDF->h_ratio->SetFillColorAlpha( color_NNPDF, 0.4 );
 	Hist_NNPDF->h_ratio->SetFillStyle( 1001 );
 
-	
 	// Print_Histogram( Hist_NNPDF->h_ratio );
 
 	// -- CT14 -- //
@@ -145,9 +146,11 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 
 	TH1D* h_CT_RelUnc = Get_Hist( FileName, HistName_CT_RelUnc );
 	AssignErrors( Hist_CT->h_ratio, h_CT_RelUnc, kFALSE ); // -- uncertainty on the ratio: theo. unc. only -- //
-	Hist_CT->h_ratio->SetMarkerColorAlpha( color_CT, 0 );
-	Hist_CT->h_ratio->SetLineColorAlpha( color_NNPDF, 0 );
-	Hist_CT->h_ratio->SetFillColorAlpha( color_CT, 0.7 );
+	// Hist_CT->h_ratio->SetMarkerColorAlpha( color_CT, 0 );
+	Hist_CT->h_ratio->SetMarkerStyle( kOpenTriangleUp );
+ 	Hist_CT->h_ratio->SetMarkerColor( color_CT );
+	Hist_CT->h_ratio->SetLineColorAlpha( color_CT, 0 );
+	Hist_CT->h_ratio->SetFillColorAlpha( color_CT, 0.4 );
 
 	// -- MMHT2014 -- //
 	TH1D* h_MMHT = Get_Hist( FileName, HistName_MMHT );
@@ -156,9 +159,11 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 
 	TH1D* h_MMHT_RelUnc = Get_Hist( FileName, HistName_MMHT_RelUnc );
 	AssignErrors( Hist_MMHT->h_ratio, h_MMHT_RelUnc, kFALSE ); // -- uncertainty on the ratio: theo. unc. only -- //
-	Hist_MMHT->h_ratio->SetMarkerColorAlpha( color_MMHT, 0 );
-	Hist_MMHT->h_ratio->SetLineColorAlpha( color_NNPDF, 0 );
-	Hist_MMHT->h_ratio->SetFillColorAlpha( color_MMHT, 0.7 );
+	// Hist_MMHT->h_ratio->SetMarkerColorAlpha( color_MMHT, 0 );
+	Hist_MMHT->h_ratio->SetMarkerStyle( kOpenCircle );
+ 	Hist_MMHT->h_ratio->SetMarkerColor( color_MMHT );
+	Hist_MMHT->h_ratio->SetLineColorAlpha( color_MMHT, 0 );
+	Hist_MMHT->h_ratio->SetFillColorAlpha( color_MMHT, 0.4 );
 
 	// -- HERAPDF15 -- //
 	TH1D* h_HERAPDF = Get_Hist( FileName, HistName_HERAPDF );
@@ -167,9 +172,11 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 
 	TH1D* h_HERAPDF_RelUnc = Get_Hist( FileName, HistName_HERAPDF_RelUnc );
 	AssignErrors( Hist_HERAPDF->h_ratio, h_HERAPDF_RelUnc, kFALSE ); // -- uncertainty on the ratio: theo. unc. only -- //
-	Hist_HERAPDF->h_ratio->SetMarkerColorAlpha( color_HERAPDF, 0 );
-	Hist_HERAPDF->h_ratio->SetLineColorAlpha( color_NNPDF, 0 );
-	Hist_HERAPDF->h_ratio->SetFillColorAlpha( color_HERAPDF, 0.7 );
+	// Hist_HERAPDF->h_ratio->SetMarkerColorAlpha( color_HERAPDF, 0 );
+	Hist_HERAPDF->h_ratio->SetMarkerStyle( kOpenSquare );
+	Hist_HERAPDF->h_ratio->SetMarkerColor( color_HERAPDF );
+	Hist_HERAPDF->h_ratio->SetLineColorAlpha( color_HERAPDF, 0 );
+	Hist_HERAPDF->h_ratio->SetFillColorAlpha( color_HERAPDF, 0.4 );
 
 	// -- ABM12LHC -- //
 	TH1D* h_ABM = Get_Hist( FileName, HistName_ABM );
@@ -179,12 +186,20 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 	TH1D* h_ABM_RelUnc = Get_Hist( FileName, HistName_ABM_RelUnc );
 	AssignErrors( Hist_ABM->h_ratio, h_ABM_RelUnc, kFALSE ); // -- uncertainty on the ratio: theo. unc. only -- //
 	Hist_ABM->h_ratio->SetMarkerColorAlpha( color_ABM, 0 );
-	Hist_ABM->h_ratio->SetLineColorAlpha( color_NNPDF, 0 );
-	Hist_ABM->h_ratio->SetFillColorAlpha( color_ABM, 0.7 );
+	Hist_ABM->h_ratio->SetMarkerStyle( kOpenDiamond );
+	Hist_ABM->h_ratio->SetMarkerColor( color_ABM );
+	// Hist_ABM->h_ratio->SetMarkerSize( 1 );
+	Hist_ABM->h_ratio->SetLineColorAlpha( color_ABM, 0 );
+	Hist_ABM->h_ratio->SetFillColorAlpha( color_ABM, 0.4 );
 
 	// -- Draw Canvas -- //
 	TCanvas *c;
-	TString CanvasName = "c_Comparison_VariousPDF_"+TStr_Channel;
+	// TString CanvasName = "c_Comparison_VariousPDF_"+TStr_Channel;
+	TString channelType = "";
+	if( TStr_Channel == "LL" ) channelType = "Combined";
+	if( TStr_Channel == "MM" ) channelType = "Muon";
+	if( TStr_Channel == "EE" ) channelType = "Electron";
+	TString CanvasName = TString::Format("%s_RatioWithData_VariousPDF", channelType.Data());
 	SetCanvas_Square( c, "./Local/"+CanvasName );
 
 	gStyle->SetPadBorderMode(0);
@@ -258,12 +273,13 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 
 	// latex.DrawLatexNDC(0.09, 0.96, "#font[62]{CMS}");
 	// latex.DrawLatexNDC(0.19, 0.96, "#font[42]{#it{#scale[0.8]{Preliminary}}}");
-	latex.DrawLatexNDC(0.09, 0.96, "#font[62]{#scale[0.8]{CMS Preliminary}}");
+	latex.DrawLatexNDC(0.09, 0.96, "#font[62]{#scale[0.8]{CMS}}");
+	// latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
 
 	if( TStr_Channel == "MM" || TStr_Channel == "EE" )
-		latex.DrawLatexNDC(0.69, 0.96, "#font[42]{#scale[0.8]{"+TString::Format("%.1lf fb^{-1} (%d TeV)", lumi, E_CM)+"}}");
+		latex.DrawLatexNDC(0.69, 0.96, "#font[62]{#scale[0.7]{"+TString::Format("%.1lf fb^{-1} (%d TeV)", lumi, E_CM)+"}}");
 	else if( TStr_Channel == "LL" )
-		latex.DrawLatexNDC( 0.55, 0.96, "#font[42]{#scale[0.8]{2.3 fb^{-1} (ee)  2.8 fb^{-1} (#mu#mu)}}");
+		latex.DrawLatexNDC( 0.46, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (ee)  2.8 fb^{-1} (#mu#mu) (13 TeV)}}");
 
 	// latex.DrawLatexNDC( 0.76, 0.004, "#font[42]{#scale[0.8]{m (#mu#mu) [GeV]}}");
 

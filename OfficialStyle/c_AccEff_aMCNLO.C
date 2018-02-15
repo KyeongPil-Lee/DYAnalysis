@@ -1022,20 +1022,24 @@ void c_AccEff_aMCNLO()
    tex->SetLineWidth(2);
    tex->Draw();
    */
-   TPaveText *pave = new TPaveText(1700,1.1,2000,1.2); // CHANGE
-   pave->SetFillColor(0);
-   TText* text = pave->AddText("13 TeV");
-   //TText* text = pave->AddText("2.8 fb^{#font[122]{\55}1} (13 TeV)");
-   text->SetTextSize(0.04);
-   pave->Draw("0");
-   TPaveText *ptitle = new TPaveText(19,0.95,70,1.05); // CHANGE
-   ptitle->SetFillColor(0);
-   TText* ttitle = ptitle->AddText("CMS Simulation");
-   ttitle->SetTextSize(0.045);
-   ptitle->Draw("0");
+   // TPaveText *pave = new TPaveText(1700,1.1,2000,1.2); // CHANGE
+   // pave->SetFillColor(0);
+   // TText* text = pave->AddText("13 TeV");
+   // //TText* text = pave->AddText("2.8 fb^{#font[122]{\55}1} (13 TeV)");
+   // text->SetTextSize(0.04);
+   // pave->Draw("0");
+   // TPaveText *ptitle = new TPaveText(19,0.95,70,1.05); // CHANGE
+   // ptitle->SetFillColor(0);
+   // TText* ttitle = ptitle->AddText("CMS Simulation");
+   // ttitle->SetTextSize(0.045);
+   // ptitle->Draw("0");
+   TLatex latex;
+   latex.DrawLatexNDC(0.14, 0.96, "#font[62]{#scale[0.8]{CMS}}");
+   latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
    c_AccEff_aMCNLO->Update();
 
    c_AccEff_aMCNLO->Modified();
    c_AccEff_aMCNLO->cd();
    c_AccEff_aMCNLO->SetSelected(c_AccEff_aMCNLO);
+   // c_AccEff_aMCNLO->SaveAs(".pdf");
 }

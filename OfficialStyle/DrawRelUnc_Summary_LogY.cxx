@@ -245,11 +245,8 @@ protected:
 
 	void DrawLatex( TLatex &latex )
 	{
-		latex.SetTextSize(0.04);
-		latex.DrawLatexNDC( 0.725, 0.93, "2.8 fb^{#font[122]{\55}1} (13 TeV)");
-
-		latex.SetTextSize(0.045);
-		latex.DrawLatexNDC( 0.14, 0.87, "CMS Preliminary" );
+		latex.DrawLatexNDC(0.14, 0.935, "#font[62]{#scale[1]{CMS}}");
+		latex.DrawLatexNDC(0.72, 0.935, "#font[62]{#scale[0.8]{2.8 fb^{-1} (13 TeV)}}");
 	}
 
 	void RemoveNegativeBin( TH1D* h)

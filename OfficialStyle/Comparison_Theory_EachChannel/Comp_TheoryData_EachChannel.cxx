@@ -129,20 +129,17 @@ public:
 
 		// -- write down some sentences -- //
 		TLatex latex;
-		latex.SetTextSize(0.035);
-		latex.DrawLatexNDC(0.15, 0.91, "CMS Preliminary");
+		latex.DrawLatexNDC(0.14, 0.96, "#font[62]{#scale[0.8]{CMS}}");
 		
 		if( this->Type_Channel == "Muon" )
 		{
-			latex.SetTextSize(0.03);
-			latex.DrawLatexNDC(0.79, 0.96, "2.8 fb^{#font[122]{\55}1} (13 TeV)");
+			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
 			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow #mu#mu");
 		}
 		else if( this->Type_Channel == "Electron" )
 		{
-			latex.SetTextSize(0.03);
-			latex.DrawLatexNDC(0.79, 0.96, "2.3 fb^{#font[122]{\55}1} (13 TeV)");
+			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (13 TeV)}}");
 			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow ee");
 		}
@@ -315,20 +312,17 @@ public:
 
 		// -- write down some sentences -- //
 		TLatex latex;
-		latex.SetTextSize(0.035);
-		latex.DrawLatexNDC(0.15, 0.91, "CMS Preliminary");
+		latex.DrawLatexNDC(0.14, 0.96, "#font[62]{#scale[0.8]{CMS}}");
 		
 		if( this->Type_Channel == "Muon" )
 		{
-			latex.SetTextSize(0.03);
-			latex.DrawLatexNDC(0.79, 0.96, "2.8 fb^{#font[122]{\55}1} (13 TeV)");
+			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
 			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow #mu#mu");
 		}
 		else if( this->Type_Channel == "Electron" )
 		{
-			latex.SetTextSize(0.03);
-			latex.DrawLatexNDC(0.79, 0.96, "2.3 fb^{#font[122]{\55}1} (13 TeV)");
+			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (13 TeV)}}");
 			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow ee");
 		}
@@ -351,7 +345,7 @@ public:
 		this->h_Ratio_aMCNLO->Draw("AXIS");
 		this->h_Ratio_TotUnc->Draw("E2PSAME");
 		this->h_Ratio_StatUnc->Draw("E1PSAME");
-		this->h_Ratio_aMCNLO->Draw("E2SAME");		
+		this->h_Ratio_aMCNLO->Draw("E2PSAME");		
 
 		TLegend *legend_aMCNLO = new TLegend(0.15, 0.69, 0.55, 0.96);
 		legend_aMCNLO->SetNColumns(3);
@@ -511,12 +505,16 @@ private:
 		this->h_Ratio_TotUnc->SetFillColorAlpha( kStatSyst, 1 );
 		this->h_Ratio_TotUnc->SetFillStyle( 3354 );
 
-		this->h_Ratio_FEWZ->SetMarkerColorAlpha(kWhite, 0);
+		this->h_Ratio_FEWZ->SetMarkerColor(kBlue);
+		this->h_Ratio_FEWZ->SetMarkerStyle( 32 );
+		// this->h_Ratio_FEWZ->SetMarkerSize( 0.8 );
 		this->h_Ratio_FEWZ->SetLineColorAlpha(kWhite, 0);
 		this->h_Ratio_FEWZ->SetFillColorAlpha( kFEWZ, 0.4 );
 		this->h_Ratio_FEWZ->SetFillStyle( 1001 );
 
-		this->h_Ratio_aMCNLO->SetMarkerColorAlpha(kWhite, 0);
+		this->h_Ratio_aMCNLO->SetMarkerStyle( 26 );
+		this->h_Ratio_aMCNLO->SetMarkerColor(kRed);
+		// this->h_Ratio_aMCNLO->SetMarkerSize( 0.8 );
 		this->h_Ratio_aMCNLO->SetLineColorAlpha(kWhite, 0);
 		this->h_Ratio_aMCNLO->SetFillColorAlpha( kaMCNLO, 0.4 );
 		this->h_Ratio_aMCNLO->SetFillStyle( 1001 );
@@ -543,11 +541,12 @@ private:
 		this->h_FpoF_Ratio_TotUnc->SetFillColorAlpha( kStatSyst, 1 );
 		this->h_FpoF_Ratio_TotUnc->SetFillStyle( 3354 );
 
-		this->h_FpoF_Ratio_aMCNLO->SetMarkerColorAlpha(kWhite, 0);
+		this->h_FpoF_Ratio_aMCNLO->SetMarkerStyle( 26 );
+		this->h_FpoF_Ratio_aMCNLO->SetMarkerColor(kRed);
+		// this->h_FpoF_Ratio_aMCNLO->SetMarkerSize( 0.8 );
 		this->h_FpoF_Ratio_aMCNLO->SetLineColorAlpha(kWhite, 0);
 		this->h_FpoF_Ratio_aMCNLO->SetFillColorAlpha( kaMCNLO, 0.4 );
 		this->h_FpoF_Ratio_aMCNLO->SetFillStyle( 1001 );
-
 	}
 
 	TH1D* Assign_Uncertainty_Ratio1Plot( TH1D* h_RelUnc )

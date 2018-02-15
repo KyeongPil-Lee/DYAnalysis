@@ -200,7 +200,8 @@ protected:
 		this->h_Ratio_noPI->Divide( this->h_DY, this->h_data ); 
 		AssignErrors( this->h_Ratio_noPI, h_RelTheoUnc ); // -- theory / data, only theoretical uncertainty -- //
 		// this->h_Ratio_noPI->SetMarkerColorAlpha(kWhite, 0);
-		this->h_Ratio_noPI->SetMarkerColorAlpha(kWhite, 0);
+		this->h_Ratio_noPI->SetMarkerColor(kBlue);
+		this->h_Ratio_noPI->SetMarkerStyle(32);
 		this->h_Ratio_noPI->SetLineColorAlpha(kWhite, 0);
 		this->h_Ratio_noPI->SetFillColorAlpha( kBlue, 0.3 );
 		
@@ -249,21 +250,22 @@ protected:
 		Double_t lumi_MM = 2.8;
 		Double_t lumi_EE = 2.3;
 
-		latex.DrawLatexNDC(0.14, 0.96, "#font[62]{#scale[0.8]{CMS Preliminary}}");
+		latex.DrawLatexNDC(0.14, 0.96, "#font[62]{#scale[0.8]{CMS}}");
 
 		if( this->Type == "Muon" )
 		{
-			latex.DrawLatexNDC(0.70, 0.96, TString::Format("#font[42]{#scale[0.8]{%.1lf fb^{-1} (13 TeV)}}", lumi_MM ) );
+			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
 			latex.DrawLatexNDC(0.16, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow #mu^{+}#mu^{-}}}");
 		}
 		else if( this->Type == "Electron" )
 		{
-			latex.DrawLatexNDC(0.70, 0.96, TString::Format("#font[42]{#scale[0.8]{%.1lf fb^{-1} (13 TeV)}}", lumi_EE ) );
+			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (13 TeV)}}");
 			latex.DrawLatexNDC(0.16, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow e^{+}e^{-}}}");
 		}
 		else if( this->Type == "Combined" )
 		{
-			latex.DrawLatexNDC(0.48, 0.96, TString::Format("#font[42]{#scale[0.7]{%.1lf fb^{-1} (ee) %.1lf fb^{-1} (#mu#mu)} #scale[0.8]{(13 TeV)}}", lumi_EE, lumi_MM) );
+			latex.DrawLatexNDC(0.48, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (ee) 2.8 fb^{-1} (#mu#mu) (13 TeV)}}");
+			// latex.DrawLatexNDC(0.48, 0.96, TString::Format("#font[42]{#scale[0.7]{%.1lf fb^{-1} (ee) %.1lf fb^{-1} (#mu#mu)} #scale[0.8]{(13 TeV)}}", lumi_EE, lumi_MM) );
 			latex.DrawLatexNDC(0.16, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow e^{+}e^{-}, #mu^{+}#mu^{-}}}");
 		}
 	}

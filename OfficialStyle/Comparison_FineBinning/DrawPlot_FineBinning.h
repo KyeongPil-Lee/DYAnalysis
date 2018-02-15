@@ -254,7 +254,8 @@ public:
 
 		g_ratio->SetFillColorAlpha( kBlue, 0.4 );
 		g_ratio->SetLineColorAlpha( kBlue, 0 );
-		g_ratio->SetMarkerColorAlpha( kBlue, 0 );
+		g_ratio->SetMarkerColor( kBlue );
+		g_ratio->SetMarkerStyle( 32 );
 		g_ratio->SetFillStyle( 1001 );
 
 		gStyle->SetHatchesSpacing( 1.5 );
@@ -276,7 +277,9 @@ public:
 		legend_ratio->SetNColumns(3);
 		legend_ratio->AddEntry( g_StatUnc, "Stat. Unc." );
 		legend_ratio->AddEntry( g_TotUnc, "Tot. Unc." );
-		legend_ratio->AddEntry( g_ratio, "Theo. Unc." );
+		TGraphAsymmErrors* g_ratio_ForLegend = (TGraphAsymmErrors*)g_ratio->Clone();
+		g_ratio_ForLegend->SetMarkerColorAlpha(kWhite, 0 );
+		legend_ratio->AddEntry( g_ratio_ForLegend, "Theo. Unc." );
 		legend_ratio->Draw();
 
 
@@ -354,21 +357,22 @@ protected:
 
 		// latex.DrawLatexNDC(0.14, 0.965, "#font[62]{CMS}");
 		// latex.DrawLatexNDC(0.25, 0.965, "#font[42]{#it{#scale[0.8]{Preliminary}}}");
-		latex.DrawLatexNDC(0.14, 0.96, "#font[62]{#scale[0.8]{CMS Preliminary}}");
+		latex.DrawLatexNDC(0.14, 0.96, "#font[62]{#scale[0.8]{CMS}}");
 
 		if( this->ChannelType == "Dimuon" )
 		{
-			latex.DrawLatexNDC(0.71, 0.96, TString::Format("#font[42]{#scale[0.8]{%.1lf fb^{-1} (13 TeV)}}", lumi_MM ) );
+			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
 			latex.DrawLatexNDC(0.65, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow #mu^{+}#mu^{-}}}");
 		}
 		else if( this->ChannelType == "Dielectron" )
 		{
-			latex.DrawLatexNDC(0.71, 0.96, TString::Format("#font[42]{#scale[0.8]{%.1lf fb^{-1} (13 TeV)}}", lumi_EE ) );
+			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (13 TeV)}}");
 			latex.DrawLatexNDC(0.65, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow e^{+}e^{-}}}");
 		}
 		else if( this->ChannelType == "Combined" )
 		{
-			latex.DrawLatexNDC(0.48, 0.96, TString::Format("#font[42]{#scale[0.7]{%.1lf fb^{-1} (ee) %.1lf fb^{-1} (#mu#mu)} #scale[0.8]{(13 TeV)}}", lumi_EE, lumi_MM) );
+			latex.DrawLatexNDC(0.48, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (ee) 2.8 fb^{-1} (#mu#mu) (13 TeV)}}");
+			// latex.DrawLatexNDC(0.48, 0.96, TString::Format("#font[42]{#scale[0.7]{%.1lf fb^{-1} (ee) %.1lf fb^{-1} (#mu#mu)} #scale[0.8]{(13 TeV)}}", lumi_EE, lumi_MM) );
 			latex.DrawLatexNDC(0.65, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow e^{+}e^{-}, #mu^{+}#mu^{-}}}");
 		}
 	}
