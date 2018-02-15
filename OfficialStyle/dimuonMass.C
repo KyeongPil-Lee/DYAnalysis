@@ -179,16 +179,19 @@ void dimuonMass()
    entry=leg->AddEntry(hFakes,"Fakes","f");
    leg->Draw();
 
-   TPaveText *pave = new TPaveText(1200,5000000,2000,7000000); // CHANGE
-   pave->SetFillColor(0);
-   TText* text = pave->AddText("2.8 fb^{#font[122]{\55}1} (13 TeV)");
-   text->SetTextSize(0.03);
-   pave->Draw("0");
-   TPaveText *ptitle = new TPaveText(20,900000,60,1020000); // CHANGE
-   ptitle->SetFillColor(0);
-   TText* ttitle = ptitle->AddText("CMS Preliminary");
-   ttitle->SetTextSize(0.035);
-   ptitle->Draw("0");
+   // TPaveText *pave = new TPaveText(1200,5000000,2000,7000000); // CHANGE
+   // pave->SetFillColor(0);
+   // TText* text = pave->AddText("2.8 fb^{#font[122]{\55}1} (13 TeV)");
+   // text->SetTextSize(0.03);
+   // pave->Draw("0");
+   // TPaveText *ptitle = new TPaveText(20,900000,25,1020000); // CHANGE
+   // ptitle->SetFillColor(0);
+   // TText* ttitle = ptitle->AddText("CMS");
+   // ttitle->SetTextSize(0.035);
+   // ptitle->Draw("0");
+   TLatex latex;
+   latex.DrawLatexNDC(0.14, 0.96, "#font[62]{#scale[0.8]{CMS}}");
+   latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
 
 // ------------>Primitives in pad: bottomPad
    TPad *bottomPad = new TPad("bottomPad", "bottomPad",0.01,0.01,0.99,0.3);
