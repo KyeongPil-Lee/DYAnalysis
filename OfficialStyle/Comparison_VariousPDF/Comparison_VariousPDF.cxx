@@ -273,11 +273,11 @@ void Comparison_VariousPDF(TString TStr_Channel = "LL")
 
 	// latex.DrawLatexNDC(0.09, 0.96, "#font[62]{CMS}");
 	// latex.DrawLatexNDC(0.19, 0.96, "#font[42]{#it{#scale[0.8]{Preliminary}}}");
-	latex.DrawLatexNDC(0.09, 0.96, "#font[62]{#scale[0.8]{CMS}}");
+	latex.DrawLatexNDC(0.09, 0.96, "#scale[0.8]{#font[62]{CMS }#font[42]{#it{Supplementary}}}");
 	// latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
 
 	if( TStr_Channel == "MM" || TStr_Channel == "EE" )
-		latex.DrawLatexNDC(0.69, 0.96, "#font[62]{#scale[0.7]{"+TString::Format("%.1lf fb^{-1} (%d TeV)", lumi, E_CM)+"}}");
+		latex.DrawLatexNDC(0.72, 0.96, "#font[62]{#scale[0.7]{"+TString::Format("%.1lf fb^{-1} (%d TeV)", lumi, E_CM)+"}}");
 	else if( TStr_Channel == "LL" )
 		latex.DrawLatexNDC( 0.46, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (ee)  2.8 fb^{-1} (#mu#mu) (13 TeV)}}");
 
