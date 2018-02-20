@@ -78,6 +78,8 @@ public:
 			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (13 TeV)}}");
 
 		c->SaveAs(".pdf");
+
+		// Print_Histogram( Hist_totBkg->h );
 	}
 
 private:
@@ -112,9 +114,21 @@ private:
 		h_tW_emu->Sumw2();
 		TH1D* h_WW = Get_Hist( fileName, "h_WW_emu" );
 		h_WW->Sumw2();
+		this->HotFix_ElectronChannel( h_tW_emu, h_WW );
+
 		TH1D* h_ttbarLike = (TH1D*)h_ttbar->Clone();
 		h_ttbarLike->Add( h_tW_emu );
 		h_ttbarLike->Add( h_WW );
+
+		cout << "h_ttbar" << endl;
+		Print_Histogram( h_ttbar );
+
+		cout << "h_tW_emu" << endl;
+		Print_Histogram( h_tW_emu );
+
+
+		cout << "h_WW" << endl;
+		Print_Histogram( h_WW );
 
 		// -- h_ZZWZ -- //
 		TH1D* h_WZ = Get_Hist( fileName, "h_WZ" );
@@ -135,9 +149,27 @@ private:
 		h_totBkg->Add( h_ZZWZ );
 		h_totBkg->Add( h_DYtautau );
 
+		cout << "h_ttbarLike" << endl;
+		Print_Histogram( h_ttbarLike );
+
+		// cout << "h_ZZWZ" << endl;
+		// Print_Histogram( h_ZZWZ );
+
+		// cout << "h_DYtautau" << endl;
+		// Print_Histogram( h_DYtautau );
+
 		// -- bkg. ratio -- //
 		this->h_ratio_totBkg = (TH1D*)h_data->Clone();
 		h_ratio_totBkg->Divide( h_totBkg, h_data );
+
+		// cout << "h_data" << endl;
+		// Print_Histogram( h_data );
+
+		// cout << "h_totBkg" << endl;
+		// Print_Histogram( h_totBkg );
+
+		// cout << "h_ratio_totBkg" << endl;
+		// Print_Histogram( h_ratio_totBkg );
 
 		this->h_ratio_fakes = (TH1D*)h_data->Clone();
 		h_ratio_fakes->Divide( h_fakes, h_data );
@@ -150,6 +182,15 @@ private:
 
 		this->h_ratio_DYtautau = (TH1D*)h_data->Clone();
 		h_ratio_DYtautau->Divide( h_DYtautau, h_data );
+	}
+
+	void HotFix_ElectronChannel( TH1D* h_tW_emu, TH1D* h_WW )
+	{
+		if( this->channel == "Electron" )
+		{
+			h_tW_emu->SetBinError(42, 0 );
+			h_WW->SetBinError(42, 0 );
+		}
 	}
 
 };
