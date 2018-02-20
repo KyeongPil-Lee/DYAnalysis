@@ -90,10 +90,9 @@ private:
 
 	void Init()
 	{
+		TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
 		if( this->channel == "Muon" )
 		{
-			TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
-
 			// -- detector resolution -- //
 			TString fileName_detRes = rootFilePath+"/ROOTFile_Histogram_ResponseM_1D_aMCNLO_IsoMu20_OR_IsoTkMu20.root";
 
@@ -107,6 +106,13 @@ private:
 			TH1D* h_truth_FSR = Get_Hist( fileName_FSR, "h_Truth_RooUnfold" );
 			TH2D* h_nEvents_FSR = Get_Hist_2D( fileName_FSR, "h_RespM_RooUnfold" );
 			this->h_respM_FSR = this->CalcFractionPerBin_Transpose( h_nEvents_FSR, h_truth_FSR );
+		}
+		else if( this->channel == "Electron" )
+		{
+			TString fileName = rootFilePath+"/ROOTFile_RespM_Electron.root";
+
+			this->h_respM_detRes = Get_Hist_2D( fileName, "h_respM_detRes" );
+			this->h_respM_FSR = Get_Hist_2D( fileName, "h_respM_FSR" );
 		}
 	}
 
@@ -173,4 +179,7 @@ void DrawRespM()
 {
 	DrawingTool *tool_Muon = new DrawingTool( "Muon" );
 	tool_Muon->DrawAll();
+
+	DrawingTool *tool_Electron = new DrawingTool( "Electron" );
+	tool_Electron->DrawAll();
 }
