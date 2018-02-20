@@ -120,15 +120,14 @@ private:
 		h_ttbarLike->Add( h_tW_emu );
 		h_ttbarLike->Add( h_WW );
 
-		cout << "h_ttbar" << endl;
-		Print_Histogram( h_ttbar );
+		// cout << "h_ttbar" << endl;
+		// Print_Histogram( h_ttbar );
 
-		cout << "h_tW_emu" << endl;
-		Print_Histogram( h_tW_emu );
+		// cout << "h_tW_emu" << endl;
+		// Print_Histogram( h_tW_emu );
 
-
-		cout << "h_WW" << endl;
-		Print_Histogram( h_WW );
+		// cout << "h_WW" << endl;
+		// Print_Histogram( h_WW );
 
 		// -- h_ZZWZ -- //
 		TH1D* h_WZ = Get_Hist( fileName, "h_WZ" );
@@ -149,8 +148,8 @@ private:
 		h_totBkg->Add( h_ZZWZ );
 		h_totBkg->Add( h_DYtautau );
 
-		cout << "h_ttbarLike" << endl;
-		Print_Histogram( h_ttbarLike );
+		// cout << "h_ttbarLike" << endl;
+		// Print_Histogram( h_ttbarLike );
 
 		// cout << "h_ZZWZ" << endl;
 		// Print_Histogram( h_ZZWZ );
