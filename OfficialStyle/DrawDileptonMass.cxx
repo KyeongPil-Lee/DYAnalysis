@@ -253,9 +253,6 @@ private:
 		TH1D* h_tW_emu = Get_Hist( fileName, "h_tW_emu");
 		h_tW_emu->Sumw2();
 
-		this->h_top	= (TH1D*)h_ttbar->Clone();
-		this->h_top->Add( h_tW_emu );
-
 		// -- EW -- //
 		TH1D* h_WW = Get_Hist( fileName, "h_WW_emu" );
 		h_WW->Sumw2();
@@ -265,6 +262,11 @@ private:
 		h_ZZ->Sumw2();
 		TH1D* h_DYtautau = Get_Hist( fileName, "h_DYTauTau_emu" );
 		h_DYtautau->Sumw2();
+
+		this->HotFix_ElectronChannel( h_tW_emu, h_WW );
+
+		this->h_top	= (TH1D*)h_ttbar->Clone();
+		this->h_top->Add( h_tW_emu );
 
 		this->h_EW = (TH1D*)h_WW->Clone();
 		this->h_EW->Add( h_WZ );
@@ -290,6 +292,15 @@ private:
 		this->h_ratio = (TH1D*)h_data->Clone();
 		this->h_ratio->Reset("ICES");
 		this->h_ratio->Divide(this->h_data, this->h_pred);
+	}
+
+	void HotFix_ElectronChannel( TH1D* h_tW_emu, TH1D* h_WW )
+	{
+		if( this->channel == "Electron" )
+		{
+			h_tW_emu->SetBinError(42, 0 );
+			h_WW->SetBinError(42, 0 );
+		}
 	}
 
 };
