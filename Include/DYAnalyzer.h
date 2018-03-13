@@ -845,6 +845,36 @@ void DYAnalyzer::SetupMCsamples_v20160309_76X_MiniAODv2( TString Type, vector<TS
 		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M1500to2000_25ns" ); Tag->push_back( "DYEE_M1500to2000" ); Xsec->push_back( 0.002/3.0 ); nEvents->push_back( 37287.0 ); //nEvents: sum of DYEE weights 
 		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M2000to3000_25ns" ); Tag->push_back( "DYEE_M2000to3000" ); Xsec->push_back( 0.00054/3.0 ); nEvents->push_back( 23315.0 ); //nEvents: sum of DYEE weights
 	}
+	else if( Type == "aMCNLO_NNLOxSec")
+	{
+		// -- Signal binned samples -- //
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M10to50_25ns" ); Tag->push_back( "DYMuMu_M10to50" ); Xsec->push_back( 6016.88 ); nEvents->push_back( 7506956.0 ); //nEvents: sum of weights within 10<M<50
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M50toInf_25ns" ); Tag->push_back( "DYMuMu_M50to100" ); Xsec->push_back( 1873.52 ); nEvents->push_back( 6061181.0 ); //nEvents: sum of DYMuMu weights
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M100to200_25ns" ); Tag->push_back( "DYMuMu_M100to200" ); Xsec->push_back( 76.2401 ); nEvents->push_back( 227522.0 ); //nEvents: sum of weights within 10<M<50
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M200to400_25ns" ); Tag->push_back( "DYMuMu_M200to400" ); Xsec->push_back( 2.67606 ); nEvents->push_back( 170955.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M400to500_25ns" ); Tag->push_back( "DYMuMu_M400to500" ); Xsec->push_back( 0.139728 ); nEvents->push_back( 50136.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M500to700_25ns" ); Tag->push_back( "DYMuMu_M500to700" ); Xsec->push_back( 0.0792496 ); nEvents->push_back( 47833.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M700to800_25ns" ); Tag->push_back( "DYMuMu_M700to800" ); Xsec->push_back( 0.0123176 ); nEvents->push_back( 44740.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M800to1000_25ns" ); Tag->push_back( "DYMuMu_M800to1000" ); Xsec->push_back( 0.01042 ); nEvents->push_back( 43496.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M1000to1500_25ns" ); Tag->push_back( "DYMuMu_M1000to1500" ); Xsec->push_back( 0.00552772 ); nEvents->push_back( 40783.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M1500to2000_25ns" ); Tag->push_back( "DYMuMu_M1500to2000" ); Xsec->push_back( 0.000741613 ); nEvents->push_back( 37176.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M2000to3000_25ns" ); Tag->push_back( "DYMuMu_M2000to3000" ); Xsec->push_back( 0.000178737 ); nEvents->push_back( 23078.0 ); //nEvents: sum of DYMuMu weights
+	}
+	else if( Type == "aMCNLO_NLO_XSDB")
+	{
+		// -- Signal binned samples -- //
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M10to50_25ns" ); Tag->push_back( "DYMuMu_M10to50" ); Xsec->push_back( 18810.0/3.0 ); nEvents->push_back( 7506956.0 ); //nEvents: sum of weights within 10<M<50
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M50toInf_25ns" ); Tag->push_back( "DYMuMu_M50to100" ); Xsec->push_back( 5941.0/3.0 ); nEvents->push_back( 6061181.0 ); //nEvents: sum of DYMuMu weights
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M100to200_25ns" ); Tag->push_back( "DYMuMu_M100to200" ); Xsec->push_back( 226.6/3.0 ); nEvents->push_back( 227522.0 ); //nEvents: sum of weights within 10<M<50
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M200to400_25ns" ); Tag->push_back( "DYMuMu_M200to400" ); Xsec->push_back( 7.77/3.0 ); nEvents->push_back( 170955.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M400to500_25ns" ); Tag->push_back( "DYMuMu_M400to500" ); Xsec->push_back( 0.4065/3.0 ); nEvents->push_back( 50136.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M500to700_25ns" ); Tag->push_back( "DYMuMu_M500to700" ); Xsec->push_back( 0.2334/3.0 ); nEvents->push_back( 47833.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M700to800_25ns" ); Tag->push_back( "DYMuMu_M700to800" ); Xsec->push_back( 0.03614/3.0 ); nEvents->push_back( 44740.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M800to1000_25ns" ); Tag->push_back( "DYMuMu_M800to1000" ); Xsec->push_back( 0.03047/3.0 ); nEvents->push_back( 43496.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M1000to1500_25ns" ); Tag->push_back( "DYMuMu_M1000to1500" ); Xsec->push_back( 0.01636/3.0 ); nEvents->push_back( 40783.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M1500to2000_25ns" ); Tag->push_back( "DYMuMu_M1500to2000" ); Xsec->push_back( 0.00218/3.0 ); nEvents->push_back( 37176.0 ); //nEvents: sum of DYMuMu weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M2000to3000_25ns" ); Tag->push_back( "DYMuMu_M2000to3000" ); Xsec->push_back( 0.0005156/3.0 ); nEvents->push_back( 23078.0 ); //nEvents: sum of DYMuMu weights
+	}
 	else
 		cout << "Wrong Type!" << endl;
 }
