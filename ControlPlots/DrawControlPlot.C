@@ -10,6 +10,6 @@ void DrawControlPlot(Bool_t DrawDataDriven = kTRUE, TString NormType = "Lumi" )
 	DrawControlPlotTool *tool = new DrawControlPlotTool(DrawDataDriven, NormType);
 	// tool->GenLevelMassSpectrum();
 	tool->SetupHistogramNames();
-	tool->LoopForHistograms(3);
+	tool->LoopForHistograms(-1);
 }
 

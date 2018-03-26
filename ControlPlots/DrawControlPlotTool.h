@@ -97,7 +97,7 @@ DrawControlPlotTool::DrawControlPlotTool(Bool_t DrawDataDriven_arg, TString Norm
 	f_output = new TFile("ROOTFile_YieldHistogram.root", "RECREATE");
 
 	DYAnalyzer *analyzer = new DYAnalyzer( "None" );
-	analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("Full_AdditionalSF", &ntupleDirectory, &Tag, &Xsec, &nEvents); // -- 76X -- //
+	analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("Full_NNLOxSecForDY", &ntupleDirectory, &Tag, &Xsec, &nEvents); // -- 76X -- //
 
 	// -- Set the colors for each sample -- //
 	for(Int_t i=0; i<(Int_t)Tag.size(); i++ )
@@ -228,7 +228,7 @@ void DrawControlPlotTool::SetupHistogramNames()
 	HistNames.push_back( "h_phi_OtherLeg" );	Variables.push_back( "TrigNOTMatchedPhi" );	XTitles.push_back( "Muon(NOT Matched with Trigger) #phi");
 
 	HistNames.push_back( "h_mass" );			Variables.push_back( "Mass" );				XTitles.push_back( "Invariant Mass(#mu#mu) [GeV]");
-	HistNames.push_back( "h_mass_barrel" );		Variables.push_back( "BarrelMass" );		XTitles.push_back( "Invariant Mass(|muon #eta|<0.9) [GeV]");
+	// HistNames.push_back( "h_mass_barrel" );		Variables.push_back( "BarrelMass" );		XTitles.push_back( "Invariant Mass(|muon #eta|<0.9) [GeV]");
 	HistNames.push_back( "h_mass_SS" );			Variables.push_back( "SSMass" );			XTitles.push_back( "Invariant Mass(Same Sign) [GeV]");
 
 
