@@ -6,15 +6,12 @@ void PrintOutGraph(TGraphAsymmErrors* g);
 Double_t Error_PropagatedAoverB(Double_t A, Double_t sigma_A, Double_t B, Double_t sigma_B);
 // void Correction_AccEff(TH1D *h_yield_AccEff, TH1D *h_yield, TGraphAsymmErrors *g_AccEff);
 
-void DrawAccEffPlot(TString version = "None")
+void DrawAccEffPlot()
 {
 	setTDRStyle();
 	gROOT->SetStyle( "tdrStyle" );
 
 	TString FileLocation = gSystem->Getenv("KP_ROOTFILE_PATH");
-
-	if( version == "None" )
-		FileLocation = ".";
 
 	TFile *f_input = new TFile(FileLocation + "/ROOTFile_Histogram_Acc_Eff_aMCNLO_IsoMu20_OR_IsoTkMu20.root");
 	TString FileName = f_input->GetName();
@@ -104,7 +101,7 @@ void DrawAccEffPlot(TString version = "None")
 
 	TString CanvasName = c_compare->GetName();
 	c_compare->SaveAs(CanvasName+".pdf");
-	c_compare->SaveAs(CanvasName+".C");
+	// c_compare->SaveAs(CanvasName+".C");
 
 
 	TEfficiency *TEff_Eff_Corr_HLTv4p2 = (TEfficiency*)f_input->Get("TEff_Eff_Mass_Corr_HLTv4p2");
