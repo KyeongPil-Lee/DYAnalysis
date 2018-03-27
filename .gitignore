@@ -1,6 +1,9 @@
 # Plots, Big files...
 Local/
 
+# log files
+*.log
+
 # output from batch jobs
 *.o*
 
