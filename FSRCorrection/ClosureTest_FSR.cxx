@@ -1,6 +1,6 @@
 #include <Include/PlotTools.h>
 
-void ClosureTest()
+void ClosureTest_FSR()
 {
 	TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
 	TString fileName = rootFilePath + "/ROOTFile_FSRCorrections_DressedLepton_aMCNLO.root";
@@ -11,13 +11,13 @@ void ClosureTest()
 	TH1D* h_truth = Get_Hist( fileName, "h_Truth_RooUnfold" );
 
 	// -- unfold MC reco. histogram
-	RooUnfoldResponse *rooResp = (RooUnfoldResponse*)f_input->Get("h_RecoMass_h_GenMass")->Clone();
+	RooUnfoldResponse *rooResp = (RooUnfoldResponse*)f_input->Get("UnfoldRes")->Clone();
 	RooUnfoldInvert *rooInvert = new RooUnfoldInvert(rooResp, h_measured);
 	TH1D *h_unfolded = (TH1D*)rooInvert->Hreco();
 
 	// -- Draw canvas
 	TCanvas *c; TPad *TopPad; TPad *BottomPad;
-	TString canvasName = "Local/c_ClosureTest";
+	TString canvasName = "Local/c_ClosureTest_FSR";
 	SetCanvas_Ratio( c, canvasName, TopPad, BottomPad, 1, 1 );
 
 	c->cd();
@@ -53,7 +53,8 @@ void ClosureTest()
 
 	TLatex latex;
 	Latex_Simulation( latex );
-	latex.DrawLatexNDC(0.16, 0.91, "#scale[0.7]{#font[42]{Closure test (unfolding correction for FSR)}}");
+	latex.DrawLatexNDC(0.16, 0.35, "#scale[0.7]{#font[42]{Closure test}}");
+	latex.DrawLatexNDC(0.16, 0.32, "#scale[0.6]{#font[42]{(unfolding correction for FSR)}}");
 
 	c->cd();
 	BottomPad->cd();
