@@ -19,14 +19,8 @@
 #include <TMath.h>
 
 // -- RooUnfold package -- //
-// #include </home/kplee/Unfolding/libRooUnfold.so>
-// #include </home/kplee/Unfolding/src/RooUnfold_LinkDef.h>
-// #include </home/kplee/Unfolding/src/RooUnfold.h>
-// #include </home/kplee/Unfolding/src/RooUnfold.cxx>
 #include <src/RooUnfoldResponse.h>
-// #include <src/RooUnfoldResponse.cxx>
 #include <src/RooUnfoldBayes.h>
-// #include <src/RooUnfoldBayes.cxx>
 // #include <src/RooUnfoldInvert.h>
 
 // -- for Rochester Muon momentum correction -- //
@@ -105,7 +99,7 @@ void MuonResponseMatrix_1D(Bool_t isCorrected = kTRUE, TString Sample = "aMCNLO"
 
 	if( Sample == "aMCNLO" )
 	{
-		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("aMCNLO_AdditionalSF", &ntupleDirectory, &Tag, &Xsec, &nEvents);
+		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("aMCNLO_NNLOxSec", &ntupleDirectory, &Tag, &Xsec, &nEvents);
 	}
 	if( Sample == "Powheg" )
 	{
