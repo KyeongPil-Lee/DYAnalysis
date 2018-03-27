@@ -61,6 +61,19 @@ elif [ "$HOSTNAME" == "cms.snu.ac.kr" ]; then
 	KP_ROOT6_PATH="/cvmfs/cms.cern.ch/slc6_amd64_gcc530/lcg/root/6.06.00-ikhhed6/bin/thisroot.sh" # -- CMSSW_8_0_25 -- #
 fi
 
+# -- setup for lxplus
+if [[ $HOSTNAME =~ "cern.ch" ]]; then
+	export SCRAM_ARCH=slc6_amd64_gcc491
+	export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
+	source $VO_CMS_SW_DIR/cmsset_default.sh
+	cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_1 # -- has ROOT 6.02/05, and unfolding package was compiled under this version! -- #
+	eval `scramv1 runtime -sh`
+
+	cd $KP_ANALYZER_PATH
+
+	KP_ROOUNFOLD_PATH="/afs/cern.ch/user/k/kplee/work/private/Physics/RooUnfold"
+fi
+
 # -- Directory for official style plots -- #
 export KP_PLOT_PATH=$KP_ANALYZER_PATH/Local/Plots
 
