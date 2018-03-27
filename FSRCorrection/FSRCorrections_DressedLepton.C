@@ -53,7 +53,7 @@ void FSRCorrections_DressedLepton( TString Sample = "aMCNLO", TString HLTname = 
 
 	if( Sample == "aMCNLO" )
 	{
-		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("aMCNLO_AdditionalSF", &ntupleDirectory, &Tag, &Xsec, &nEvents);
+		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("aMCNLO_NNLOxSec", &ntupleDirectory, &Tag, &Xsec, &nEvents);
 	}
 	if( Sample == "Powheg" )
 	{
