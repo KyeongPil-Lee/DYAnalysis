@@ -97,7 +97,7 @@ DrawControlPlotTool::DrawControlPlotTool(Bool_t DrawDataDriven_arg, TString Norm
 	f_output = new TFile("ROOTFile_YieldHistogram.root", "RECREATE");
 
 	DYAnalyzer *analyzer = new DYAnalyzer( "None" );
-	analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("Full_NNLOxSecForDY", &ntupleDirectory, &Tag, &Xsec, &nEvents); // -- 76X -- //
+	analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("Full_AdditionalSF", &ntupleDirectory, &Tag, &Xsec, &nEvents); // -- 76X -- //
 
 	// -- Set the colors for each sample -- //
 	for(Int_t i=0; i<(Int_t)Tag.size(); i++ )

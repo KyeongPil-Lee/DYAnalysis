@@ -77,7 +77,7 @@ void Acc_Eff(Bool_t isCorrected = kTRUE, TString Sample = "aMCNLO", TString HLTn
 
 	if( Sample == "aMCNLO" )
 	{
-		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("aMCNLO_NNLOxSec", &ntupleDirectory, &Tag, &Xsec, &nEvents);
+		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("aMCNLO_AdditionalSF", &ntupleDirectory, &Tag, &Xsec, &nEvents);
 	}
 	if( Sample == "Powheg" )
 	{

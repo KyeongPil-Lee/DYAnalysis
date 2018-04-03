@@ -99,7 +99,7 @@ void MuonResponseMatrix_1D(Bool_t isCorrected = kTRUE, TString Sample = "aMCNLO"
 
 	if( Sample == "aMCNLO" )
 	{
-		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("aMCNLO_NNLOxSec", &ntupleDirectory, &Tag, &Xsec, &nEvents);
+		analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("aMCNLO_AdditionalSF", &ntupleDirectory, &Tag, &Xsec, &nEvents);
 	}
 	if( Sample == "Powheg" )
 	{
