@@ -40,19 +40,22 @@ public:
 		ci = TColor::GetColor("#0000ff");
 		g_acc->SetLineColor(ci);
 		g_acc->SetMarkerColor(ci);
+		g_acc->SetMarkerSize(0.8);
 		g_acc->SetMarkerStyle(20);
 		g_acc->SetFillColorAlpha(kWhite, 0);
 
 		ci = TColor::GetColor("#ff0000");
 		g_eff->SetLineColor(ci);
 		g_eff->SetMarkerColor(ci);
-		g_eff->SetMarkerStyle(20);
+		g_eff->SetMarkerSize(0.8);
+		g_eff->SetMarkerStyle(21);
 		g_eff->SetFillColorAlpha(kWhite, 0);
 
 		ci = TColor::GetColor(kBlack); // CHANGE
 		g_accEff->SetLineColor(ci);
 		g_accEff->SetMarkerColor(ci);
-		g_accEff->SetMarkerStyle(20);
+		g_accEff->SetMarkerSize(0.9);
+		g_accEff->SetMarkerStyle(22);
 		g_accEff->SetFillColorAlpha(kWhite, 0);
 
 		g_acc->SetMinimum(0);
