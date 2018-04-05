@@ -60,10 +60,10 @@ public:
 
 		h_TotUnc_temp->SetTitle("");
 		SetHistFormat_SinglePad(h_TotUnc_temp, "m [GeV]", "Theory/Data");
-		h_TotUnc_temp->GetYaxis()->SetRangeUser(0.7, 1.3);
+		h_TotUnc_temp->GetYaxis()->SetRangeUser(0.7, 1.4);
 
 		TLegend *legend;
-		SetLegend( legend, 0.15, 0.15, 0.55, 0.27 );
+		SetLegend( legend, 0.15, 0.78, 0.60, 0.95 );
 		legend->SetNColumns( 2 );
 		legend->AddEntry( h_StatUnc_temp, "Stat. Unc.");
 		legend->AddEntry( h_TotUnc_temp, "Tot. Unc.");
@@ -101,7 +101,7 @@ public:
 		h_TotUnc_temp->GetYaxis()->SetRangeUser(0.0, 3.0);
 
 		TLegend *legend;
-		SetLegend( legend, 0.15, 0.15, 0.55, 0.27 );
+		SetLegend( legend, 0.15, 0.78, 0.67, 0.95 );
 		legend->SetNColumns( 2 );
 		legend->AddEntry( h_StatUnc_temp, "Stat. Unc.");
 		legend->AddEntry( h_TotUnc_temp, "Tot. Unc.");
@@ -255,18 +255,18 @@ protected:
 		if( this->Type == "Muon" )
 		{
 			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
-			latex.DrawLatexNDC(0.16, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow #mu^{+}#mu^{-}}}");
+			latex.DrawLatexNDC(0.76, 0.91, "#font[42]{#scale[0.8]{Z/#gamma* #rightarrow #mu^{+}#mu^{-}}}");
 		}
 		else if( this->Type == "Electron" )
 		{
 			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (13 TeV)}}");
-			latex.DrawLatexNDC(0.16, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow e^{+}e^{-}}}");
+			latex.DrawLatexNDC(0.76, 0.91, "#font[42]{#scale[0.8]{Z/#gamma* #rightarrow e^{+}e^{-}}}");
 		}
 		else if( this->Type == "Combined" )
 		{
 			latex.DrawLatexNDC(0.48, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (ee) 2.8 fb^{-1} (#mu#mu) (13 TeV)}}");
 			// latex.DrawLatexNDC(0.48, 0.96, TString::Format("#font[42]{#scale[0.7]{%.1lf fb^{-1} (ee) %.1lf fb^{-1} (#mu#mu)} #scale[0.8]{(13 TeV)}}", lumi_EE, lumi_MM) );
-			latex.DrawLatexNDC(0.16, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow e^{+}e^{-}, #mu^{+}#mu^{-}}}");
+			latex.DrawLatexNDC(0.68, 0.91, "#font[42]{#scale[0.8]{Z/#gamma* #rightarrow e^{+}e^{-}, #mu^{+}#mu^{-}}}");
 		}
 	}
 
