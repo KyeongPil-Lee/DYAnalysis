@@ -116,7 +116,7 @@ public:
 			legend->AddEntry( h_DY, "#gamma* /#font[122]{Z} #rightarrow ee", "f" );
 		legend->AddEntry( h_top, "t#bar{t}+tW+#bar{t}W", "f" );
 		legend->AddEntry( h_EW, "EW", "f" );
-		legend->AddEntry( h_fakes, "Fakes", "f" );
+		legend->AddEntry( h_fakes, "Misid.", "f" );
 		legend->Draw();
 
 		TLatex latex;
