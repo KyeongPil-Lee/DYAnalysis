@@ -118,12 +118,12 @@ protected:
 		this->Hist_RelSystUnc_FSR->h->SetMarkerSize(1);
 
 		TH1D* h_RelTheoUnc_Acc = Get_Hist( FileName, HistName_RelTheoUnc_Acc );
-		this->Hist_RelTheoUnc_Acc = new HistInfo( TColor::GetColor("#99ff99"), "Acceptance", h_RelTheoUnc_Acc );
+		this->Hist_RelTheoUnc_Acc = new HistInfo( TColor::GetColor("#99ff99"), "Acceptance + PDF", h_RelTheoUnc_Acc );
 		this->Hist_RelTheoUnc_Acc->h->SetMarkerStyle(24);
 		this->Hist_RelTheoUnc_Acc->h->SetMarkerSize(1);
 
 		TH1D* h_RelLumiUnc = Get_Hist( FileName, HistName_RelLumiUnc );
-		this->Hist_RelLumiUnc = new HistInfo( TColor::GetColor("#ff9933"), "Luminosity", h_RelLumiUnc );
+		this->Hist_RelLumiUnc = new HistInfo( TColor::GetColor("#ff9933"), "Int. lumi.", h_RelLumiUnc );
 		this->Hist_RelLumiUnc->h->SetMarkerStyle(22);
 		this->Hist_RelLumiUnc->h->SetMarkerSize(1);
 	}
@@ -204,9 +204,15 @@ protected:
 	{
 		latex.DrawLatexNDC(0.14, 0.935, "#font[62]{#scale[1]{CMS}}");
 		if( this->channel == "Muon" )
+		{
 			latex.DrawLatexNDC(0.72, 0.935, "#font[62]{#scale[0.8]{2.8 fb^{-1} (13 TeV)}}");
+			latex.DrawLatexNDC(0.72, 0.88, "#scale[0.8]{#gamma* /#font[122]{Z} #rightarrow #mu#mu}");
+		}
 		else if( this->channel == "Electron" )
+		{
 			latex.DrawLatexNDC(0.72, 0.935, "#font[62]{#scale[0.8]{2.3 fb^{-1} (13 TeV)}}");
+			latex.DrawLatexNDC(0.72, 0.88, "#scale[0.8]{#gamma* /#font[122]{Z} #rightarrow ee}");
+		}
 	}
 
 };

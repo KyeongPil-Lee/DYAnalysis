@@ -94,6 +94,10 @@ public:
 		TLatex latex;
 		latex.DrawLatexNDC(0.14, 0.935, "#font[62]{#scale[1]{CMS }}#font[42]{#it{Simulation}}");
 		latex.DrawLatexNDC(0.86, 0.935, "#font[62]{#scale[0.9]{13 TeV}}");
+		if( this->channel == "Muon" )
+			latex.DrawLatexNDC(0.80, 0.87, "#scale[0.8]{#gamma* /#font[122]{Z} #rightarrow #mu#mu}");
+		if( this->channel == "Electron" )
+			latex.DrawLatexNDC(0.80, 0.87, "#scale[0.8]{#gamma* /#font[122]{Z} #rightarrow ee}");
 
 		c->SaveAs(".pdf");
 	}

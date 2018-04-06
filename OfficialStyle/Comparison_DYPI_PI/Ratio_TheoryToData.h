@@ -73,6 +73,7 @@ public:
 
 		TLatex latex;
 		DrawLatexNDC( latex );
+		latex.DrawLatexNDC(0.15, 0.17, "#scale[0.8]{#font[42]{M < 200 GeV}}");
 
 		c->SaveAs(".pdf");
 		TString PlotPath = gSystem->Getenv("KP_PLOT_PATH");
@@ -111,6 +112,7 @@ public:
 
 		TLatex latex;
 		DrawLatexNDC( latex );
+		latex.DrawLatexNDC(0.15, 0.17, "#scale[0.8]{#font[42]{M > 200 GeV}}");
 
 		c->SaveAs(".pdf");
 		TString PlotPath = gSystem->Getenv("KP_PLOT_PATH");
