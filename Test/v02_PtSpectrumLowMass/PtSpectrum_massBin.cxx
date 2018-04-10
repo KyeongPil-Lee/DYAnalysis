@@ -35,7 +35,7 @@ public:
 	TH1D* h_leadPt_M25to30;
 	TH1D* h_subPt_M25to30;
 
-	void PtSpectrumTool()
+	PtSpectrumTool()
 	{
 		this->Init();
 	}
@@ -54,6 +54,7 @@ public:
 			if( !Tag[i_sample].Contains("M10to50") ) continue;
 
 			TChain *chain = new TChain("recoTree/DYTree");
+			TString BaseLocation = gSystem->Getenv("KP_DATA_PATH");
 			chain->Add(BaseLocation+"/"+ntupleDirectory[i_sample]+"/ntuple_*.root");
 
 			NtupleHandle *ntuple = new NtupleHandle( chain );
@@ -69,10 +70,11 @@ public:
 
 			Double_t NormFactor = (Lumi * Xsec[i_sample]) / nEvents[i_sample];
 			cout << "\t[Normalization factor: " << NormFactor << "]" << endl;
+			// nEvent = 10000;
 
 			for(Int_t i=0; i<nEvent; i++)
 			{
-				loadBar(i+1, NEvents, 100, 100);
+				loadBar(i+1, nEvent, 100, 100);
 				
 				ntuple->GetEvent(i);
 
@@ -144,7 +146,7 @@ public:
 
 							// -- Event Selection -- //
 							vector< Muon > vec_selectedMuon;
-							flag_selected = analyzer->EventSelection(vec_muon, ntuple, &vec_selectedMuon);
+							Bool_t flag_selected = analyzer->EventSelection(vec_muon, ntuple, &vec_selectedMuon);
 
 							if( flag_selected == kTRUE )
 							{
@@ -187,7 +189,7 @@ public:
 
 			this->h_leadPt_M25to30->Write();
 			this->h_subPt_M25to30->Write();
-			f_output->close();
+			f_output->Close();
 
 			cout << "finished" << endl;
 		}
@@ -230,7 +232,7 @@ private:
 		cout << "]\r" << flush;
 
 	}
-}
+};
 
 void PtSpectrum_massBin()
 {
