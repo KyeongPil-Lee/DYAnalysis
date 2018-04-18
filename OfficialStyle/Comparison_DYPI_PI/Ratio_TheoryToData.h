@@ -65,8 +65,8 @@ public:
 		TLegend *legend;
 		SetLegend( legend, 0.15, 0.78, 0.60, 0.95 );
 		legend->SetNColumns( 2 );
-		legend->AddEntry( h_StatUnc_temp, "Stat. Unc.");
-		legend->AddEntry( h_TotUnc_temp, "Tot. Unc.");
+		legend->AddEntry( h_StatUnc_temp, "Stat. unc.");
+		legend->AddEntry( h_TotUnc_temp, "Tot. unc.");
 		legend->AddEntry( h_ratio_noPI_temp, "Theory(w/o PI)/Data");
 		// legend->AddEntry( h_ratio_withPI_temp, "Theory(w/ PI)/Data");
 		legend->Draw();
@@ -104,8 +104,8 @@ public:
 		TLegend *legend;
 		SetLegend( legend, 0.15, 0.78, 0.67, 0.95 );
 		legend->SetNColumns( 2 );
-		legend->AddEntry( h_StatUnc_temp, "Stat. Unc.");
-		legend->AddEntry( h_TotUnc_temp, "Tot. Unc.");
+		legend->AddEntry( h_StatUnc_temp, "Stat. unc.");
+		legend->AddEntry( h_TotUnc_temp, "Tot. unc.");
 		legend->AddEntry( h_ratio_noPI_temp, "Theory(w/o PI)/Data");
 		legend->AddEntry( h_ratio_withPI_temp, "Theory(w/ PI)/Data");
 		legend->Draw();

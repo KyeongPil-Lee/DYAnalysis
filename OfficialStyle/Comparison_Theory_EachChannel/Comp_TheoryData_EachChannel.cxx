@@ -172,7 +172,7 @@ public:
 		legend_ratio->SetBorderSize(0);
 		legend_ratio->SetTextFont(62);
 		legend_ratio->AddEntry( h_FpoF_Ratio_StatUnc, "Stat.");
-		legend_ratio->AddEntry( h_FpoF_Ratio_TotUnc, "Stat.+Syst.", "f");
+		legend_ratio->AddEntry( h_FpoF_Ratio_TotUnc, "Stat.+syst.", "f");
 		legend_ratio->AddEntry( h_FpoF_Ratio_aMCNLO, "Theory (aMC@NLO)", "f");
 		legend_ratio->Draw();
 
@@ -353,7 +353,7 @@ public:
 		legend_aMCNLO->SetBorderSize(0);
 		legend_aMCNLO->SetTextFont(62);
 		legend_aMCNLO->AddEntry( h_Ratio_StatUnc, "Stat.");
-		legend_aMCNLO->AddEntry( h_Ratio_TotUnc, "Stat.+Syst.", "f");
+		legend_aMCNLO->AddEntry( h_Ratio_TotUnc, "Stat.+syst.", "f");
 		legend_aMCNLO->AddEntry( h_Ratio_aMCNLO, "Theory (aMC@NLO)", "f");
 		legend_aMCNLO->Draw();
 
@@ -389,7 +389,7 @@ public:
 		legend_FEWZ->SetBorderSize(0);
 		legend_FEWZ->SetTextFont(62);
 		legend_FEWZ->AddEntry( h_Ratio_StatUnc, "Stat.");
-		legend_FEWZ->AddEntry( h_Ratio_TotUnc, "Stat.+Syst.", "f");
+		legend_FEWZ->AddEntry( h_Ratio_TotUnc, "Stat.+syst.", "f");
 		legend_FEWZ->AddEntry( h_Ratio_FEWZ, "Theory (FEWZ)", "f");
 		legend_FEWZ->Draw();
 

@@ -275,11 +275,11 @@ public:
 		legend_ratio->SetFillStyle(0);
 		legend_ratio->SetTextFont(62);
 		legend_ratio->SetNColumns(3);
-		legend_ratio->AddEntry( g_StatUnc, "Stat. Unc." );
-		legend_ratio->AddEntry( g_TotUnc, "Tot. Unc." );
+		legend_ratio->AddEntry( g_StatUnc, "Stat. unc." );
+		legend_ratio->AddEntry( g_TotUnc, "Tot. unc." );
 		TGraphAsymmErrors* g_ratio_ForLegend = (TGraphAsymmErrors*)g_ratio->Clone();
 		g_ratio_ForLegend->SetMarkerColorAlpha(kWhite, 0 );
-		legend_ratio->AddEntry( g_ratio_ForLegend, "Theo. Unc." );
+		legend_ratio->AddEntry( g_ratio_ForLegend, "Theo. unc." );
 		legend_ratio->Draw();
 
 

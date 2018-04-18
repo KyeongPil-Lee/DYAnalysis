@@ -109,7 +109,7 @@ public:
 		legend->SetFillStyle(0);
 		legend->SetTextFont(62);
 
-		legend->AddEntry( h_data,"data" );
+		legend->AddEntry( h_data,"Data" );
 		if( this->channel == "Muon" )
 			legend->AddEntry( h_DY, "#gamma* /#font[122]{Z} #rightarrow #mu#mu", "f" );
 		else if( this->channel == "Electron" )

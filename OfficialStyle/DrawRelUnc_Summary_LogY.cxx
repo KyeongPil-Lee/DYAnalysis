@@ -92,7 +92,7 @@ protected:
 		this->Hist_RelStatUnc->h->SetMarkerSize(1);
 
 		TH1D* h_RelSystUnc_Tot = Get_Hist( FileName, HistName_RelSystUnc_Tot );
-		this->Hist_RelSystUnc_Tot = new HistInfo(kRed, "Total Systematic", h_RelSystUnc_Tot );
+		this->Hist_RelSystUnc_Tot = new HistInfo(kRed, "Total systematic", h_RelSystUnc_Tot );
 		this->Hist_RelSystUnc_Tot->h->SetMarkerStyle(kFullSquare);
 		this->Hist_RelSystUnc_Tot->h->SetMarkerSize(1);
 
@@ -102,7 +102,7 @@ protected:
 		this->Hist_RelSystUnc_EffSF->h->SetMarkerSize(1);
 
 		TH1D* h_RelSystUnc_DetRes = Get_Hist( FileName, HistName_RelSystUnc_DetRes );
-		this->Hist_RelSystUnc_DetRes = new HistInfo( TColor::GetColor("#cc00ff"), "Detector Res.", h_RelSystUnc_DetRes );
+		this->Hist_RelSystUnc_DetRes = new HistInfo( TColor::GetColor("#cc00ff"), "Detector resolution", h_RelSystUnc_DetRes );
 		this->Hist_RelSystUnc_DetRes->h->SetMarkerStyle(26);
 		this->Hist_RelSystUnc_DetRes->h->SetMarkerSize(1);
 
@@ -190,7 +190,7 @@ protected:
 		h->GetXaxis()->SetTitleOffset(0.95);
 		h->GetXaxis()->SetTitleSize(0.06);
 		h->GetXaxis()->SetTitleFont(42);
-		h->GetYaxis()->SetTitle("Relative Uncertainty (%)");
+		h->GetYaxis()->SetTitle("Relative uncertainty (%)");
 		h->GetYaxis()->SetLabelFont(42);
 		h->GetYaxis()->SetLabelOffset(0.007);
 		h->GetYaxis()->SetLabelSize(0.05);
