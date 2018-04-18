@@ -17,7 +17,10 @@ public:
 
 	void Draw()
 	{
-		TString canvasName = "c_AccEff_"+this->channel;
+		// gStyle->SetErrorX(0); // -- remove horizontal error bar in the plot
+		// gStyle->SetEndErrorSize(0);
+
+		TString canvasName = "Local/c_AccEff_"+this->channel;
 		TCanvas *c = new TCanvas(canvasName, "", 800,600 );
 		c->SetLogx();
 		c->SetTickx(1);
@@ -124,6 +127,20 @@ private:
 		}
 		else
 			cout << this->channel << " is wrong type!" << endl;
+
+		this->RemoveHorizontalErrors( this->g_acc );
+		this->RemoveHorizontalErrors( this->g_eff );
+		this->RemoveHorizontalErrors( this->g_accEff );
+	}
+
+	void RemoveHorizontalErrors( TGraphAsymmErrors* g )
+	{
+		Int_t nPoint = g->GetN();
+		for(Int_t i=0; i<nPoint; i++)
+		{
+			g->SetPointEXhigh(i, 0);
+			g->SetPointEXlow(i, 0);
+		}
 	}
 
 };

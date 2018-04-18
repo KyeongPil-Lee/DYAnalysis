@@ -22,10 +22,11 @@ public:
 
 	void Draw()
 	{
+		gStyle->SetErrorX(0); // -- remove horizontal error bar in the plot
 		gStyle->SetOptStat(0);
 		gStyle->SetOptTitle(0);
 
-		TString canvasName = this->channel+"_Mass_DYBin";
+		TString canvasName = "./Local/"+this->channel+"_Mass_DYBin";
 		TCanvas *c = new TCanvas(canvasName, "", 800, 700);
 		c->SetTickx(1);
 		c->SetTicky(1);

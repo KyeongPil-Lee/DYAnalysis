@@ -49,6 +49,8 @@ public:
 		///////////////////////
 		// -- Draw Canvas -- //
 		///////////////////////
+		gStyle->SetErrorX(0); // -- remove horizontal error bar in the plot
+		
 		TString CanvasName = "Local/c_FpoF_DXSec_"+this->Type_Channel;
 		TCanvas *c = new TCanvas(CanvasName, "", 0, 0, 800, 700);
 		// c->SetTopMargin(0.08);
@@ -147,6 +149,9 @@ public:
 		//////////////////////
 		// -- Bottom Pad -- //
 		//////////////////////
+		TExec *ex = new TExec("ex","gStyle->SetErrorX(0.5);"); // -- make horizontal error bar in the plot
+		ex->Draw();
+
 		TPad *bottomPad = new TPad("bottomPad","bottomPad",0.01,0.01,0.99,0.3);
 		bottomPad->Draw();
 		bottomPad->cd();
@@ -218,6 +223,8 @@ public:
 	void Draw_Dressed()
 	{
 		this->Get_Histogram();
+
+		gStyle->SetErrorX(0); // -- remove horizontal error bar in the plot
 
 		///////////////////////
 		// -- Draw Canvas -- //
@@ -330,6 +337,9 @@ public:
 		/////////////////////////////////////
 		// -- Bottom Pad1: Data/aMC@NLO -- //
 		/////////////////////////////////////
+		TExec *ex = new TExec("ex","gStyle->SetErrorX(0.5);"); // -- make horizontal error bar in the plot
+		ex->Draw();
+
 		TPad *bottomPad1 = new TPad("bottomPad1","bottomPad1",0.01,0.25,0.99,0.40);
 		bottomPad1->Draw();
 		bottomPad1->cd();
@@ -363,6 +373,7 @@ public:
 		h_Ratio_aMCNLO->GetYaxis()->SetTitleSize( 0.13 );
 		h_Ratio_aMCNLO->GetYaxis()->SetLabelSize( 0.10 );
 		h_Ratio_aMCNLO->GetYaxis()->SetRangeUser( 0.25, 1.75 );
+
 
 		//////////////////////////////////
 		// -- Bottom Pad2: Data/FEWZ -- //

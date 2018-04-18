@@ -121,6 +121,7 @@ public:
 		TString FileName = "./Local/ROOTFile_Input_"+this->ChannelType+".root";
 
 		this->g_CenV_Shifted = Get_Graph(FileName, this->GraphName_CenV_Shifted );
+
 		this->h_CenV = Get_Hist(FileName, this->HistName_CenV );
 		this->h_RelStatUnc = Get_Hist(FileName, this->HistName_RelStatUnc );
 		this->h_RelTotUnc = Get_Hist(FileName, this->HistName_RelTotUnc );
@@ -209,6 +210,12 @@ public:
 		TGraphAsymmErrors* g_StatUnc = this->Convert_XShiftGraph( this->g_CenV_Shifted, h_StatUnc );
 		TGraphAsymmErrors* g_TotUnc = this->Convert_XShiftGraph( this->g_CenV_Shifted, h_TotUnc );
 		TGraphAsymmErrors* g_ratio = this->Convert_XShiftGraph( this->g_CenV_Shifted, h_ratio );
+
+		RemoveHorizontalErrors( this->g_CenV_Shifted );
+
+		//////////////////////
+		// -- bottom pad -- //
+		//////////////////////
 
 		TPad *BottomPad = new TPad("BottomPad","BottomPad",0.01,0.01,0.99,0.3);
 		BottomPad->Draw();
@@ -444,5 +451,15 @@ protected:
 		}
 
 		return h_RelLumiUnc;
+	}
+
+	void RemoveHorizontalErrors( TGraphAsymmErrors* g )
+	{
+		Int_t nPoint = g->GetN();
+		for(Int_t i=0; i<nPoint; i++)
+		{
+			g->SetPointEXhigh(i, 0);
+			g->SetPointEXlow(i, 0);
+		}
 	}
 };
