@@ -44,6 +44,7 @@ void FpoF_SysUnc_Combination()
 	tool->SaveResults( FpoF );
 
 	// tool->Print_FpoF_SysUnc_texFormat();
+	tool->FpoF_PrintFinalResults();
 	tool->FpoF_PrintFinalResults_texFormat();
 
 	// tool->PrintAll();
