@@ -1593,6 +1593,11 @@ public:
 	{
 		Int_t Exponent = Calc_Exponent( value );
 		Double_t front = value / TMath::Power(10, Exponent);
+		if( front >= 9.95 && front < 10.05 ) // -- if rounded off to 10.0: change it to 1.0 x 10^1
+		{
+			front = 1.0;
+			Exponent = Exponent + 1;
+		}
 
 		TString str = TString::Format(" & $  %.1lf \\times 10^{%d}  $", front, Exponent);
 		return str;
