@@ -1,3 +1,4 @@
+void RemoveLumiUnc( TH1D* h_relUnc_syst_tot, TH1D* h_relUnc_lumi );
 void c_RelUnc_Summary_LogY_Electron()
 {
 //=========Macro generated from canvas: c_RelUnc_Summary_LogY/
@@ -826,7 +827,9 @@ void c_RelUnc_Summary_LogY_Electron()
    c_RelUnc_Summary_LogY->SetSelected(c_RelUnc_Summary_LogY);
    c_RelUnc_Summary_LogY->SaveAs("Electron_SysUncAll.pdf");
 
-   TFile *f_output = TFile::Open("ROOTFile_RelUnc_All_Electron.root", "RECREATE");
+   // -- v2: remove luminosity uncertainty from total systematic uncertainty
+   TFile *f_output = TFile::Open("ROOTFile_RelUnc_All_Electron_v2.root", "RECREATE");
+   RemoveLumiUnc( h_RelSysUnc_Tot_Percent8, h_RelLumiUnc_Percent2 );
    h_RelUnc_Stat1->Write( "h_RelStatUnc_Percent" );
    h_RelLumiUnc_Percent2->Write( "h_RelLumiUnc_Percent" );
    h_RelSysUnc_Tot_Percent8->Write( "h_RelSysUnc_Tot_Percent" );
@@ -836,4 +839,18 @@ void c_RelUnc_Summary_LogY_Electron()
    h_SysUnc_Tot_Percent7->Write( "h_RelSysUnc_FSR_Percent" );
    h_RelSysUnc_Tot_Percent3->Write( "h_RelSysUnc_Acc._Percent" );
    f_output->Close();
+}
+
+void RemoveLumiUnc( TH1D* h_relUnc_syst_tot, TH1D* h_relUnc_lumi )
+{
+   Int_t nMassBin = h_relUnc_syst_tot->GetNbinsX();
+  for(Int_t i=0; i<nMassBin; i++)
+  {
+    Int_t i_bin = i+1;
+    Double_t relUnc_tot_before = h_relUnc_syst_tot->GetBinContent(i_bin);
+    Double_t relUnc_lumi = h_relUnc_lumi->GetBinContent(i_bin);
+    Double_t relUnc_tot_after = sqrt( relUnc_tot_before*relUnc_tot_before - relUnc_lumi*relUnc_lumi);
+
+    h_relUnc_syst_tot->SetBinContent(i_bin, relUnc_tot_after);
+  }
 }
