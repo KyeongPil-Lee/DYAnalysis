@@ -58,11 +58,23 @@ void Test_RelUnc_DetRes()
   c_detRes->Draw("LPSAME");
 
 
-  TH1D* h_quadSumFromSmth = QuadSum( h_relUnc_syst_unfold_smth, h_relUnc_syst_momCorr_smth );
+  // TH1D* h_quadSumFromSmth = QuadSum( h_relUnc_syst_unfold_smth, h_relUnc_syst_momCorr_smth );
+  TH1D* h_quadSumFromSmth = QuadSum( h_relUnc_syst_unfold_smth, h_relUnc_syst_momCorr ); // -- no smoothing on mom. corr.
 
+  PlotTool::HistCanvaswRatio *c_detResAll_UnfoldSmth = new PlotTool::HistCanvaswRatio( "c_relUnc_detResAll_UnfoldSmth", 1, 1 );
+  c_detResAll_UnfoldSmth->Register( h_quadSumFromSmth, "Quad. sum (unfolding(smoothed) + mom. corr.)", kRed);
+  c_detResAll_UnfoldSmth->Register( h_relUnc_syst_unfold_smth, "Unfolding (smoothed)", kGreen+2);
+  c_detResAll_UnfoldSmth->Register( h_relUnc_syst_momCorr, "Momentum Correction", kBlue);
+  c_detResAll_UnfoldSmth->SetTitle( "m [GeV]", "Uncertainty (%)", "rato to total");
+  c_detResAll_UnfoldSmth->SetLegendPosition( 0.15, 0.74, 0.90, 0.95 );
+  c_detResAll_UnfoldSmth->SetRangeY( 1e-1, 2e2 );
+  c_detResAll_UnfoldSmth->Latex_CMSPre();
+  c_detResAll_UnfoldSmth->Draw("LPSAME");
+
+  // -- quad. sum first & smoothing it vs. smoothing unfolding unc. first & quad. sum.
   PlotTool::HistCanvaswRatio *c_detRes_withquadSumwSmth = new PlotTool::HistCanvaswRatio( "c_relUnc_detRes_SmoothingQuadSum", 1, 1 );
   c_detRes_withquadSumwSmth->Register( h_relUnc_syst_detRes_smth, "Quad. sum first & Smoothing it", kGreen+2);
-  c_detRes_withquadSumwSmth->Register( h_quadSumFromSmth, "Smoothing individual unc. first & Quad. sum", kBlue);
+  c_detRes_withquadSumwSmth->Register( h_quadSumFromSmth, "Smoothing unfolding unc. only & Quad. sum", kBlue);
 
   c_detRes_withquadSumwSmth->SetTitle( "m [GeV]", "Unc. from det. res. (%)", "Blue/Green");
   c_detRes_withquadSumwSmth->SetLegendPosition( 0.15, 0.32, 0.95, 0.45 );
@@ -156,7 +168,7 @@ void Test_RelUnc_DetRes()
 
   PlotTool::HistCanvaswRatio *c_systTot = new PlotTool::HistCanvaswRatio( "c_relUnc_systTot_differentDetRes", 1, 1 );
   c_systTot->Register( h_relUnc_syst_tot, "Det. Res: Quad. sum first & Smoothing it", kGreen+2);
-  c_systTot->Register( h_relUnc_syst_tot_wQuadSumFromSmth, "Det. Res.: Smoothing individual unc. first & Quad. sum", kBlue);
+  c_systTot->Register( h_relUnc_syst_tot_wQuadSumFromSmth, "Det. Res.: Smoothing unfodling unc. first & Quad. sum", kBlue);
   c_systTot->SetTitle( "m [GeV]", "Total systematic (%)", "Blue/Green");
   c_systTot->SetLegendPosition( 0.15, 0.32, 0.95, 0.45 );
   c_systTot->SetRangeY( 1e-1, 2e2 );
@@ -165,7 +177,7 @@ void Test_RelUnc_DetRes()
 
   PlotTool::HistCanvaswRatio *c_totUnc = new PlotTool::HistCanvaswRatio( "c_relUnc_totUnc_differentDetRes", 1, 1 );
   c_totUnc->Register( h_relTotUnc, "Det. Res: Quad. sum first & Smoothing it", kGreen+2);
-  c_totUnc->Register( h_relTotUnc_wQuadSumFromSmth, "Det. Res.: Smoothing individual unc. first & Quad. sum", kBlue);
+  c_totUnc->Register( h_relTotUnc_wQuadSumFromSmth, "Det. Res.: Smoothing unfolding unc. first & Quad. sum", kBlue);
   c_totUnc->SetTitle( "m [GeV]", "Total uncertainty (%)", "Blue/Green");
   c_totUnc->SetLegendPosition( 0.15, 0.32, 0.95, 0.45 );
   c_totUnc->SetRangeY( 1e-1, 2e2 );
