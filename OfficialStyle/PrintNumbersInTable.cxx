@@ -35,8 +35,8 @@ public:
     {
       Print_Unc();
       Print_Unc_texFormat();
-      Print_DXSecEachChannel();
-      Print_FpoF_DXSecEachChannel();
+      // Print_DXSecEachChannel();
+      // Print_FpoF_DXSecEachChannel();
     }
     else if( channel_ == "Combined" )
     {
@@ -269,10 +269,41 @@ private:
       h_FpoF_relUnc_stat_     = Get_Hist(fileName_xSec, "h_RelUnc_Stat_Fiducial");
       h_FpoF_relUnc_syst_tot_ = Get_Hist(fileName_xSec, "h_RelUnc_Syst_Fiducial");
     }
+    if( channel_ == "Muon" )
+    {
+      TString fileName_momCorr = rootFilePath+"/ROOTFile_SysUnc_DetRes.root";
+      h_relUnc_syst_momEngCorr_ = Get_Hist(fileName_momCorr, "h_RelSysUnc_MomCorr_Percent");
+
+      TString fileName_unc = rootFilePath+"/ROOTFile_DiffXSec_FullUnc.root";
+      h_relUnc_lumi_        = Get_Hist(fileName_unc, "h_RelLumiUnc_Percent"); 
+      h_relUnc_syst_eff_    = Get_Hist(fileName_unc, "h_RelSysUnc_Eff.SF._Percent");
+
+      h_relUnc_syst_detRes_ = Get_Hist(fileName_unc, "h_RelSysUnc_Det.Res_Percent");
+      RemoveMomCorrUnc_MuonChannel( h_relUnc_syst_detRes_, h_relUnc_syst_momEngCorr_ );
+
+      h_relUnc_syst_bkg_    = Get_Hist(fileName_unc, "h_RelSysUnc_Bkg.Est._Percent");
+      h_relUnc_syst_FSR_    = Get_Hist(fileName_unc, "h_RelSysUnc_FSR_Percent");
+      h_relUnc_syst_tot_    = Get_Hist(fileName_unc, "h_RelSysUnc_Tot_Percent");
+      // RemoveLumiUnc( h_relUnc_syst_tot_, h_relUnc_lumi_ );
+      h_relUnc_syst_accPDF_ = Get_Hist(fileName_unc, "h_RelSysUnc_Acc._Percent");
+    }
     else if( channel_ == "Combined" )
     {
       TString fileName = rootFilePath+"/dyll-combi-_corr_wLumi_inpYieldUnc-20171204.root";
       h_diffXSec_ = Get_Hist(fileName, "h1Combi");
+    }
+  }
+
+  void RemoveMomCorrUnc_MuonChannel( TH1D* h_relUnc_syst_detRes, TH1D* h_relUnc_syst_momEngCorr )
+  {
+    for(Int_t i=0; i<nMassBin; i++)
+    {
+      Int_t i_bin = i+1;
+      Double_t relUnc_detRes_before = h_relUnc_syst_detRes->GetBinContent(i_bin);
+      Double_t relUnc_syst_momEngCorr = h_relUnc_syst_momEngCorr->GetBinContent(i_bin);
+      Double_t relUnc_detRes_after = sqrt( relUnc_detRes_before*relUnc_detRes_before - relUnc_syst_momEngCorr*relUnc_syst_momEngCorr);
+
+      h_relUnc_syst_detRes->SetBinContent(i_bin, relUnc_detRes_after);
     }
   }
 
@@ -296,6 +327,9 @@ void PrintNumbersInTable()
 {
   PrintTool* tool_elec = new PrintTool( "Electron" );
   tool_elec->Print_All();
+
+  PrintTool* tool_muon = new PrintTool( "Muon" );
+  tool_muon->Print_All();
 
   PrintTool* tool_comb = new PrintTool( "Combined" );
   tool_comb->Print_All();
