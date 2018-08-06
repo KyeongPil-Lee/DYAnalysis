@@ -353,7 +353,7 @@ private:
 
 };
 
-void MuonPlots(TString type, TString applyEffSF )
+void MuonPlots(TString type, Bool_t applyEffSF )
 {
   HistProducer *producer = new HistProducer();
   producer->Set_Type( type );
