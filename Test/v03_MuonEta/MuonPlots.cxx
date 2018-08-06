@@ -310,11 +310,11 @@ public:
       printf("\t[Total sum of weights (separated): %.0lf\n]", sumW_separated );
 
       Double_t LoopRunTime = looptime.CpuTime();
-      cout << "\tLoop RunTime(" << Tag[i_tup] << "): " << LoopRunTime << " seconds\n" << endl;
+      cout << "\tLoop RunTime(" << tag[i_sample] << "): " << LoopRunTime << " seconds\n" << endl;
 
     } // -- end of sample iterations
 
-    f_output.Close();
+    f_output->Close();
 
     Double_t TotalRunTime = totaltime.CpuTime();
     cout << "Total RunTime: " << TotalRunTime << " seconds" << endl;
@@ -358,5 +358,5 @@ void MuonPlots(TString type, TString applyEffSF )
   HistProducer *producer = new HistProducer();
   producer->Set_Type( type );
   producer->Set_ApplyEffSF( applyEffSF );
-  HistProducer->Produce();
+  producer->Produce();
 }
