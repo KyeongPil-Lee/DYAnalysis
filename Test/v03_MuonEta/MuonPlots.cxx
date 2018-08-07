@@ -103,8 +103,8 @@ public:
     }
     else if( mu_lead.Pt > 22 && mu_lead.Pt < 40 )
     {
-      h_eta_Pt20to40_->Fill( mu_lead.eta, weight);
-      h_eta_lead_Pt20to40_->Fill( mu_lead.eta, weight);
+      h_eta_Pt22to40_->Fill( mu_lead.eta, weight);
+      h_eta_lead_Pt22to40_->Fill( mu_lead.eta, weight);
     }
     else if( mu_lead.Pt > 40 && mu_lead.Pt < 70 )
     {
@@ -130,8 +130,8 @@ public:
     }
     else if( mu_subLead.Pt > 22 && mu_subLead.Pt < 40 )
     {
-      h_eta_Pt20to40_->Fill( mu_subLead.eta, weight);
-      h_eta_subLead_Pt20to40_->Fill( mu_subLead.eta, weight);
+      h_eta_Pt22to40_->Fill( mu_subLead.eta, weight);
+      h_eta_subLead_Pt22to40_->Fill( mu_subLead.eta, weight);
     }
     else if( mu_subLead.Pt > 40 && mu_subLead.Pt < 70 )
     {
