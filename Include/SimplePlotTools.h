@@ -11,6 +11,7 @@
 #include <TPad.h>
 #include <TF1.h>
 #include <TGraphAsymmErrors.h>
+#include <THStack.h>
 
 #include <vector>
 
@@ -842,6 +843,177 @@ public:
 
     return (A/B) * sqrt(errorSquare);
   }
+};
+
+class DataMCStackCanvaswRatio: public CanvasBase
+{
+public:
+  Double_t nRebin_;
+  Bool_t setRebin_;
+
+  HistInfo histInfoData_;
+  vector<HistInfo> histInfosMC_; 
+
+  THStack *hs;
+  TH1D* h_ratioDataMC_;
+
+  DataMCStackCanvaswRatio()
+  {
+    // -- member variables are initialized by Init() in CanvasBase()
+  }
+
+  DataMCStackCanvaswRatio(TString canvasName, Bool_t isLogX = kFALSE, Bool_t isLogY = kFALSE ): DataMCStackCanvaswRatio()
+  {
+    canvasName_ = canvasName;
+    isLogX_ = isLogX;
+    isLogY_ = isLogY;
+  }
+
+  void Register( TH1D* h, TString legend, Int_t color, Bool_t isMC = kFALSE )
+  {
+    if( isMC )
+    {
+      HistInfo histInfo{ (TH1D*)h->Clone(), legend, color };
+      histInfosMC_.push_back( histInfo );
+    }
+    else
+    {
+      HistInfo histInfo{ (TH1D*)h->Clone(), legend, color };
+      histInfoData_ = histInfo;
+    }
+  }
+
+  void SetRebin( Int_t n )
+  {
+    nRebin_ = n;
+    setRebin_ = kTRUE;
+  }
+
+  void Draw()
+  {
+    // -- make legend
+    TLegend *legend;
+    PlotTool::SetLegend( legend, legendMinX_, legendMinY_, legendMaxX_, legendMaxY_ );
+
+    // -- setup data, MC stacks
+    SetDataHistogram(legend);
+    SetMCStack(legend);
+
+    // -- initialize the canvas
+    SetCanvas_Ratio();
+
+    // -- top pad
+    c_->cd();
+    topPad_->cd();
+
+    TH1D* h_format = (TH1D*)histInfoData_.h->Clone();
+    h_format->Reset("ICES");
+    h_format->Draw("");
+    PlotTool::SetAxis_TopPad( h_format->GetXaxis(), h_format->GetYaxis(), titleY_ );
+    hs->Draw("HISTSAME");
+    histInfoData_.h->Draw("EPSAME");
+    h_format->Draw("AXISSAME");
+    legend->Draw();
+
+    DrawLatexAll();
+
+    // -- bottom pad
+    c_->cd();
+    bottomPad_->cd();
+
+    // -- setup ratio (data/MC) histogram
+    SetRatioHistogram();
+
+    Int_t colorRatio = histInfoData_.color; // -- same color with the data
+
+    h_ratioDataMC_->Draw("EPSAME");
+    h_ratioDataMC_->SetStats(kFALSE);
+    h_ratioDataMC_->SetMarkerStyle(20);
+    h_ratioDataMC_->SetMarkerColor(colorRatio);
+    h_ratioDataMC_->SetLineColor(colorRatio);
+    h_ratioDataMC_->SetFillColorAlpha(kWhite, 0); 
+    h_ratioDataMC_->SetTitle("");
+    PlotTool::SetAxis_BottomPad(h_ratioDataMC_->GetXaxis(), h_ratioDataMC_->GetYaxis(), titleX_, titleRatio_);
+    if( setRangeRatio_ ) h_ratioDataMC_->GetYaxis()->SetRangeUser( minRatio_, maxRatio_ );
+
+    TF1 *f_line;
+    PlotTool::DrawLine(f_line);
+
+    c_->SaveAs(".pdf");
+  }
+
+private:
+  void SetDataHistogram(TLegend *legend)
+  {
+    TH1D*& h           = histInfoData_.h;
+    TString legendName = histInfoData_.legend;
+    Int_t color        = histInfoData_.color;
+
+    if( setRebin_ ) h->Rebin( nRebin_ );
+
+    h->SetStats(kFALSE);
+    h->SetMarkerStyle(20);
+    h->SetMarkerColor(color);
+    h->SetLineColor(color);
+    h->SetFillColorAlpha(kWhite, 0); 
+    h->SetTitle("");
+
+    if( setRangeX_ ) h->GetXaxis()->SetRangeUser( minX_, maxX_ );
+    if( setRangeY_ ) h->GetYaxis()->SetRangeUser( minY_, maxY_ );
+
+    legend->AddEntry( h, legendName );
+  }
+
+  void SetMCStack(TLegend *legend)
+  {
+    hs = new THStack("hs", "");
+
+    Int_t nHistMC = (Int_t)histInfosMC_.size();
+    for(Int_t i=0; i<nHistMC; i++)
+    {
+      TH1D*& h    = histInfosMC_[i].h;
+      Int_t color = histInfosMC_[i].color;
+
+      if( setRebin_ ) h->Rebin( nRebin_ );
+
+      h->SetStats(kFALSE);
+      h->SetMarkerStyle(20);
+      h->SetMarkerColor(color);
+      h->SetLineColor(color);
+      h->SetFillColor(color);
+      h->SetTitle("");
+
+      if( setRangeX_ ) h->GetXaxis()->SetRangeUser( minX_, maxX_ );
+      if( setRangeY_ ) h->GetYaxis()->SetRangeUser( minY_, maxY_ );
+
+      hs->Add( h );
+    }
+
+    for(Int_t i=nHistMC-1; i>=0; i--) // -- reverse order
+      legend->AddEntry(histInfosMC_[i].h, histInfosMC_[i].legend);
+  }
+
+  void SetRatioHistogram()
+  {
+    TH1D* h_data = (TH1D*)histInfoData_.h->Clone();
+    h_data->Sumw2();
+
+    TH1D *h_totMC = NULL;
+    Int_t nHistMC = (Int_t)histInfosMC_.size();
+    for(Int_t i_MC=0; i_MC<nHistMC; i_MC++)
+    {
+      histInfosMC_[i_MC].h->Sumw2();
+
+      if( h_totMC == NULL )
+        h_totMC = (TH1D*)histInfosMC_[i_MC].h->Clone();
+      else
+        h_totMC->Add( histInfosMC_[i_MC].h );
+    }
+
+    h_ratioDataMC_ = (TH1D*)h_data->Clone();
+    h_ratioDataMC_->Divide( h_data, h_totMC );
+  }
+
 };
 
 }; // -- namespace PlotTool
