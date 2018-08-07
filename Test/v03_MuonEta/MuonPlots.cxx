@@ -288,37 +288,46 @@ public:
           Bool_t passSel = kFALSE;
           passSel = analyzer->EventSelection(muons, ntuple, &selectedMuons);
 
-          if( zMassConstraint_ )
-          {
-            Double_t mass = (selectedMuons[0].Momentum + selectedMuons[1].Momentum).M();
-            if( !(mass > 60 && mass < 120) ) // -- reject the event if it is not in Z-mass range
-              passSel = kFALSE;
-          }
-
           if( passSel )
           {
-            Double_t totWeight = genWeight * PUWeight;
-
-            if( applyEffSF_ )
+            // -- check Z mass constraint
+            Bool_t passZMassCut = kFALSE;
+            if( zMassConstraint_ )
             {
-              Double_t effSF_HLTv4p2 = analyzer->EfficiencySF_EventWeight_HLTv4p2( selectedMuons[0], selectedMuons[1] );
-              Double_t effSF_HLTv4p3 = analyzer->EfficiencySF_EventWeight_HLTv4p3( selectedMuons[0], selectedMuons[1] );
-
-              Double_t lumiFrac_HLTv4p2 = Lumi_HLTv4p2 / Lumi;
-              Double_t lumiFrac_HLTv4p3 = 1.0 - lumiFrac_HLTv4p2;
-
-              // -- weighted sum with corresponding luminosity
-              Double_t effSFWeight = effSF_HLTv4p2*lumiFrac_HLTv4p2 + effSF_HLTv4p3*lumiFrac_HLTv4p3;
-
-              // -- update total weight by multiplying the weight from the efficiency SF
-              totWeight = totWeight * effSFWeight;
+              Double_t mass = (selectedMuons[0].Momentum + selectedMuons[1].Momentum).M();
+              if( mass > 60 && mass < 120 )
+                passZMassCut = kTRUE;
             }
-
-            if( selectedMuons[0].Pt > selectedMuons[1].Pt )
-              histContainer->Fill( selectedMuons[0], selectedMuons[1], totWeight );
             else
-              histContainer->Fill( selectedMuons[1], selectedMuons[0], totWeight );
-          }
+              passZMassCut = kTRUE; // -- always true
+
+            if( passZMassCut )
+            {
+              Double_t totWeight = genWeight * PUWeight;
+
+              if( applyEffSF_ )
+              {
+                Double_t effSF_HLTv4p2 = analyzer->EfficiencySF_EventWeight_HLTv4p2( selectedMuons[0], selectedMuons[1] );
+                Double_t effSF_HLTv4p3 = analyzer->EfficiencySF_EventWeight_HLTv4p3( selectedMuons[0], selectedMuons[1] );
+
+                Double_t lumiFrac_HLTv4p2 = Lumi_HLTv4p2 / Lumi;
+                Double_t lumiFrac_HLTv4p3 = 1.0 - lumiFrac_HLTv4p2;
+
+                // -- weighted sum with corresponding luminosity
+                Double_t effSFWeight = effSF_HLTv4p2*lumiFrac_HLTv4p2 + effSF_HLTv4p3*lumiFrac_HLTv4p3;
+
+                // -- update total weight by multiplying the weight from the efficiency SF
+                totWeight = totWeight * effSFWeight;
+              }
+
+              if( selectedMuons[0].Pt > selectedMuons[1].Pt )
+                histContainer->Fill( selectedMuons[0], selectedMuons[1], totWeight );
+              else
+                histContainer->Fill( selectedMuons[1], selectedMuons[0], totWeight );
+
+            } // -- end of passZMasCut
+
+          } // -- end of passSel
 
         } // -- end of isTriggered & genFlag
 
