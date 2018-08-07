@@ -132,6 +132,12 @@ public:
 
   void Produce()
   {
+    if( applyEffSF_ && (type_ == "MuonPhys" || type_ == "Golden") )
+    {
+      printf("applyEffSF == True for the data ... it is ignored and SF will not be applied!\n");
+      applyEffSF_ = kFALSE;
+    }
+
     TTimeStamp ts_start;
     cout << "[Start Time(local time): " << ts_start.AsString("l") << "]" << endl;
 
@@ -168,6 +174,8 @@ public:
     else              applyEffSFStr = "withoutSF";
 
     TString fileName = "ROOTFile_MuonPlot_"+type_+"_"+applyEffSFStr+".root";
+    if( type_ == "MuonPhys" || type_ == "Golden" ) // -- data
+      fileName = "ROOTFile_MuonPlot_"+type_+".root";
 
     TFile *f_output = TFile::Open(fileName, "RECREATE");
 
