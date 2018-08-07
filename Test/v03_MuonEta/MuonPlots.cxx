@@ -292,7 +292,7 @@ public:
           {
             Double_t mass = (selectedMuons[0].Momentum + selectedMuons[1].Momentum).M();
             if( !(mass > 60 && mass < 120) ) // -- reject the event if it is not in Z-mass range
-              passSel = kFLASE;
+              passSel = kFALSE;
           }
 
           if( passSel )
