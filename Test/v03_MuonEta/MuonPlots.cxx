@@ -113,6 +113,7 @@ class HistProducer
 public:
   TString type_;
   Bool_t applyEffSF_;
+  Bool_t zMassConstraint_;
 
   HistProducer()
   {
@@ -128,6 +129,11 @@ public:
   void Set_ApplyEffSF(Bool_t apply )
   {
     applyEffSF_ = apply;
+  }
+
+  void Set_ZMassConstraint( Bool_t flag )
+  {
+    zMassConstraint_ = flag;
   }
 
   void Produce()
@@ -282,6 +288,13 @@ public:
           Bool_t passSel = kFALSE;
           passSel = analyzer->EventSelection(muons, ntuple, &selectedMuons);
 
+          if( zMassConstraint_ )
+          {
+            Double_t mass = (selectedMuons[0].Momentum + selectedMuons[1].Momentum).M();
+            if( !(mass > 60 && mass < 120) ) // -- reject the event if it is not in Z-mass range
+              passSel = kFLASE;
+          }
+
           if( passSel )
           {
             Double_t totWeight = genWeight * PUWeight;
@@ -366,5 +379,6 @@ void MuonPlots(TString type, Bool_t applyEffSF )
   HistProducer *producer = new HistProducer();
   producer->Set_Type( type );
   producer->Set_ApplyEffSF( applyEffSF );
+  producer->Set_ZMassConstraint( kTRUE );
   producer->Produce();
 }

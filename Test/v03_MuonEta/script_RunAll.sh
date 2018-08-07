@@ -9,7 +9,4 @@ sleep 30
 root -l -b -q 'MuonPlots.cxx++("MC", 1)' >&MuonPlots_MC_1.log&
 sleep 30
 
-root -l -b -q 'MuonPlots.cxx++("MuonPhys", 1)' >&MuonPlots_MC_1.log&
-sleep 30
-
 echo "Submission is finished"
