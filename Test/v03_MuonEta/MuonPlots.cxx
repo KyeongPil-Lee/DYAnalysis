@@ -39,6 +39,24 @@ public:
   TH1D* h_eta_lead_;
   TH1D* h_eta_subLead_;
 
+  TH1D* h_eta_Pt10to22_;
+  TH1D* h_eta_Pt22to40_;
+  TH1D* h_eta_Pt40to70_;
+  TH1D* h_eta_Pt70to250_;
+  TH1D* h_eta_Pt250toInf_;
+
+  TH1D* h_eta_lead_Pt10to22_;
+  TH1D* h_eta_lead_Pt22to40_;
+  TH1D* h_eta_lead_Pt40to70_;
+  TH1D* h_eta_lead_Pt70to250_;
+  TH1D* h_eta_lead_Pt250toInf_;
+
+  TH1D* h_eta_subLead_Pt10to22_;
+  TH1D* h_eta_subLead_Pt22to40_;
+  TH1D* h_eta_subLead_Pt40to70_;
+  TH1D* h_eta_subLead_Pt70to250_;
+  TH1D* h_eta_subLead_Pt250toInf_;
+
   TH1D* h_phi_;
   TH1D* h_phi_lead_;
   TH1D* h_phi_subLead_;
@@ -77,6 +95,60 @@ public:
     h_eta_lead_->Fill( mu_lead.eta, weight );
     h_eta_subLead_->Fill( mu_subLead.eta, weight );
 
+    // -- leading muon
+    if( mu_lead.Pt > 10 && mu_lead.Pt < 22 )
+    {
+      h_eta_Pt10to22_->Fill( mu_lead.eta, weight);
+      h_eta_lead_Pt10to22_->Fill( mu_lead.eta, weight);
+    }
+    else if( mu_lead.Pt > 22 && mu_lead.Pt < 40 )
+    {
+      h_eta_Pt20to40_->Fill( mu_lead.eta, weight);
+      h_eta_lead_Pt20to40_->Fill( mu_lead.eta, weight);
+    }
+    else if( mu_lead.Pt > 40 && mu_lead.Pt < 70 )
+    {
+      h_eta_Pt40to70_->Fill( mu_lead.eta, weight);
+      h_eta_lead_Pt40to70_->Fill( mu_lead.eta, weight);
+    }
+    else if( mu_lead.Pt > 70 && mu_lead.Pt < 250 )
+    {
+      h_eta_Pt70to250_->Fill( mu_lead.eta, weight);
+      h_eta_lead_Pt70to250_->Fill( mu_lead.eta, weight);
+    }
+    else if( mu_lead.Pt > 250 )
+    {
+      h_eta_Pt250toInf_->Fill( mu_lead.eta, weight);
+      h_eta_lead_Pt250toInf_->Fill( mu_lead.eta, weight);
+    }
+
+    // -- sub-leading muon
+    if( mu_subLead.Pt > 10 && mu_subLead.Pt < 22 )
+    {
+      h_eta_Pt10to22_->Fill( mu_subLead.eta, weight);
+      h_eta_subLead_Pt10to22_->Fill( mu_subLead.eta, weight);
+    }
+    else if( mu_subLead.Pt > 22 && mu_subLead.Pt < 40 )
+    {
+      h_eta_Pt20to40_->Fill( mu_subLead.eta, weight);
+      h_eta_subLead_Pt20to40_->Fill( mu_subLead.eta, weight);
+    }
+    else if( mu_subLead.Pt > 40 && mu_subLead.Pt < 70 )
+    {
+      h_eta_Pt40to70_->Fill( mu_subLead.eta, weight);
+      h_eta_subLead_Pt40to70_->Fill( mu_subLead.eta, weight);
+    }
+    else if( mu_subLead.Pt > 70 && mu_subLead.Pt < 250 )
+    {
+      h_eta_Pt70to250_->Fill( mu_subLead.eta, weight);
+      h_eta_subLead_Pt70to250_->Fill( mu_subLead.eta, weight);
+    }
+    else if( mu_subLead.Pt > 250 )
+    {
+      h_eta_Pt250toInf_->Fill( mu_subLead.eta, weight);
+      h_eta_subLead_Pt250toInf_->Fill( mu_subLead.eta, weight);
+    }
+
     h_phi_->Fill( mu_lead.phi, weight );
     h_phi_->Fill( mu_subLead.phi, weight );
     h_phi_lead_->Fill( mu_lead.phi, weight );
@@ -105,6 +177,24 @@ private:
     h_eta_         = new TH1D("h_eta_"+type_,          "", 60, -3, 3); hists_.push_back( h_eta_ );
     h_eta_lead_    = new TH1D("h_eta_lead_"+type_,     "", 60, -3, 3); hists_.push_back( h_eta_lead_ );
     h_eta_subLead_ = new TH1D("h_eta_subLead_"+type_,  "", 60, -3, 3); hists_.push_back( h_eta_subLead_ );
+
+    h_eta_Pt10to22_   = new TH1D("h_eta_Pt10to22_"  +type_,  "", 60, -3, 3); hists_.push_back( h_eta_Pt10to22_ );
+    h_eta_Pt22to40_   = new TH1D("h_eta_Pt22to40_"  +type_,  "", 60, -3, 3); hists_.push_back( h_eta_Pt22to40_ );
+    h_eta_Pt40to70_   = new TH1D("h_eta_Pt40to70_"  +type_,  "", 60, -3, 3); hists_.push_back( h_eta_Pt40to70_ );
+    h_eta_Pt70to250_  = new TH1D("h_eta_Pt70to250_" +type_,  "", 60, -3, 3); hists_.push_back( h_eta_Pt70to250_ );
+    h_eta_Pt250toInf_ = new TH1D("h_eta_Pt250toInf_"+type_,  "", 60, -3, 3); hists_.push_back( h_eta_Pt250toInf_ );
+
+    h_eta_lead_Pt10to22_   = new TH1D("h_eta_lead_Pt10to22_"  +type_,  "", 60, -3, 3); hists_.push_back( h_eta_lead_Pt10to22_ );
+    h_eta_lead_Pt22to40_   = new TH1D("h_eta_lead_Pt22to40_"  +type_,  "", 60, -3, 3); hists_.push_back( h_eta_lead_Pt22to40_ );
+    h_eta_lead_Pt40to70_   = new TH1D("h_eta_lead_Pt40to70_"  +type_,  "", 60, -3, 3); hists_.push_back( h_eta_lead_Pt40to70_ );
+    h_eta_lead_Pt70to250_  = new TH1D("h_eta_lead_Pt70to250_" +type_,  "", 60, -3, 3); hists_.push_back( h_eta_lead_Pt70to250_ );
+    h_eta_lead_Pt250toInf_ = new TH1D("h_eta_lead_Pt250toInf_"+type_,  "", 60, -3, 3); hists_.push_back( h_eta_lead_Pt250toInf_ );
+
+    h_eta_subLead_Pt10to22_   = new TH1D("h_eta_subLead_Pt10to22_"  +type_,  "", 60, -3, 3); hists_.push_back( h_eta_subLead_Pt10to22_ );
+    h_eta_subLead_Pt22to40_   = new TH1D("h_eta_subLead_Pt22to40_"  +type_,  "", 60, -3, 3); hists_.push_back( h_eta_subLead_Pt22to40_ );
+    h_eta_subLead_Pt40to70_   = new TH1D("h_eta_subLead_Pt40to70_"  +type_,  "", 60, -3, 3); hists_.push_back( h_eta_subLead_Pt40to70_ );
+    h_eta_subLead_Pt70to250_  = new TH1D("h_eta_subLead_Pt70to250_" +type_,  "", 60, -3, 3); hists_.push_back( h_eta_subLead_Pt70to250_ );
+    h_eta_subLead_Pt250toInf_ = new TH1D("h_eta_subLead_Pt250toInf_"+type_,  "", 60, -3, 3); hists_.push_back( h_eta_subLead_Pt250toInf_ );
 
     h_phi_         = new TH1D("h_phi_"+type_,          "", 80, -4, 4); hists_.push_back( h_phi_ );
     h_phi_lead_    = new TH1D("h_phi_lead_"+type_,     "", 80, -4, 4); hists_.push_back( h_phi_lead_ );
