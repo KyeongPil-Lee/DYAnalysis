@@ -44,6 +44,7 @@ public:
   TH1D* h_phi_subLead_;
 
   TH1D* h_mass_;
+  TH1D* h_rapidity_;
 
   vector<TH1D*> hists_;
 
@@ -62,7 +63,9 @@ public:
     }
 
     Double_t mass = (mu_lead.Momentum + mu_subLead.Momentum).M();
+    Double_t rapidity = (mu_lead.Momentum + mu_subLead.Momentum).Rapidity();
     h_mass_->Fill(mass, weight);
+    h_rapidity_->Fill(rapidity, weight);
 
     h_pt_->Fill( mu_lead.Pt, weight );
     h_pt_->Fill( mu_subLead.Pt, weight );
@@ -93,6 +96,7 @@ private:
   void Init()
   {
     h_mass_        = new TH1D("h_mass_"+type_,         "", 10000, 0, 10000); hists_.push_back( h_mass_ );
+    h_rapidity_    = new TH1D("h_rapidity_"+type_,     "", 60, -3, 3); hists_.push_back( h_rapidity_ );
 
     h_pt_          = new TH1D("h_pt_"+type_,           "", 10000, 0, 10000); hists_.push_back( h_pt_ );
     h_pt_lead_     = new TH1D("h_pt_lead_"+type_,      "", 10000, 0, 10000); hists_.push_back( h_pt_lead_ );
