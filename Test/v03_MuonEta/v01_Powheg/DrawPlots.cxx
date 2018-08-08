@@ -21,39 +21,8 @@ void DrawPlots()
   DrawOnePlot( "h_eta_lead", kFALSE );
   DrawOnePlot( "h_eta_lead", kTRUE );
 
-  DrawOnePlot( "h_eta_lead_Pt10to22", kFALSE );
-  DrawOnePlot( "h_eta_lead_Pt10to22", kTRUE );
-
-  DrawOnePlot( "h_eta_lead_Pt22to40", kFALSE );
-  DrawOnePlot( "h_eta_lead_Pt22to40", kTRUE );
-
-  DrawOnePlot( "h_eta_lead_Pt40to70", kFALSE );
-  DrawOnePlot( "h_eta_lead_Pt40to70", kTRUE );
-
-  DrawOnePlot( "h_eta_lead_Pt70to250", kFALSE );
-  DrawOnePlot( "h_eta_lead_Pt70to250", kTRUE );
-
-  DrawOnePlot( "h_eta_lead_Pt250toInf", kFALSE );
-  DrawOnePlot( "h_eta_lead_Pt250toInf", kTRUE );
-
-
   DrawOnePlot( "h_eta_subLead", kFALSE );
   DrawOnePlot( "h_eta_subLead", kTRUE );
-
-  DrawOnePlot( "h_eta_subLead_Pt10to22", kFALSE );
-  DrawOnePlot( "h_eta_subLead_Pt10to22", kTRUE );
-
-  DrawOnePlot( "h_eta_subLead_Pt22to40", kFALSE );
-  DrawOnePlot( "h_eta_subLead_Pt22to40", kTRUE );
-
-  DrawOnePlot( "h_eta_subLead_Pt40to70", kFALSE );
-  DrawOnePlot( "h_eta_subLead_Pt40to70", kTRUE );
-
-  DrawOnePlot( "h_eta_subLead_Pt70to250", kFALSE );
-  DrawOnePlot( "h_eta_subLead_Pt70to250", kTRUE );
-
-  DrawOnePlot( "h_eta_subLead_Pt250toInf", kFALSE );
-  DrawOnePlot( "h_eta_subLead_Pt250toInf", kTRUE );
 }
 
 void DrawOnePlot(TString histNameBase, Bool_t applyEffSF = kTRUE )
@@ -62,7 +31,7 @@ void DrawOnePlot(TString histNameBase, Bool_t applyEffSF = kTRUE )
   if( applyEffSF ) applyEffSFStr = "withSF";
   else             applyEffSFStr = "withoutSF";
 
-  TString fileName_data = "Local/ROOTFile_MuonPlot_MuonPhys.root";
+  TString fileName_data = "../Local/ROOTFile_MuonPlot_MuonPhys.root";
   TH1D* h_data = PlotTool::Get_Hist( fileName_data, histNameBase+"_Data");
 
   DYAnalyzer *analyzer = new DYAnalyzer( "IsoMu20_OR_IsoTkMu20" );
@@ -70,26 +39,7 @@ void DrawOnePlot(TString histNameBase, Bool_t applyEffSF = kTRUE )
   vector<TString> tag;
   vector<Double_t> xSec;
   vector<Double_t> nEvent;
-  analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("Full_AdditionalSF", &ntuplePath, &tag, &xSec, &nEvent);
-
-  // vector<TString> MCProcessStr = 
-  // {
-  //   "ZZ", "WZ", "WZ",
-  //   "WJets",
-  //   "DYTauTau_M10to50", "DYTauTau",
-  //   "ttbar",
-  //   "DYMuMu_M10to50",
-  //   "DYMuMu_M50to100",
-  //   "DYMuMu_M100to200",
-  //   "DYMuMu_M200to400",
-  //   "DYMuMu_M400to500",
-  //   "DYMuMu_M500to700",
-  //   "DYMuMu_M700to800",
-  //   "DYMuMu_M800to1000",
-  //   "DYMuMu_M1000to1500",
-  //   "DYMuMu_M1500to2000",
-  //   "DYMuMu_M2000to3000"
-  // };
+  analyzer->SetupMCsamples_v20160309_76X_MiniAODv2("Full_Powheg", &ntuplePath, &tag, &xSec, &nEvent);
 
   TString fileName = "Local/ROOTFile_MuonPlot_MC_"+applyEffSFStr+".root";
 
@@ -122,7 +72,7 @@ void DrawOnePlot(TString histNameBase, Bool_t applyEffSF = kTRUE )
     if( tag[i_sample] == "ttbar" )
       AddHistogram( h_ttbar, h_temp);
 
-    if( tag[i_sample].Contains("DYMuMu") )
+    if( tag[i_sample].Contains("ZMuMu") )
       AddHistogram( h_DYMuMu, h_temp);
   }
 
@@ -143,14 +93,7 @@ void DrawOnePlot(TString histNameBase, Bool_t applyEffSF = kTRUE )
   canvas->Register( h_wjets, "W+jets", kBlue, isMC);
   canvas->Register( h_DYTauTau, "Z/#gamma*#rightarrow#tau#tau", kBlue-9, isMC);
   canvas->Register( h_ttbar, "t#bar{t}", kRed, isMC);
-  canvas->Register( h_DYMuMu, "Z/#gamma*#rightarrow#mu#mu", kOrange-2, isMC);
-
-  // if( histNameBase.Contains("Pt10to22") || 
-  //     histNameBase.Contains("Pt22to40") || 
-  //     histNameBase.Contains("Pt40to70") || 
-  //     histNameBase.Contains("Pt70to250") || 
-  //     histNameBase.Contains("Pt250toInf") )
-  //   canvas->SetRebin( 2 );
+  canvas->Register( h_DYMuMu, "Z/#gamma*#rightarrow#mu#mu (Powheg)", kOrange-2, isMC);
 
   Double_t minX, maxX;
   GetRangeX( histNameBase, minX, maxX);
@@ -161,17 +104,6 @@ void DrawOnePlot(TString histNameBase, Bool_t applyEffSF = kTRUE )
   canvas->Latex_CMSPre( 2.8, 13 );
   if( histNameBase != "h_mass" )
     canvas->RegisterLatex( 0.16, 0.91, "#font[42]{#scale[0.6]{60 < M(#mu#mu) < 120 GeV}}");
-
-  if( histNameBase.Contains("Pt10to22") )
-    canvas->RegisterLatex( 0.16, 0.87, "#font[42]{#scale[0.6]{10 < P_{T}(#mu) < 22 GeV}}");
-  if( histNameBase.Contains("Pt22to40") )
-    canvas->RegisterLatex( 0.16, 0.87, "#font[42]{#scale[0.6]{22 < P_{T}(#mu) < 40 GeV}}");
-  if( histNameBase.Contains("Pt40to70") )
-    canvas->RegisterLatex( 0.16, 0.87, "#font[42]{#scale[0.6]{40 < P_{T}(#mu) < 70 GeV}}");
-  if( histNameBase.Contains("Pt70to250") )
-    canvas->RegisterLatex( 0.16, 0.87, "#font[42]{#scale[0.6]{70 < P_{T}(#mu) < 250 GeV}}");
-  if( histNameBase.Contains("Pt250toInf") )
-    canvas->RegisterLatex( 0.16, 0.87, "#font[42]{#scale[0.6]{P_{T}(#mu) > 250 GeV}}");
 
   canvas->Draw();
 }
@@ -198,13 +130,13 @@ void GetTitle( TString histNameBase, TString& titleX, TString& titleY )
     titleY = "Muon / 0.1";
   }
 
-  if( histNameBase.Contains("h_eta_lead") )
+  if( histNameBase == "h_eta_lead" )
   {
     titleX = "#eta(#mu, leading)";
     titleY = "Muon / 0.1";
   }
 
-  if( histNameBase.Contains("h_eta_subLead") )
+  if( histNameBase == "h_eta_subLead" )
   {
     titleX = "#eta(#mu, sub-leading)";
     titleY = "Muon / 0.1";
