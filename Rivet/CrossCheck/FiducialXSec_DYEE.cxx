@@ -22,6 +22,7 @@ using namespace std;
 
 // -- Customized Analyzer for Drel-Yan Analysis -- //
 #include <Include/DYAnalyzer.h>
+#include <Include/SimplePlotTools.h>
 
 Bool_t CompareObject( GenLepton lep1, GenLepton lep2 )
 {
@@ -65,7 +66,7 @@ public:
   {
     Bool_t pass = kFALSE;
 
-    Double_t ptCut_lead = 30.0;
+    Double_t ptCut_lead = 35.0;
     Double_t ptCut_sub = 10.0;
     Double_t etaCut_lead = 2.5;
     Double_t etaCut_sub = 2.5;
@@ -113,6 +114,15 @@ public:
     h_etaSub_->Fill( genPair.second_.eta, weight );
   }
 
+  void Make_DXSec(Double_t xSec, Double_t sumWeight )
+  {
+    h_dXSec_ = PlotTool::DivideEachBin_ByBinWidth(h_mass_);
+    h_dXSec_->Scale(xSec/sumWeight);
+
+    h_dXSec_->SetName("h_dXSec_"+type_);
+    hists_.push_back( h_dXSec_ );
+  }
+
   void Save(TFile *f_output)
   {
     f_output->cd();
@@ -124,6 +134,8 @@ public:
 private:
   vector<TH1D*> hists_;
   TH1D* h_mass_;
+  TH1D* h_dXSec_;
+  TH1D* h_dXSec;
   TH1D* h_ptLead_;
   TH1D* h_ptSub_;
   TH1D* h_etaLead_;
@@ -272,6 +284,9 @@ public:
     printf("[Sum of weight: %.1lf]\n", sumWeight);
 
     TFile *f_output = TFile::Open("ROOTFile_FiducialXSec_DYEE.root", "RECREATE");
+    hists_genFlag->Make_DXSec(xSec_, sumWeight);
+    hists_highestPt->Make_DXSec(xSec_, sumWeight);
+
     hists_genFlag->Save( f_output );
     hists_highestPt->Save( f_output );
 
@@ -475,7 +490,7 @@ void FiducialXSec_DYEE()
   HistProducer *producer = new HistProducer();
   producer->AddDataPath(dataPathBase+"/76X/v20160304_76X_MINIAODv2_DYLL_M10to50_25ns/ntuple_*.root");
   // producer->AddDataPath("./Local/ntuple_skim_377.root");
-  producer->xSec_ = 18610.0 / 3.0;
+  producer->xSec_ = 18610.0 * (2.0/3.0); // DY->ee & mumu events
 
   producer->Produce();
 }
