@@ -121,6 +121,54 @@ void DrawLine( TF1*& f_line, Int_t color = kRed )
   f_line->Draw("PSAME");
 }
 
+TH1D* DivideEachBin_ByBinWidth( TH1D* h, TString HistName = "" )
+{
+  TH1D* h_return = (TH1D*)h->Clone();
+  if( HistName != "" )
+    h_return->SetName(HistName);
+
+  Int_t nBin = h->GetNbinsX();
+  for(Int_t i=0; i<nBin; i++)
+  {
+    Int_t i_bin = i+1;
+    Double_t Entry_before = h->GetBinContent(i_bin);
+    Double_t Error_before = h->GetBinError(i_bin);
+    Double_t BinWidth = h->GetBinWidth(i_bin);
+
+    Double_t Entry_after = Entry_before / BinWidth;
+    Double_t Error_after = Error_before / BinWidth;
+
+    h_return->SetBinContent(i_bin, Entry_after);
+    h_return->SetBinError(i_bin, Error_after);
+  }
+
+  return h_return;
+}
+
+TH1D* MultiplyEachBin_byBinWidth( TH1D* h, TString HistName = "" )
+{
+  TH1D* h_return = (TH1D*)h->Clone();
+  if( HistName != "" )
+    h_return->SetName(HistName);
+
+  Int_t nBin = h->GetNbinsX();
+  for(Int_t i=0; i<nBin; i++)
+  {
+    Int_t i_bin = i+1;
+    Double_t Entry_before = h->GetBinContent(i_bin);
+    Double_t Error_before = h->GetBinError(i_bin);
+    Double_t BinWidth = h->GetBinWidth(i_bin);
+
+    Double_t Entry_after = Entry_before * BinWidth;
+    Double_t Error_after = Error_before * BinWidth;
+
+    h_return->SetBinContent(i_bin, Entry_after);
+    h_return->SetBinError(i_bin, Error_after);
+  }
+
+  return h_return;
+}
+
 struct HistInfo
 {
   TH1D* h;
