@@ -311,6 +311,7 @@ private:
   void Print_AllFinalStateLeptons(NtupleHandle* ntuple)
   {
     printf("[Print_AllFinalStateLeptons]\n");
+    Int_t i_lepton = 0;
     for(Int_t i_gen=0; i_gen<ntuple->gnpair; i_gen++)
     {
       GenLepton genLepton;
@@ -319,8 +320,9 @@ private:
       {
         if( genLepton.Status == 1 )
         {
-          printf("   [%02d lepton] (pt, eta, phi, fromHardProcessFinalState) = (%7.3lf, %5.3lf, %5.3lf, %d)\n", 
-                 i_gen, genLepton.Pt, genLepton.eta, genLepton.phi, genLepton.fromHardProcessFinalState);
+          printf("   [%02d lepton] (ID, pt, eta, phi, fromHardProcessFinalState) = (%d, %7.3lf, %5.3lf, %5.3lf, %d)\n", 
+                 i_lepton, genLepton.ID, genLepton.Pt, genLepton.eta, genLepton.phi, genLepton.fromHardProcessFinalState);
+          i_lepton++;
         }
       }
     }
