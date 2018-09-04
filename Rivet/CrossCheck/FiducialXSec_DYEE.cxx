@@ -54,6 +54,13 @@ public:
     Init();
   }
 
+  void Print()
+  {
+    printf("[Leading muon]     (pt, eta, phi) = (%7.3lf, %5.3lf, %5.3lf)\n", first_.Pt, first_.eta, first_.phi);
+    printf("[Sub-Leading muon] (pt, eta, phi) = (%7.3lf, %5.3lf, %5.3lf)\n", second_.Pt, second_.eta, second_.phi);
+    printf("   Dilepton mass: %.3lf\n\n", mass_);
+  }
+
   Bool_t CheckAcceptance_EE()
   {
     Bool_t pass = kFALSE;
@@ -205,6 +212,8 @@ public:
 
       ntuple->GetEvent(i);
 
+      if( IsDYTauTauEvent(ntuple) ) continue;
+
       Double_t genWeight = 0;
       ntuple->GENEvt_weight < 0 ? genWeight = -1 : genWeight = 1;
       sumWeight = sumWeight + genWeight;
@@ -226,12 +235,18 @@ public:
       {
         printf("[%d event]\n", i);
         printf("   Highest pT method cannot find correct DY->ee pair\n");
+        Print_AllFinalStateLeptons(ntuple);
+        printf("[genPair_genFlag]\n");
+        genPair_genFlag->Print();
       }
 
       if( !isFound_genFlag && isFound_highestPt )
       {
         printf("[%d event]\n", i);
         printf("   Highest pT method finds wrong DY->ee pair\n");
+        Print_AllFinalStateLeptons(ntuple);
+        printf("[genPair_highestPt]\n");
+        genPair_highestPt->Print();
       }
 
       if( isFound_genFlag && isFound_highestPt )
@@ -272,6 +287,44 @@ private:
 
     if( xSec_ == 0)
       cout << "No cross section is assigned" << endl;
+  }
+
+  Bool_t IsDYTauTauEvent( NtupleHandle* ntuple )
+  {
+    Bool_t isFound = kFALSE;
+    vector<GenLepton> genLeptons;
+    for(Int_t i_gen=0; i_gen<ntuple->gnpair; i_gen++)
+    {
+      GenLepton genLepton;
+      genLepton.FillFromNtuple(ntuple, i_gen);
+      if( abs(genLepton.ID) == 15 && genLepton.isHardProcess )
+        genLeptons.push_back( genLepton );
+    }
+
+    Int_t nGenLepton = (Int_t)genLeptons.size();
+    if( nGenLepton == 2 )
+      isFound = kTRUE;
+
+    return isFound;
+  }
+
+  void Print_AllFinalStateLeptons(NtupleHandle* ntuple)
+  {
+    printf("[Print_AllFinalStateLeptons]\n");
+    for(Int_t i_gen=0; i_gen<ntuple->gnpair; i_gen++)
+    {
+      GenLepton genLepton;
+      genLepton.FillFromNtuple(ntuple, i_gen);
+      if( abs(genLepton.ID) == 11 || abs(genLepton.ID) == 13 || abs(genLepton.ID) == 15 )
+      {
+        if( genLepton.Status == 1 )
+        {
+          printf("   [%02d lepton] (pt, eta, phi, fromHardProcessFinalState) = (%7.3lf, %5.3lf, %5.3lf, %d)\n", 
+                 i_gen, genLepton.Pt, genLepton.eta, genLepton.phi, genLepton.fromHardProcessFinalState);
+        }
+      }
+    }
+    printf("\n");
   }
 
   Bool_t FindGenLeptonPair_GenFlag( NtupleHandle* ntuple, GenPair*& genPair )
@@ -418,7 +471,7 @@ void FiducialXSec_DYEE()
 
   HistProducer *producer = new HistProducer();
   producer->AddDataPath(dataPathBase+"/76X/v20160304_76X_MINIAODv2_DYLL_M10to50_25ns/ntuple_*.root");
-  // producer->AddDataPath("./ntuple_skim_377.root");
+  // producer->AddDataPath("./Local/ntuple_skim_377.root");
   producer->xSec_ = 18610.0 / 3.0;
 
   producer->Produce();
