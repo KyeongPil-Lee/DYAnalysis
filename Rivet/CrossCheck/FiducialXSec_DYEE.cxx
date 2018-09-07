@@ -66,7 +66,8 @@ public:
   {
     Bool_t pass = kFALSE;
 
-    Double_t ptCut_lead = 35.0;
+    Double_t ptCut_lead = 30.0;
+    // Double_t ptCut_lead = 35.0;
     Double_t ptCut_sub = 10.0;
     Double_t etaCut_lead = 2.5;
     Double_t etaCut_sub = 2.5;
@@ -401,8 +402,8 @@ private:
   void FindPFSLeptonPair_HighestPtWithinAcc(vector<GenLepton> leptonsByPt, int leptonID, int& index_lepton1, int& index_lepton2)
   {
     double pTCut_lead = 0;
-    // if( leptonID == 11 ) pTCut_lead = 30.0;
-    if( leptonID == 11 ) pTCut_lead = 35.0;
+    if( leptonID == 11 ) pTCut_lead = 30.0;
+    // if( leptonID == 11 ) pTCut_lead = 35.0;
     if( leptonID == 13 ) pTCut_lead = 22.0;
     double pTCut_sub = 10.0; // same for both channel
 
