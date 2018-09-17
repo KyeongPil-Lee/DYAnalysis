@@ -1,5 +1,7 @@
 #include <Include/DYAnalyzer.h>
 #include <Include/SimplePlotTools.h>
+#include <TStopwatch.h>
+#include <TTimeStamp.h>
 
 static inline void loadBar(int x, int n, int r, int w)
 {
