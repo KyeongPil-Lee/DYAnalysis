@@ -39,7 +39,7 @@ public:
 
   HistProducer()
   {
-    Init();
+
   }
 
   void Produce()
@@ -49,6 +49,8 @@ public:
 
     TStopwatch totaltime;
     totaltime.Start();
+
+    Set_AcceptanceCut();
 
     DYAnalyzer *analyzer = new DYAnalyzer( "None" );
 
@@ -178,11 +180,6 @@ private:
   Double_t ptCut_sub_;
   Double_t etaCut_lead_;
   Double_t etaCut_sub_;
-
-  void Init()
-  {
-    Set_AcceptanceCut();
-  }
 
   void Set_AcceptanceCut()
   {
