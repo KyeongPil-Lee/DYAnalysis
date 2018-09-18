@@ -307,6 +307,9 @@ private:
 
 void DrawDileptonMass()
 {
+	printf("[Dimuon mass distribution for each channel]\n");
+	printf("   Uncertainties are statistical uncertainty only\n");
+	printf("   Check DrawControlPlotTools.h\n");
 	DrawingTool* tool_Muon = new DrawingTool("Muon");
 	tool_Muon->Draw();
 
