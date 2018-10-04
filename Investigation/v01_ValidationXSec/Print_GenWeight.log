@@ -1,0 +1,37 @@
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<const int,int> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<const std::string,int> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<const string,int> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<double,double> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<float,float> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<int,double> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<int,int> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<std::string,int> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<string,double> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<string,float> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  pair<string,int> found in libCore.so  is already in libDataFormatsStdDictionaries.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  TUnfold found in libUnfold.so  is already in libHist.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  TUnfoldBinning found in libUnfold.so  is already in libHist.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  TUnfoldDensity found in libUnfold.so  is already in libHist.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  TUnfoldSys found in libUnfold.so  is already in libHist.so 
+   ------------------------------------------------------------
+  | Welcome to ROOT 6.02/05                http://root.cern.ch |
+  |                               (c) 1995-2014, The ROOT Team |
+  | Built for linuxx8664gcc                                    |
+  | From tag , 9 February 2015                                 |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q' |
+   ------------------------------------------------------------
+
+
+Processing Print_GenWeight.cxx...
+[M10to50] absolute value of weight: 41444.199000
+[M10to50_highStat] absolute value of weight: 41444.199000
+[M50toInf] absolute value of weight: 23443.424000
+[M100to200] absolute value of weight: 963.769110
+[M200to400] absolute value of weight: 40.880079
+[M400to500] absolute value of weight: 2.439265
+[M500to700] absolute value of weight: 1.468282
+[M700to800] absolute value of weight: 0.241347
+[M800to1000] absolute value of weight: 0.212754
+[M1000to1500] absolute value of weight: 0.121011
+[M1500to2000] absolute value of weight: 0.017809
+[M2000to3000] absolute value of weight: 0.004678
