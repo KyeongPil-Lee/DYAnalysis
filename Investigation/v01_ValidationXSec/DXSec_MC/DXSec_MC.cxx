@@ -277,8 +277,8 @@ private:
 void DXSec_MC()
 {
   HistProducer producer;
-  producer.sampleType_ = "aMCNLO_ee_AdditionalSF";
+  producer.sampleType_ = "aMCNLO_ee_AdditionalSF_LargeN_M10to50";
   producer.leptonID_ = 11;
-  producer.outputName_ = "ROOTFile_DXSec_MC_aMCNLO_ee_AdditionalSF.root";
+  producer.outputName_ = "ROOTFile_DXSec_MC_aMCNLO_ee_AdditionalSF_LargeN_M10to50.root";
   producer.Produce();
 }
