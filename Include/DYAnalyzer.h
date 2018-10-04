@@ -844,6 +844,21 @@ void DYAnalyzer::SetupMCsamples_v20160309_76X_MiniAODv2( TString Type, vector<TS
 		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M1000to1500_25ns" ); Tag->push_back( "DYEE_M1000to1500" ); Xsec->push_back( 0.016/3.0 ); nEvents->push_back( 40438.0 ); //nEvents: sum of DYEE weights 
 		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M1500to2000_25ns" ); Tag->push_back( "DYEE_M1500to2000" ); Xsec->push_back( 0.002/3.0 ); nEvents->push_back( 37287.0 ); //nEvents: sum of DYEE weights 
 		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M2000to3000_25ns" ); Tag->push_back( "DYEE_M2000to3000" ); Xsec->push_back( 0.00054/3.0 ); nEvents->push_back( 23315.0 ); //nEvents: sum of DYEE weights
+
+		Double_t SF = 1.033504;
+		Int_t nTag = (Int_t)Tag->size();
+		for(Int_t i_tag=0; i_tag<nTag; i_tag++)
+		{
+			if( Tag->at(i_tag).Contains("DYEE") && !Tag->at(i_tag).Contains("DYEE_M10to50") && !Tag->at(i_tag).Contains("DYEE_M50to100") )
+			{
+				Double_t xSec_before = Xsec->at(i_tag);
+
+				Xsec->at(i_tag) = Xsec->at(i_tag) * SF;
+
+				printf("[Cross section of %s] %lf -> %lf\n", Tag->at(i_tag).Data(), xSec_before, Xsec->at(i_tag) );
+			}
+		}
+		cout << endl;
 	}
 	else if( Type == "aMCNLO_NNLOxSec")
 	{
