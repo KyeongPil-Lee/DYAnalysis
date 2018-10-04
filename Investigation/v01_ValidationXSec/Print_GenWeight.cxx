@@ -50,6 +50,6 @@ void Print_GenWeight()
     chain->SetBranchAddress("GENEvt_weight", &genWeight);
 
     chain->GetEntry(0);
-    printf("[%s] absolute value of weight: %lf\n", vec_tag[i], fabs(genWeight));
+    printf("[%s] absolute value of weight: %lf\n", vec_tag[i].Data(), fabs(genWeight));
   }
 }
