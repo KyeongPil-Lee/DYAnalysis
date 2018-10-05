@@ -282,7 +282,9 @@ void DXSec_MC()
   // producer.outputName_ = "ROOTFile_DXSec_MC_aMCNLO_ee_AdditionalSF.root";
   // producer.sampleType_ = "aMCNLO_ee_AdditionalSF_LargeN_M10to50";
   // producer.outputName_ = "ROOTFile_DXSec_MC_aMCNLO_ee_AdditionalSF_LargeN_M10to50.root";
-  producer.sampleType_ = "aMCNLO_ee_NoSF";
-  producer.outputName_ = "ROOTFile_DXSec_MC_aMCNLO_ee_NoSF.root";
+  // producer.sampleType_ = "aMCNLO_ee_NoSF";
+  // producer.outputName_ = "ROOTFile_DXSec_MC_aMCNLO_ee_NoSF.root";
+  producer.sampleType_ = "aMCNLO_ee_NoSF_LargeN_M10to50";
+  producer.outputName_ = "ROOTFile_DXSec_MC_aMCNLO_ee_NoSF_LargeN_M10to50.root";
   producer.Produce();
 }
