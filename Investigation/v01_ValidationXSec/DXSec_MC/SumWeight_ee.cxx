@@ -57,6 +57,13 @@ void SumWeight_ee()
     looptime.Start();
 
     cout << "\t<" << Tag[i_sample] << ">" << endl;
+    if( Tag[i_sample] == "DYEE_M50to100" )
+    {
+      Tag[i_sample] = "DYEE_M50toInf";
+      cout << "Tag is changed: M50to100 -> M50toInf" << endl;
+    }
+    else
+      continue;
 
     TChain *chain = new TChain("recoTree/DYTree");
     TString dataPath = gSystem->Getenv("KP_DATA_PATH");
