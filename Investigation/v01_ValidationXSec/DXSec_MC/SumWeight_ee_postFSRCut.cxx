@@ -30,11 +30,11 @@ static inline void loadBar(int x, int n, int r, int w)
 
 }
 
-Bool_t PassMassCut_postFSR(TString type, NtupleHandle* ntuple)
+Bool_t PassMassCut_postFSR(TString tag, NtupleHandle* ntuple)
 {
   Bool_t genFlag = kFALSE;
 
-  if( type.Contains("DYEE") )
+  if( tag.Contains("DYEE") )
   {
     vector<GenLepton> vec_genLepton;
     Int_t nGenLepton = ntuple->gnpair;
@@ -49,7 +49,7 @@ Bool_t PassMassCut_postFSR(TString type, NtupleHandle* ntuple)
 
     if( vec_genLepton.size() == 2 ) // -- Select the events containing 2 electrons from hard-process -- //
     {
-      if( Tag == "DYEE_M50to200" ) // -- Select only evetns withtin 50 < M < 200 -- //
+      if( tag == "DYEE_M50to200" ) // -- Select only evetns withtin 50 < M < 200 -- //
       {
         TLorentzVector v1 = vec_genLepton[0].Momentum;
         TLorentzVector v2 = vec_genLepton[1].Momentum;
@@ -57,7 +57,7 @@ Bool_t PassMassCut_postFSR(TString type, NtupleHandle* ntuple)
         if( reco_M < 200 )
           genFlag = kTRUE;
       }
-      if( Tag.Contains("M50to100") ) // -- Select only evetns withtin 50 < M < 100 -- //
+      if( tag.Contains("M50to100") ) // -- Select only evetns withtin 50 < M < 100 -- //
       {
         TLorentzVector v1 = vec_genLepton[0].Momentum;
         TLorentzVector v2 = vec_genLepton[1].Momentum;
