@@ -75,7 +75,7 @@ Bool_t PassMassCut_postFSR(TString tag, NtupleHandle* ntuple)
   return genFlag;
 }
 
-void SumWeight_ee()
+void SumWeight_ee_postFSRCut()
 {
   TTimeStamp ts_start;
   cout << "[Start Time(local time): " << ts_start.AsString("l") << "]" << endl;
