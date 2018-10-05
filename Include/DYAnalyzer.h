@@ -875,6 +875,21 @@ void DYAnalyzer::SetupMCsamples_v20160309_76X_MiniAODv2( TString Type, vector<TS
 		}
 		cout << endl;
 	}
+	else if( Type == "aMCNLO_ee_NoSF_LargeN_M10to50" )
+	{
+		// -- Signal binned samples -- //
+		ntupleDirectory->push_back( "76X/DYntuple_v20170626_76X_MINIAODv2_DYLL_M10to50_25ns_LargeN" ); Tag->push_back( "DYEE_M10to50" ); Xsec->push_back( 18610.0/3.0 ); nEvents->push_back( 18612156.0 ); //nEvents: sum of weights within 10<M<50
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M50toInf_25ns" ); Tag->push_back( "DYEE_M50to100" ); Xsec->push_back( 5869.58346/3.0 ); nEvents->push_back( 6058012.0 ); //nEvents: sum of DYMuMu weights
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M100to200_25ns" ); Tag->push_back( "DYEE_M100to200" ); Xsec->push_back( 226/3.0 ); nEvents->push_back( 228151.0 ); //nEvents: sum of weights within 10<M<50
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M200to400_25ns" ); Tag->push_back( "DYEE_M200to400" ); Xsec->push_back( 7.67/3.0 ); nEvents->push_back( 171446.0 ); //nEvents: sum of DYEE weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M400to500_25ns" ); Tag->push_back( "DYEE_M400to500" ); Xsec->push_back( 0.423/3.0 ); nEvents->push_back( 50421.0 ); //nEvents: sum of DYEE weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M500to700_25ns" ); Tag->push_back( "DYEE_M500to700" ); Xsec->push_back( 0.24/3.0 ); nEvents->push_back( 47674.0 ); //nEvents: sum of DYEE weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M700to800_25ns" ); Tag->push_back( "DYEE_M700to800" ); Xsec->push_back( 0.035/3.0 ); nEvents->push_back( 45913.0 ); //nEvents: sum of DYEE weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M800to1000_25ns" ); Tag->push_back( "DYEE_M800to1000" ); Xsec->push_back( 0.03/3.0 ); nEvents->push_back( 44256.0 ); //nEvents: sum of DYEE weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M1000to1500_25ns" ); Tag->push_back( "DYEE_M1000to1500" ); Xsec->push_back( 0.016/3.0 ); nEvents->push_back( 40438.0 ); //nEvents: sum of DYEE weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M1500to2000_25ns" ); Tag->push_back( "DYEE_M1500to2000" ); Xsec->push_back( 0.002/3.0 ); nEvents->push_back( 37287.0 ); //nEvents: sum of DYEE weights 
+		ntupleDirectory->push_back( "76X/v20160304_76X_MINIAODv2_DYLL_M2000to3000_25ns" ); Tag->push_back( "DYEE_M2000to3000" ); Xsec->push_back( 0.00054/3.0 ); nEvents->push_back( 23315.0 ); //nEvents: sum of DYEE weights
+	}
 	else if( Type == "aMCNLO_NNLOxSec")
 	{
 		// -- Signal binned samples -- //
