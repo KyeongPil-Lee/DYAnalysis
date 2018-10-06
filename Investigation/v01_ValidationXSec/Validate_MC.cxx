@@ -121,7 +121,7 @@ void DrawCanvas_Ratio3_Eff(TH1D* h_ratio3, TH1D *h_eff)
 void DrawCanvas_GENOnly_KP_Ridhi(TH1D* h_KP, TH1D *h_Ridhi)
 {
   PlotTool::HistCanvaswRatio *canvas = new PlotTool::HistCanvaswRatio("c_GenOnly_KP_vs_Ridhi_MC", 1, 1);
-  canvas->Register( h_KP, "Gen-only MC F-DXSec (KP)", kBlack);
+  canvas->Register( h_KP, "Gen-only MC F-DXSec (Kyeongpil)", kBlack);
   canvas->Register( h_Ridhi, "Gen-only MC F-DXSec (Ridhi)", kBlue);
 
   canvas->SetTitle( "m [GeV]", "d#sigma/dm [pb/GeV]", "Blue/Black");
