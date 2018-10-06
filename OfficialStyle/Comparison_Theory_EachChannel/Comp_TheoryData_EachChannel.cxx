@@ -450,7 +450,9 @@ private:
 		}
 		else if( this->Type_Channel == "Electron" )
 		{
-			TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v8.root";
+			// TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v8.root";
+			// TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v9.root"; // -- update from v8: apply efficiency correction to fiducial cross section (it was missed by mistake)
+			TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v10.root"; // -- update from v9: several bugs in data/MC are fixed
 			this->h_data = Get_Hist(FileName_Data, "h_DiffXSec");
 
 			TH1D* h_RelUnc_Stat = Get_Hist(FileName_Data, "h_RelUnc_Stat"); h_RelUnc_Stat->Scale( 0.01 );
@@ -470,7 +472,10 @@ private:
 			this->AssignTotalError( this->h_FpoF_data, h_FpoF_RelUnc_Stat, h_FpoF_RelUnc_Syst, h_RelUnc_Lumi );
 
 			this->h_FpoF_data_StatOnly = this->MakeHist_DXSecStatOnly( this->h_FpoF_data, h_FpoF_RelUnc_Stat );
-			// this->h_FpoF_aMCNLO = this->MakeHist_aMCNLO_Electron("FpoF"); // -- it gives inconsistent central value with the data: why? -- //
+			
+			// -- MC fiducial cross section
+			// this->h_FpoF_aMCNLO = this->MakeHist_aMCNLO_Electron("FpoF"); // -- do not use my result
+
 			this->h_FpoF_aMCNLO = Get_Hist( FileName_Data, "h_DiffXSec_MCNLO_Fiducial" );
 			TString FileName_RelUnc = this->ROOTFilePath+"/ROOTFile_TheoryUnc_aMCNLO.root";
 			TString HistName_RelUnc = "Electron_withinAcc/h_RelUnc_Tot";
