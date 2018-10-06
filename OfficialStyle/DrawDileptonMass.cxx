@@ -22,6 +22,7 @@ public:
 
 	void Draw()
 	{
+		gStyle->SetErrorX(0); // -- remove horizontal error bar in the plot
 		gStyle->SetOptStat(0);
 		gStyle->SetOptTitle(0);
 

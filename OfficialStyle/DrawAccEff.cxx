@@ -124,6 +124,20 @@ private:
 		}
 		else
 			cout << this->channel << " is wrong type!" << endl;
+
+		this->RemoveHorizontalErrors( this->g_acc );
+		this->RemoveHorizontalErrors( this->g_eff );
+		this->RemoveHorizontalErrors( this->g_accEff );
+	}
+
+	void RemoveHorizontalErrors( TGraphAsymmErrors* g )
+	{
+		Int_t nPoint = g->GetN();
+		for(Int_t i=0; i<nPoint; i++)
+		{
+			g->SetPointEXhigh(i, 0);
+			g->SetPointEXlow(i, 0);
+		}
 	}
 
 };

@@ -26,6 +26,8 @@ public:
 
 	void Draw()
 	{
+		gStyle->SetErrorX(0); // -- remove horizontal error bar in the plot
+		
 		// -- Draw canvas -- //
 		HistInfo *Hist_totBkg = new HistInfo( kBlack, "Total", h_ratio_totBkg );
 		Hist_totBkg->h->SetMarkerStyle( 20 );
