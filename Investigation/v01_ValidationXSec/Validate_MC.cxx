@@ -47,7 +47,7 @@ void Validate_MC()
 
 
   // -- MC fiducial cross section provided by Ridhi: using only gen-level info.
-  TString fileName_RidhiGEN = "Temp/DiffXsec_Electron_v10.root";
+  TString fileName_RidhiGEN = rootFilePath+"/DiffXsec_Electron_v10.root";
   TH1D* h_DXSec_RidhiGEN = PlotTool::Get_Hist(fileName_RidhiGEN, "h_DiffXSec_MCNLO_Fiducial");
 
   DrawCanvas_GENOnly_KP_Ridhi( h_DXSec_mainSample, h_DXSec_RidhiGEN );
