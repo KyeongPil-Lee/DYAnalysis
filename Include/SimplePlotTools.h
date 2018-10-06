@@ -31,6 +31,20 @@ TH1D* Get_Hist(TString fileName, TString histName, TString histName_new = "" )
   return h_temp;
 }
 
+TH2D* Get_Hist2D(TString fileName, TString histName, TString histName_new = "" )
+{
+  TH1::AddDirectory(kFALSE);
+
+  TFile* f_input = TFile::Open( fileName );
+  TH2D* h_temp = (TH2D*)f_input->Get(histName)->Clone();
+  if( histName_new != "" )
+    h_temp->SetName( histName_new );
+
+  f_input->Close();
+
+  return h_temp;
+}
+
 
 TGraphAsymmErrors* Get_Graph(TString fileName, TString graphName, TString graphName_New = "" )
 {
@@ -167,6 +181,98 @@ TH1D* MultiplyEachBin_byBinWidth( TH1D* h, TString HistName = "" )
   }
 
   return h_return;
+}
+
+Bool_t IsRatio1( TH1D* h1, TH1D* h2)
+{
+  Bool_t isRatio1 = kTRUE;
+
+  TString h1Name = h1->GetName();
+  TString h2Name = h2->GetName();
+  printf("[IsRatio1] Check %s / %s == 1 for all bin\n", h1Name.Data(), h2Name.Data());
+
+  Int_t nBin1 = h1->GetNbinsX();
+  Int_t nBin2 = h2->GetNbinsX();
+  if( nBin1 != nBin2 )
+  {
+    printf("(nBin1 = %d, nBin2 = %d) is different! ... need to check\n", nBin1, nBin2);
+    return kFALSE;
+  }
+
+  for(Int_t i=0; i<nBin1; i++)
+  {
+    Int_t i_bin = i+1;
+
+    Double_t content1 = h1->GetBinContent(i_bin);
+    Double_t content2 = h2->GetBinContent(i_bin);
+    Double_t ratio = content1 / content2;
+
+    if( fabs(ratio - 1) > 1e-5 )
+    {
+      printf("[%02d bin is deviated from 1]\n", i_bin);
+      printf("   Bin content1 = %lf\n", content1);
+      printf("   Bin content2 = %lf\n", content2);
+      printf("          Ratio = %lf\n\n", ratio);
+      isRatio1 = kFALSE;
+    }
+  }
+
+  TString isSuccess = isRatio1 ? "success" : "fail";
+
+  printf("\n");
+  printf("[IsRatio1] Checking is finished\n");
+  printf("   Result: %s\n\n", isSuccess.Data());
+
+  return isRatio1;
+}
+
+TH1D* Convert_GraphToHist( TGraphAsymmErrors *g )
+{
+  const Int_t nBin = g->GetN();
+  Double_t *BinEdges = new Double_t[nBin+1];
+  Double_t *value = new Double_t[nBin];
+  Double_t *error = new Double_t[nBin];
+
+  for(Int_t i=0; i<nBin; i++)
+  {
+    Double_t x, y;
+    g->GetPoint(i, x, y);
+
+    // -- make BinEdges array -- //
+    Double_t ErrX_Low = g->GetErrorXlow(i);
+    Double_t ErrX_High = g->GetErrorXhigh(i);
+
+    if( i == nBin-1 )
+    {
+      BinEdges[i] = x - ErrX_Low;
+      BinEdges[i+1] = x + ErrX_High;
+    }
+    else
+      BinEdges[i] = x - ErrX_Low;
+
+
+    // -- store graph information -- //
+    value[i] = y;
+
+    Double_t ErrY_Low = g->GetErrorYlow(i);
+    Double_t ErrY_High = g->GetErrorYhigh(i);
+
+    // -- take the larger one -- //
+    error[i] = ErrY_Low > ErrY_High ? ErrY_Low : ErrY_High;
+  }
+
+  TString GraphName = g->GetName();
+  TH1D* h_temp = new TH1D( "h_"+GraphName, "", nBin, BinEdges );
+
+  // -- fill this histogram using graph information -- //
+  for(Int_t i=0; i<nBin; i++)
+  {
+    Int_t i_bin = i+1;
+    h_temp->SetBinContent( i_bin, value[i] );
+    h_temp->SetBinError( i_bin, error[i] );
+  }
+
+  return h_temp;
 }
 
 struct HistInfo
