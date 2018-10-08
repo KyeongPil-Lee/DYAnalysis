@@ -7,7 +7,9 @@ void CreateInputROOTFileForRivet()
 	TString fileName_ll = ROOTFilePath+"/dyll-combi-_corr_wLumi_inpYieldUnc-20171204.root";
 	TString fileName_mumu = ROOTFilePath+"/ROOTFile_DiffXSec_FullUnc.root";
 	TString fileName_mumuFiducial = ROOTFilePath+"/ROOTFile_FpoF_DiffXSec_FullUnc.root";
-	TString fileName_ee = ROOTFilePath+"/DiffXsec_Electron_v8.root";
+	// TString fileName_ee = ROOTFilePath+"/DiffXsec_Electron_v8.root";
+	// TString fileName_ee = ROOTFilePath+"/DiffXsec_Electron_v9.root"; // -- fiducial cross section is updated
+  TString fileName_ee = ROOTFilePath+"/DiffXsec_Electron_v10.root"; // -- small bugs are fixed w.r.t. v9
 
 	cout << "Input file Name for combined result: \n" << fileName_ll << endl;
 	cout << "\nInput file Name for muon result: \n" << fileName_mumu << ", \n" << fileName_mumuFiducial << endl;
@@ -31,7 +33,7 @@ void CreateInputROOTFileForRivet()
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-	// -- multiply bin width to each bin value because root2yoda automatically divide bin content by bin value :( -- //
+	// -- multiply bin width to each bin content because root2yoda automatically divide bin content by bin width :( -- //
 	h_DXSec_ll = MultiplyEachBin_byBinWidth( h_DXSec_ll );
 	h_DXSec_mumu = MultiplyEachBin_byBinWidth( h_DXSec_mumu );
 	h_DXSecFiducial_mumu = MultiplyEachBin_byBinWidth( h_DXSecFiducial_mumu );
