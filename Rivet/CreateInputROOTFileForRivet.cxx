@@ -40,11 +40,13 @@ void CreateInputROOTFileForRivet()
 	h_DXSec_ee = MultiplyEachBin_byBinWidth( h_DXSec_ee );
 	h_DXSecFiducial_ee = MultiplyEachBin_byBinWidth( h_DXSecFiducial_ee );
 
+	// -- 25 Oct.: full phase space result for electron channel & combine results will not be included in Rivet
+	// -- reference: https://gitlab.cern.ch/cms-gen/Rivet/merge_requests/127
 	TString outputFileName = "ROOTFile_InputForRivet.root";
 	TFile *f_output = TFile::Open(outputFileName, "RECREATE");
 	f_output->cd();
-	h_DXSec_ll->SetName("h_DXSec_ll");
-	h_DXSec_ll->Write();
+	// h_DXSec_ll->SetName("h_DXSec_ll");
+	// h_DXSec_ll->Write();
 
 	h_DXSec_mumu->SetName("h_DXSec_mumu");
 	h_DXSec_mumu->Write();
@@ -52,8 +54,8 @@ void CreateInputROOTFileForRivet()
 	h_DXSecFiducial_mumu->SetName("h_DXSecFiducial_mumu");
 	h_DXSecFiducial_mumu->Write();
 
-	h_DXSec_ee->SetName("h_DXSec_ee");
-	h_DXSec_ee->Write();
+	// h_DXSec_ee->SetName("h_DXSec_ee");
+	// h_DXSec_ee->Write();
 
 	h_DXSecFiducial_ee->SetName("h_DXSecFiducial_ee");
 	h_DXSecFiducial_ee->Write();
