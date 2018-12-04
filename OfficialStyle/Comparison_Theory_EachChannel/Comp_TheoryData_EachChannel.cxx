@@ -121,12 +121,13 @@ public:
 
 		// -- Add Legend -- //
 		TLegend *legend;
-		legend = new TLegend(0.15, 0.35, 0.35, 0.55);
+		legend = new TLegend(0.15, 0.35, 0.50, 0.60 );
 
 		legend->SetFillStyle(0);
 		legend->SetBorderSize(0);
-		legend->AddEntry(this->h_FpoF_data, "Data");
-		legend->AddEntry(this->h_FpoF_aMCNLO, "aMC@NLO");
+		legend->SetTextFont(62);
+		legend->AddEntry(this->h_FpoF_data, "Data", "EP");
+		legend->AddEntry(this->h_FpoF_aMCNLO, "aMC@NLO", "EP");
 		legend->Draw();
 
 		// -- write down some sentences -- //
@@ -171,14 +172,14 @@ public:
 		this->h_FpoF_Ratio_aMCNLO->Draw("E2SAME");
 
 
-		TLegend *legend_ratio = new TLegend(0.15, 0.80, 0.55, 0.95);
+		TLegend *legend_ratio = new TLegend(0.15, 0.80, 0.70, 0.95);
 		legend_ratio->SetNColumns(3);
 		legend_ratio->SetFillStyle(0);
 		legend_ratio->SetBorderSize(0);
 		legend_ratio->SetTextFont(62);
-		legend_ratio->AddEntry( h_FpoF_Ratio_StatUnc, "Stat.");
-		legend_ratio->AddEntry( h_FpoF_Ratio_TotUnc, "Stat.+syst.", "f");
-		legend_ratio->AddEntry( h_FpoF_Ratio_aMCNLO, "Theory (aMC@NLO)", "f");
+		legend_ratio->AddEntry( h_FpoF_Ratio_StatUnc, "Stat. unc.", "EP");
+		legend_ratio->AddEntry( h_FpoF_Ratio_TotUnc, "Tot. unc.", "PF");
+		legend_ratio->AddEntry( h_FpoF_Ratio_aMCNLO, "Theo. unc. (aMC@NLO)", "PF");
 		legend_ratio->Draw();
 
 		// -- General Setting -- //
@@ -218,6 +219,9 @@ public:
 
 		c->SaveAs(".pdf");
 		// c->SaveAs(".C");
+
+    Draw_RatioZoomIn( (TPad*)bottomPad->Clone(), "Local/"+Type_Channel+"_FpoF_Ratio_Data_vs_Theory_aMCNLO", 
+                      this->h_FpoF_Ratio_aMCNLO->GetName(), legend_ratio->GetName() );
 	}
 
 	void Draw_Dressed()
@@ -309,12 +313,13 @@ public:
 		this->h_data->SetMaximum(4000);
 
 		// -- Add Legend -- //
-		TLegend *legend = new TLegend(0.15, 0.43, 0.55, 0.63);
+		TLegend *legend = new TLegend(0.10, 0.43, 0.70, 0.70);
 		legend->SetFillStyle(0);
 		legend->SetBorderSize(0);
-		legend->AddEntry(h_data, "Data");
-		legend->AddEntry(h_aMCNLO, "aMC@NLO");
-		legend->AddEntry(h_FEWZ, "FEWZ (NNLO QCD + NLO EW)");
+		legend->SetTextFont(62);
+		legend->AddEntry(h_data, "Data", "EP");
+		legend->AddEntry(h_aMCNLO, "aMC@NLO", "EP");
+		legend->AddEntry(h_FEWZ, "FEWZ (NNLO QCD + NLO EW)", "EP");
 		legend->Draw();
 
 		// -- write down some sentences -- //
@@ -337,7 +342,6 @@ public:
 		/////////////////////////////////////
 		// -- Bottom Pad1: Data/aMC@NLO -- //
 		/////////////////////////////////////
-
 		TExec *ex = new TExec("ex","gStyle->SetErrorX(0.5);"); // -- make horizontal error bar in the plot
 		ex->Draw();
 		
@@ -358,14 +362,14 @@ public:
 		this->h_Ratio_StatUnc->Draw("E1PSAME");
 		this->h_Ratio_aMCNLO->Draw("E2PSAME");		
 
-		TLegend *legend_aMCNLO = new TLegend(0.15, 0.69, 0.55, 0.96);
+		TLegend *legend_aMCNLO = new TLegend(0.15, 0.69, 0.70, 0.96);
 		legend_aMCNLO->SetNColumns(3);
 		legend_aMCNLO->SetFillStyle(0);
 		legend_aMCNLO->SetBorderSize(0);
 		legend_aMCNLO->SetTextFont(62);
-		legend_aMCNLO->AddEntry( h_Ratio_StatUnc, "Stat.");
-		legend_aMCNLO->AddEntry( h_Ratio_TotUnc, "Stat.+syst.", "f");
-		legend_aMCNLO->AddEntry( h_Ratio_aMCNLO, "Theory (aMC@NLO)", "f");
+		legend_aMCNLO->AddEntry( h_Ratio_StatUnc, "Stat. unc.", "EP");
+		legend_aMCNLO->AddEntry( h_Ratio_TotUnc, "Tot. unc.", "PF");
+		legend_aMCNLO->AddEntry( h_Ratio_aMCNLO, "Theo. unc. (aMC@NLO)", "PF");
 		legend_aMCNLO->Draw();
 
 		// -- Y-axis Setting -- //
@@ -394,14 +398,14 @@ public:
 		this->h_Ratio_StatUnc->Draw("E1PSAME");
 		this->h_Ratio_FEWZ->Draw("E2SAME");
 		
-		TLegend *legend_FEWZ = new TLegend(0.15, 0.80, 0.52, 0.96);
+		TLegend *legend_FEWZ = new TLegend(0.15, 0.80, 0.65, 0.96 );
 		legend_FEWZ->SetNColumns(3);
 		legend_FEWZ->SetFillStyle(0);
 		legend_FEWZ->SetBorderSize(0);
 		legend_FEWZ->SetTextFont(62);
-		legend_FEWZ->AddEntry( h_Ratio_StatUnc, "Stat.");
-		legend_FEWZ->AddEntry( h_Ratio_TotUnc, "Stat.+syst.", "f");
-		legend_FEWZ->AddEntry( h_Ratio_FEWZ, "Theory (FEWZ)", "f");
+		legend_FEWZ->AddEntry( h_Ratio_StatUnc, "Stat. unc.", "EP");
+		legend_FEWZ->AddEntry( h_Ratio_TotUnc, "Tot. unc.", "PF");
+		legend_FEWZ->AddEntry( h_Ratio_FEWZ, "Theo. unc. (FEWZ)", "PF");
 		legend_FEWZ->Draw();
 
 		// -- X-axis setting -- //
@@ -424,6 +428,12 @@ public:
 
 		c->SaveAs(".pdf");
 		// c->SaveAs(".C");
+
+    Draw_RatioZoomIn( (TPad*)bottomPad1->Clone(), "Local/"+Type_Channel+"_Ratio_Data_vs_Theory_aMCNLO", 
+                      this->h_Ratio_aMCNLO->GetName(), legend_aMCNLO->GetName() );
+
+    Draw_RatioZoomIn( (TPad*)bottomPad2->Clone(), "Local/"+Type_Channel+"_Ratio_Data_vs_Theory_FEWZ", 
+                      this->h_Ratio_FEWZ->GetName(), legend_FEWZ->GetName() );
 	}
 
 private:
@@ -710,6 +720,55 @@ private:
 			h_CV->SetBinError(i_bin, DXSec*RelUnc_Tot);
 		}
 	}
+
+  void Draw_RatioZoomIn(TPad *ratioPad, TString canvasName, TString histName, TString legendName )
+  {
+    TCanvas *c_ratio = new TCanvas(canvasName, "", 800, 800); c_ratio->cd();
+    ratioPad->SetPad(0.01,0.01,0.99,0.99);
+    ratioPad->SetTopMargin(0.04);
+    ratioPad->SetBottomMargin(0.12);
+    ratioPad->SetRightMargin(0.03);
+    ratioPad->SetLeftMargin(0.12);
+
+    TH1D* h_ratio = (TH1D*)ratioPad->GetPrimitive(histName);
+    h_ratio->GetXaxis()->SetTitleOffset(1.2);
+    h_ratio->GetXaxis()->SetTitleSize(0.05);
+    h_ratio->GetXaxis()->SetLabelSize(0.05);
+    h_ratio->GetXaxis()->SetTitle("m [GeV]");
+    h_ratio->GetXaxis()->SetNoExponent(); 
+    h_ratio->GetXaxis()->SetMoreLogLabels();
+
+    h_ratio->GetYaxis()->SetRangeUser(0, 2.5);
+    h_ratio->GetYaxis()->SetTitleSize(0.05);
+    h_ratio->GetYaxis()->SetTitleOffset(1);
+    h_ratio->GetYaxis()->SetLabelSize(0.05);
+
+    TLegend *legend = (TLegend*)ratioPad->GetPrimitive(legendName);
+    legend->SetX1NDC(0.15);
+    legend->SetX2NDC(0.75);
+    legend->SetY1NDC(0.84);
+    legend->SetY2NDC(0.95);
+
+    ratioPad->Draw();
+
+    TLatex latex;
+    latex.DrawLatexNDC(0.14, 0.96, "#font[62]{#scale[0.8]{CMS}}");
+    
+    if( this->Type_Channel == "Muon" )
+    {
+      latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
+      latex.SetTextSize(0.045);
+      latex.DrawLatexNDC(0.17, 0.77 , "#gamma* /#font[122]{Z} #rightarrow #mu#mu");
+    }
+    else if( this->Type_Channel == "Electron" )
+    {
+      latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (13 TeV)}}");
+      latex.SetTextSize(0.045);
+      latex.DrawLatexNDC(0.17, 0.77, "#gamma* /#font[122]{Z} #rightarrow ee");
+    }
+
+    c_ratio->SaveAs(".pdf");
+  }
 };
 
 void Comp_TheoryData_EachChannel()
