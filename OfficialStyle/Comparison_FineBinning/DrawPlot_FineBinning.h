@@ -180,11 +180,11 @@ public:
 		this->g_CenV_Shifted->SetMarkerStyle(20);
 		this->g_CenV_Shifted->SetFillColorAlpha(kWhite, 0);
 
-		TLegend *legend = new TLegend(0.15, 0.32, 0.60, 0.47);
+		TLegend *legend = new TLegend(0.15, 0.32, 0.75, 0.60);
 		legend->SetBorderSize(0);
 		legend->SetFillStyle(0);
 		legend->SetTextFont(62);
-		legend->AddEntry( this->g_CenV_Shifted, "Data" );
+		legend->AddEntry( this->g_CenV_Shifted, "Data", "EP" );
 
 		TH1D* h_forLegend = (TH1D*)this->h_NNLO_FineBin->Clone();
 		h_forLegend->SetFillColorAlpha( kBlue, 1 );
@@ -272,16 +272,16 @@ public:
 		g_StatUnc->SetLineColor(kBlack);
 		g_StatUnc->SetLineWidth(1);
 
-		TLegend *legend_ratio = new TLegend( 0.15, 0.41, 0.60, 0.56 );
+		TLegend *legend_ratio = new TLegend( 0.15, 0.84, 0.70, 0.99 );
 		legend_ratio->SetBorderSize(0);
 		legend_ratio->SetFillStyle(0);
 		legend_ratio->SetTextFont(62);
 		legend_ratio->SetNColumns(3);
-		legend_ratio->AddEntry( g_StatUnc, "Stat. unc." );
+		legend_ratio->AddEntry( g_StatUnc, "Stat. unc.", "EP" );
 		legend_ratio->AddEntry( g_TotUnc, "Tot. unc." );
 		TGraphAsymmErrors* g_ratio_ForLegend = (TGraphAsymmErrors*)g_ratio->Clone();
-		g_ratio_ForLegend->SetMarkerColorAlpha(kWhite, 0 );
-		legend_ratio->AddEntry( g_ratio_ForLegend, "Theo. unc." );
+		// g_ratio_ForLegend->SetMarkerColorAlpha(kWhite, 0 );
+		legend_ratio->AddEntry( g_ratio_ForLegend, "Theo. unc. (FEWZ)", "PF" );
 		legend_ratio->Draw();
 
 
