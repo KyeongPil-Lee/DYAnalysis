@@ -72,6 +72,7 @@ public:
 		g_acc->GetXaxis()->SetTitleSize(0.06);
 		g_acc->GetXaxis()->SetTitleOffset(1.00);
 		g_acc->GetXaxis()->SetTitleFont(42);
+		g_acc->GetXaxis()->SetLimits( 15, 3000 );
 
 		// -- Y-axis -- //
 		g_acc->GetYaxis()->SetTitle("Fraction of events");
@@ -82,13 +83,13 @@ public:
 		g_acc->GetYaxis()->SetTitleOffset(0.9);
 		g_acc->GetYaxis()->SetTitleFont(42);
 
-		TLegend *legend = new TLegend(0.75, 0.2, 0.97, 0.4 );
+		TLegend *legend = new TLegend(0.75, 0.15, 0.97, 0.5 );
 		legend->SetBorderSize(0);
 		legend->SetFillStyle(0);
 		legend->SetTextFont(62);
-		legend->AddEntry( g_acc, "#font[122]{A}" );
-		legend->AddEntry( g_eff, "#varepsilon" );
-		legend->AddEntry( g_accEff, "#font[122]{A} #times #varepsilon" );
+		legend->AddEntry( g_acc, "#font[122]{A}", "EP" );
+		legend->AddEntry( g_eff, "#varepsilon", "EP" );
+		legend->AddEntry( g_accEff, "#font[122]{A} #times #varepsilon", "EP" );
 		legend->Draw();
 
 		TLatex latex;
