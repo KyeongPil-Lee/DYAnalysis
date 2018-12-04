@@ -153,8 +153,8 @@ protected:
 		legtot->SetLineWidth(1);
 		legtot->SetFillColor(0);
 		legtot->SetFillStyle(0);
-		legtot->AddEntry( this->Hist_RelStatUnc->h, this->Hist_RelStatUnc->LegendName, "lpf" );
-		legtot->AddEntry( this->Hist_RelLumiUnc->h, this->Hist_RelLumiUnc->LegendName, "lpf" );
+		legtot->AddEntry( this->Hist_RelStatUnc->h, this->Hist_RelStatUnc->LegendName, "P" );
+		legtot->AddEntry( this->Hist_RelLumiUnc->h, this->Hist_RelLumiUnc->LegendName, "P" );
 
 		return legtot;
 	}
@@ -168,12 +168,12 @@ protected:
 		leg->SetLineWidth(1);
 		leg->SetFillColor(0);
 		leg->SetFillStyle(0);
-		leg->AddEntry( this->Hist_RelSystUnc_Tot->h, this->Hist_RelSystUnc_Tot->LegendName,"lpf");
-		leg->AddEntry( this->Hist_RelTheoUnc_Acc->h, this->Hist_RelTheoUnc_Acc->LegendName,"lpf");
-		leg->AddEntry( this->Hist_RelSystUnc_EffSF->h, this->Hist_RelSystUnc_EffSF->LegendName,"lpf");
-		leg->AddEntry( this->Hist_RelSystUnc_DetRes->h, this->Hist_RelSystUnc_DetRes->LegendName,"lpf");
-		leg->AddEntry( this->Hist_RelSystUnc_Bkg->h, this->Hist_RelSystUnc_Bkg->LegendName,"lpf");
-		leg->AddEntry( this->Hist_RelSystUnc_FSR->h, this->Hist_RelSystUnc_FSR->LegendName,"lpf");
+		leg->AddEntry( this->Hist_RelSystUnc_Tot->h, this->Hist_RelSystUnc_Tot->LegendName,"P");
+		leg->AddEntry( this->Hist_RelTheoUnc_Acc->h, this->Hist_RelTheoUnc_Acc->LegendName,"P");
+		leg->AddEntry( this->Hist_RelSystUnc_EffSF->h, this->Hist_RelSystUnc_EffSF->LegendName,"P");
+		leg->AddEntry( this->Hist_RelSystUnc_DetRes->h, this->Hist_RelSystUnc_DetRes->LegendName,"P");
+		leg->AddEntry( this->Hist_RelSystUnc_Bkg->h, this->Hist_RelSystUnc_Bkg->LegendName,"P");
+		leg->AddEntry( this->Hist_RelSystUnc_FSR->h, this->Hist_RelSystUnc_FSR->LegendName,"P");
 
 		return leg;
 	}
