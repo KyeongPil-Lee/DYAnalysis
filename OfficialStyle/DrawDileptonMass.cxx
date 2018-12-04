@@ -110,7 +110,7 @@ public:
 		legend->SetFillStyle(0);
 		legend->SetTextFont(62);
 
-		legend->AddEntry( h_data,"Data" );
+		legend->AddEntry( h_data,"Data", "EP" );
 		if( this->channel == "Muon" )
 			legend->AddEntry( h_DY, "#gamma* /#font[122]{Z} #rightarrow #mu#mu", "f" );
 		else if( this->channel == "Electron" )
@@ -204,15 +204,15 @@ public:
 		f_line->Draw("SAME");
 		h_ratio->Draw("E1PLsame");
 
-		TLine gridRatio;
-		gridRatio.SetLineColor(kGray+2);
-		gridRatio.SetLineStyle(2);
-		for( size_t ii=0; ii<44; ii++ )
-		{
-			Int_t i_bin = ii+1;
-			Double_t binEdge = h_data->GetBinLowEdge(i_bin);
-			gridRatio.DrawLine(binEdge, 0.45, binEdge, 1.55);
-		}
+		// TLine gridRatio;
+		// gridRatio.SetLineColor(kGray+2);
+		// gridRatio.SetLineStyle(2);
+		// for( size_t ii=0; ii<44; ii++ )
+		// {
+		// 	Int_t i_bin = ii+1;
+		// 	Double_t binEdge = h_data->GetBinLowEdge(i_bin);
+		// 	gridRatio.DrawLine(binEdge, 0.45, binEdge, 1.55);
+		// }
 
 		// c1->cd();
 		// c1->Modified();
