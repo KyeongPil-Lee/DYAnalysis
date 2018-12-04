@@ -63,17 +63,17 @@ public:
 		h_TotUnc_temp->GetYaxis()->SetRangeUser(0.7, 1.4);
 
 		TLegend *legend;
-		SetLegend( legend, 0.15, 0.78, 0.60, 0.95 );
+		SetLegend( legend, 0.15, 0.75, 0.78, 0.93 );
 		legend->SetNColumns( 2 );
-		legend->AddEntry( h_StatUnc_temp, "Stat. unc.");
+		legend->AddEntry( h_StatUnc_temp, "Stat. unc.", "EP");
 		legend->AddEntry( h_TotUnc_temp, "Tot. unc.");
-		legend->AddEntry( h_ratio_noPI_temp, "Theory(w/o PI)/Data");
+		legend->AddEntry( h_ratio_noPI_temp, "Theory(FEWZ, w/o PI)/Data");
 		// legend->AddEntry( h_ratio_withPI_temp, "Theory(w/ PI)/Data");
 		legend->Draw();
 
 		TLatex latex;
 		DrawLatexNDC( latex );
-		latex.DrawLatexNDC(0.15, 0.17, "#scale[0.8]{#font[42]{M < 200 GeV}}");
+		latex.DrawLatexNDC(0.15, 0.17, "#scale[0.8]{#font[42]{m < 200 GeV}}");
 
 		c->SaveAs(".pdf");
 		TString PlotPath = gSystem->Getenv("KP_PLOT_PATH");
@@ -102,17 +102,17 @@ public:
 		h_TotUnc_temp->GetYaxis()->SetRangeUser(0.0, 3.0);
 
 		TLegend *legend;
-		SetLegend( legend, 0.15, 0.78, 0.67, 0.95 );
-		legend->SetNColumns( 2 );
-		legend->AddEntry( h_StatUnc_temp, "Stat. unc.");
+		SetLegend( legend, 0.15, 0.55, 0.55, 0.95 );
+		// legend->SetNColumns( 2 );
+		legend->AddEntry( h_StatUnc_temp, "Stat. unc.", "EP");
 		legend->AddEntry( h_TotUnc_temp, "Tot. unc.");
-		legend->AddEntry( h_ratio_noPI_temp, "Theory(w/o PI)/Data");
-		legend->AddEntry( h_ratio_withPI_temp, "Theory(w/ PI)/Data");
+		legend->AddEntry( h_ratio_noPI_temp, "Theory(FEWZ, w/o PI)/Data");
+		legend->AddEntry( h_ratio_withPI_temp, "Theory(FEWZ, w/ PI)/Data");
 		legend->Draw();
 
 		TLatex latex;
 		DrawLatexNDC( latex );
-		latex.DrawLatexNDC(0.15, 0.17, "#scale[0.8]{#font[42]{M > 200 GeV}}");
+		latex.DrawLatexNDC(0.15, 0.17, "#scale[0.8]{#font[42]{m > 200 GeV}}");
 
 		c->SaveAs(".pdf");
 		TString PlotPath = gSystem->Getenv("KP_PLOT_PATH");
