@@ -63,14 +63,14 @@ public:
 		h_TotUnc_temp->GetYaxis()->SetRangeUser(0.7, 1.4);
 
 		TLegend *legend1;
-		SetLegend( legend1, 0.15, 0.85, 0.60, 0.93 );
+		SetLegend( legend1, 0.15, 0.85, 0.65, 0.95 );
 		legend1->SetNColumns(2);
 		legend1->AddEntry( h_StatUnc_temp, "Stat. unc.", "EP");
 		legend1->AddEntry( h_TotUnc_temp, "Tot. unc.");
 		legend1->Draw();
 
 		TLegend *legend2;
-		SetLegend( legend2, 0.15, 0.75, 0.63, 0.85 );
+		SetLegend( legend2, 0.15, 0.75, 0.60, 0.85 );
 		legend2->AddEntry( h_ratio_noPI_temp, "Theory(FEWZ, w/o PI)/Data");
 		legend2->Draw();
 
@@ -105,14 +105,18 @@ public:
 		SetHistFormat_SinglePad(h_TotUnc_temp, "m [GeV]", "Theory/Data");
 		h_TotUnc_temp->GetYaxis()->SetRangeUser(0.0, 3.0);
 
-		TLegend *legend;
-		SetLegend( legend, 0.15, 0.55, 0.55, 0.95 );
-		// legend->SetNColumns( 2 );
-		legend->AddEntry( h_StatUnc_temp, "Stat. unc.", "EP");
-		legend->AddEntry( h_TotUnc_temp, "Tot. unc.");
-		legend->AddEntry( h_ratio_noPI_temp, "Theory(FEWZ, w/o PI)/Data");
-		legend->AddEntry( h_ratio_withPI_temp, "Theory(FEWZ, w/ PI)/Data");
-		legend->Draw();
+		TLegend *legend1;
+		SetLegend( legend1, 0.15, 0.85, 0.65, 0.95 );
+		legend1->SetNColumns( 2 );
+		legend1->AddEntry( h_StatUnc_temp, "Stat. unc.", "EP");
+		legend1->AddEntry( h_TotUnc_temp, "Tot. unc.");
+		legend1->Draw();
+
+		TLegend *legend2;
+		SetLegend( legend2, 0.15, 0.65, 0.60, 0.85 );
+		legend2->AddEntry( h_ratio_noPI_temp, "Theory(FEWZ, w/o PI)/Data");
+		legend2->AddEntry( h_ratio_withPI_temp, "Theory(FEWZ, w/ PI)/Data");
+		legend2->Draw();
 
 		TLatex latex;
 		DrawLatexNDC( latex );
