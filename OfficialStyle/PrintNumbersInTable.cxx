@@ -69,12 +69,12 @@ private:
       printf("[%2.0d bin] (%4.0lf, %4.0lf)", i_bin, lowerEdge, upperEdge );
 
       // printf("%10.2lf", h_relUnc_syst_momEngCorr_->GetBinContent(i_bin) );
-      printf("%10.2lf", h_relUnc_syst_eff_->GetBinContent(i_bin) );
-      printf("%10.2lf", h_relUnc_syst_detRes_->GetBinContent(i_bin) );
-      printf("%10.2lf", h_relUnc_syst_bkg_->GetBinContent(i_bin) );
-      printf("%10.2lf", h_relUnc_syst_FSR_->GetBinContent(i_bin) );
-      printf("%10.2lf", h_relUnc_syst_tot_->GetBinContent(i_bin) );
-      printf("%10.2lf", h_relUnc_syst_accPDF_->GetBinContent(i_bin) );
+      printf("%10.1lf", h_relUnc_syst_eff_->GetBinContent(i_bin) );
+      printf("%10.1lf", h_relUnc_syst_detRes_->GetBinContent(i_bin) );
+      printf("%10.1lf", h_relUnc_syst_bkg_->GetBinContent(i_bin) );
+      printf("%10.1lf", h_relUnc_syst_FSR_->GetBinContent(i_bin) );
+      printf("%10.1lf", h_relUnc_syst_tot_->GetBinContent(i_bin) );
+      printf("%10.1lf", h_relUnc_syst_accPDF_->GetBinContent(i_bin) );
       printf("\n");
     }
   }
@@ -101,12 +101,12 @@ private:
       
       TString str_syst = TString::Format("%.0d--%.0d", (Int_t)lowerEdge, (Int_t)upperEdge);
       // str_syst = str_syst + TString::Format(" & $  %.2lf  $", h_relUnc_syst_momEngCorr_->GetBinContent(i_bin) );
-      str_syst = str_syst + TString::Format(" & $  %.2lf  $", h_relUnc_syst_eff_->GetBinContent(i_bin) );
-      str_syst = str_syst + TString::Format(" & $  %.2lf  $", h_relUnc_syst_detRes_->GetBinContent(i_bin) );
-      str_syst = str_syst + TString::Format(" & $  %.2lf  $", h_relUnc_syst_bkg_->GetBinContent(i_bin) );
-      str_syst = str_syst + TString::Format(" & $  %.2lf  $", h_relUnc_syst_FSR_->GetBinContent(i_bin) );
-      str_syst = str_syst + TString::Format(" & $  %.2lf  $", h_relUnc_syst_tot_->GetBinContent(i_bin) );
-      str_syst = str_syst + TString::Format(" & $  %.2lf  $", h_relUnc_syst_accPDF_->GetBinContent(i_bin) );
+      str_syst = str_syst + TString::Format(" & $  %.1lf  $", h_relUnc_syst_eff_->GetBinContent(i_bin) );
+      str_syst = str_syst + TString::Format(" & $  %.1lf  $", h_relUnc_syst_detRes_->GetBinContent(i_bin) );
+      str_syst = str_syst + TString::Format(" & $  %.1lf  $", h_relUnc_syst_bkg_->GetBinContent(i_bin) );
+      str_syst = str_syst + TString::Format(" & $  %.1lf  $", h_relUnc_syst_FSR_->GetBinContent(i_bin) );
+      str_syst = str_syst + TString::Format(" & $  %.1lf  $", h_relUnc_syst_tot_->GetBinContent(i_bin) );
+      str_syst = str_syst + TString::Format(" & $  %.1lf  $", h_relUnc_syst_accPDF_->GetBinContent(i_bin) );
       str_syst = str_syst + "\\\\";
 
       printf( "%s\n\\hline\n", str_syst.Data() );
