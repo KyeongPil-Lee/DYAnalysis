@@ -275,6 +275,76 @@ TH1D* Convert_GraphToHist( TGraphAsymmErrors *g )
   return h_temp;
 }
 
+void Print_Histogram( TH1D* h, Bool_t NegativeCheck = kFALSE )
+{
+  h->Print();
+
+  // -- underflow -- //
+  Double_t value_uf = h->GetBinContent(0);
+  Double_t errorAbs_uf = h->GetBinError(0);
+  Double_t errorRel_uf = value_uf == 0 ? 0 : errorAbs_uf / value_uf;
+
+  printf( "Underflow: (value, error) = (%lf, %lf (%7.3lf %%))\n", 
+         value_uf, errorAbs_uf, errorRel_uf*100 );
+
+  if( NegativeCheck && value_uf < 0 )
+    printf("################## NEGATIVE BIN ##################");
+
+  Int_t nBin = h->GetNbinsX();
+  for(Int_t i=0; i<nBin; i++)
+  {
+    Int_t i_bin = i+1;
+    Double_t LowerEdge = h->GetBinLowEdge(i_bin);
+    Double_t UpperEdge = h->GetBinLowEdge(i_bin+1);
+
+    Double_t value = h->GetBinContent(i_bin);
+    Double_t errorAbs = h->GetBinError(i_bin);
+    Double_t errorRel;
+    if( value != 0 )
+      errorRel = errorAbs / value;
+    else
+      errorRel = 0;
+
+    printf( "%02d bin: [%6.1lf, %6.1lf] (value, error) = (%lf, %lf (%7.3lf %%))\n", 
+           i_bin, LowerEdge, UpperEdge, value, errorAbs, errorRel*100 );
+    
+    if( NegativeCheck && value < 0 )
+      printf("################## NEGATIVE BIN ##################");
+  }
+
+  // -- overflow -- //
+  Double_t value_of = h->GetBinContent(nBin+1);
+  Double_t errorAbs_of = h->GetBinError(nBin+1);
+  Double_t errorRel_of = value_of == 0 ? 0 : errorAbs_of / value_of;
+
+  printf( "Overflow: (value, error) = (%lf, %lf (%7.3lf %%))\n", 
+         value_of, errorAbs_of, errorRel_of*100 );
+
+  if( NegativeCheck && value_of < 0 )
+    printf("################## NEGATIVE BIN ##################");
+
+  printf("\n\n");
+}
+
+TH1D* QuadSum_NoError( TH1D* h1, TH1D* h2 )
+{
+  TH1D* h_QuadSum = (TH1D*)h1->Clone( "h_QuadSum" );
+  Int_t nBin = h1->GetNbinsX();
+  for(Int_t i=0; i<nBin; i++)
+  {
+    Int_t i_bin = i+1;
+
+    Double_t value1 = h1->GetBinContent(i_bin);
+    Double_t value2 = h2->GetBinContent(i_bin);
+
+    Double_t QuadSum = sqrt( value1*value1 + value2*value2 );
+
+    h_QuadSum->SetBinContent( i_bin, QuadSum );
+    h_QuadSum->SetBinError( i_bin, 0 );
+  }
+  return h_QuadSum;
+}
+
 struct HistInfo
 {
   TH1D* h;
@@ -308,10 +378,17 @@ public:
   Bool_t isLogX_;
   Bool_t isLogY_;
 
+  Bool_t setCanvasSize_;
+  Double_t canvasSizeX_;
+  Double_t canvasSizeY_;
+
   Double_t legendMinX_;
   Double_t legendMaxX_;
   Double_t legendMinY_;
   Double_t legendMaxY_;
+
+  Bool_t setLegendColumn_;
+  Int_t nLegendColumn_;
 
   Double_t minX_;
   Double_t maxX_;
@@ -343,6 +420,9 @@ public:
   Double_t maxRatio_;
   Bool_t setRangeRatio_;
 
+  // -- use MarkerStyle = 20 for all histogram if it is true
+  Bool_t forceSameMarkerStyle_;
+
   CanvasBase()
   {
     Init();
@@ -368,12 +448,25 @@ public:
     titleRatio_ = titleRatio;
   }
 
+  void SetCanvasSize( Double_t sizeX, Double_t sizeY )
+  {
+    setCanvasSize_ = kTRUE;
+    canvasSizeX_ = sizeX;
+    canvasSizeY_ = sizeY;
+  }
+
   void SetLegendPosition( Double_t minX, Double_t minY, Double_t maxX, Double_t maxY )
   {
     legendMinX_ = minX;
     legendMinY_ = minY;
     legendMaxX_ = maxX;
     legendMaxY_ = maxY;
+  }
+
+  void SetLegendColumn( Int_t nColumn )
+  {
+    setLegendColumn_ = kTRUE;
+    nLegendColumn_ = nColumn;
   }
 
   void SetRangeX( Double_t min, Double_t max )
@@ -422,6 +515,11 @@ public:
     latexInfos_.push_back( latexInfo );
   }
 
+  void ForceSameMarkerStyle( Bool_t value )
+  {
+    forceSameMarkerStyle_ = value;
+  }
+
   // -- implemented later
   virtual void Draw( TString drawOp )
   {
@@ -437,10 +535,17 @@ public:
     titleX_ = "undefined";
     titleY_ = "undefined";
 
+    setCanvasSize_ = kFALSE;
+    canvasSizeX_ = 800;
+    canvasSizeY_ = 800;
+
     legendMinX_ = 0.50;
     legendMinY_ = 0.70;
     legendMaxX_ = 0.95;
     legendMaxY_ = 0.95;
+
+    setLegendColumn_ = kFALSE;
+    nLegendColumn_ = 1;
 
     setRangeX_ = kFALSE;
     minX_ = 0;
@@ -466,6 +571,8 @@ public:
     setRangeRatio_ = kFALSE;
     minRatio_ = 0;
     maxRatio_ = 2.5;
+
+    forceSameMarkerStyle_ = kTRUE;
   }
 
   void DrawLatex_CMSPre()
@@ -487,7 +594,11 @@ public:
 
   void SetCanvas_Square()
   {
-    c_ = new TCanvas(canvasName_, "", 800, 800);
+    if( setCanvasSize_ )
+      c_ = new TCanvas(canvasName_, "", canvasSizeX_, canvasSizeY_);
+    else
+      c_ = new TCanvas(canvasName_, "", 800, 800);
+
     c_->cd();
     
     c_->SetTopMargin(0.05);
@@ -503,7 +614,11 @@ public:
 
   void SetCanvas_Ratio()
   {
-    c_ = new TCanvas(canvasName_, "", 800, 800);
+    if( setCanvasSize_ )
+      c_ = new TCanvas(canvasName_, "", canvasSizeX_, canvasSizeY_);
+    else
+      c_ = new TCanvas(canvasName_, "", 800, 800);
+
     c_->cd();
 
     topPad_ = new TPad("TopPad","TopPad", 0.01, 0.01, 0.99, 0.99 );
@@ -561,6 +676,7 @@ public:
   HistCanvas()
   {
     // -- member variables are initialized by Init() in CanvasBase()
+    setRebin_ = kFALSE;
   }
 
   HistCanvas(TString canvasName, Bool_t isLogX = kFALSE, Bool_t isLogY = kFALSE ): HistCanvas()
@@ -588,6 +704,7 @@ public:
 
     TLegend *legend;
     PlotTool::SetLegend( legend, legendMinX_, legendMinY_, legendMaxX_, legendMaxY_ );
+    if( setLegendColumn_ ) legend->SetNColumns(nLegendColumn_);
 
     // -- draw canvas
     SetCanvas_Square();
@@ -605,7 +722,8 @@ public:
 
       h->Draw(drawOp);
       h->SetStats(kFALSE);
-      h->SetMarkerStyle(20);
+      if( forceSameMarkerStyle_ ) h->SetMarkerStyle(20);
+      h->SetMarkerSize(1);
       h->SetMarkerColor(color);
       h->SetLineColor(color);
       h->SetFillColorAlpha(kWhite, 0); 
@@ -650,6 +768,7 @@ public:
 
     TLegend *legend;
     PlotTool::SetLegend( legend, legendMinX_, legendMinY_, legendMaxX_, legendMaxY_ );
+    if( setLegendColumn_ ) legend->SetNColumns(nLegendColumn_);
 
     // -- draw canvas
     SetCanvas_Ratio();
@@ -668,7 +787,8 @@ public:
 
       h->Draw(drawOp);
       h->SetStats(kFALSE);
-      h->SetMarkerStyle(20);
+      if( forceSameMarkerStyle_ ) h->SetMarkerStyle(20);
+      h->SetMarkerSize(1);
       h->SetMarkerColor(color);
       h->SetLineColor(color);
       h->SetFillColorAlpha(kWhite, 0); 
@@ -766,6 +886,7 @@ public:
 
     TLegend *legend;
     PlotTool::SetLegend( legend, legendMinX_, legendMinY_, legendMaxX_, legendMaxY_ );
+    if( setLegendColumn_ ) legend->SetNColumns(nLegendColumn_);
 
     // -- draw canvas
     SetCanvas_Square();
@@ -830,6 +951,7 @@ public:
 
     TLegend *legend;
     PlotTool::SetLegend( legend, legendMinX_, legendMinY_, legendMaxX_, legendMaxY_ );
+    if( setLegendColumn_ ) legend->SetNColumns(nLegendColumn_);
 
     // -- draw canvas
     SetCanvas_Ratio();
@@ -1048,6 +1170,7 @@ public:
     // -- make legend
     TLegend *legend;
     PlotTool::SetLegend( legend, legendMinX_, legendMinY_, legendMaxX_, legendMaxY_ );
+    if( setLegendColumn_ ) legend->SetNColumns(nLegendColumn_);
 
     // -- setup data, MC stacks
     SetDataHistogram(legend);
@@ -1106,7 +1229,7 @@ private:
     if( setRebin_ ) h->Rebin( nRebin_ );
 
     h->SetStats(kFALSE);
-    h->SetMarkerStyle(20);
+    if( forceSameMarkerStyle_ ) h->SetMarkerStyle(20);
     h->SetMarkerColor(color);
     h->SetLineColor(color);
     h->SetFillColorAlpha(kWhite, 0); 
@@ -1131,7 +1254,7 @@ private:
       if( setRebin_ ) h->Rebin( nRebin_ );
 
       h->SetStats(kFALSE);
-      h->SetMarkerStyle(20);
+      if( forceSameMarkerStyle_ ) h->SetMarkerStyle(20);
       h->SetMarkerColor(color);
       h->SetLineColor(color);
       h->SetFillColor(color);
