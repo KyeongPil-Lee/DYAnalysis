@@ -197,7 +197,7 @@ protected:
 		h->GetYaxis()->SetTitleSize(0.06);
 		h->GetYaxis()->SetTitleOffset(0.9);
 		h->GetYaxis()->SetTitleFont(42);
-		h->GetYaxis()->SetRangeUser(4e-2, 3e+2);
+		h->GetYaxis()->SetRangeUser(2e-2, 3e+2);
 	}
 
 	void DrawLatex( TLatex &latex )
