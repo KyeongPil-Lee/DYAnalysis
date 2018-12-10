@@ -109,7 +109,8 @@ private:
       str_syst = str_syst + TString::Format(" & $  %.1lf  $", h_relUnc_syst_accPDF_->GetBinContent(i_bin) );
       str_syst = str_syst + "\\\\";
 
-      printf( "%s\n\\hline\n", str_syst.Data() );
+      // printf( "%s\n\\hline\n", str_syst.Data() );
+      printf( "%s\n", str_syst.Data() );
     }
     cout << "===========================================================================" << endl;
   }
@@ -210,7 +211,8 @@ private:
       str_result = str_result + Transform_TexFormat( absUnc_theo );
       str_result = str_result + Transform_TexFormat( absUnc_tot );
       str_result = str_result + "\\\\";
-      printf( "%s\n\\hline\n", str_result.Data() );
+      // printf( "%s\n\\hline\n", str_result.Data() );
+      printf( "%s\n", str_result.Data() );
     }
     cout << "===========================================================================" << endl;
   }
@@ -299,7 +301,8 @@ private:
       str_result = str_result + Transform_TexFormat( absUnc_exp );
       str_result = str_result + Transform_TexFormat( absUnc_tot );
       str_result = str_result + "\\\\";
-      printf( "%s\n\\hline\n", str_result.Data() );
+      // printf( "%s\n\\hline\n", str_result.Data() );
+      printf( "%s\n", str_result.Data() );
 
       // printf("15--20 & $  2.1 \times 10^{-1}  $ & $  4.8 \times 10^{-3}  $ & $  1.9 \times 10^{-2}  $ & $  2.0 \times 10^{-2}  $\\");
     }
@@ -356,7 +359,8 @@ private:
       str_result = str_result + Transform_TexFormat( diffXSec );
       str_result = str_result + Transform_TexFormat( absUnc_tot );
       str_result = str_result + "\\\\";
-      printf( "%s\n\\hline\n", str_result.Data() );
+      // printf( "%s\n\\hline\n", str_result.Data() );
+      printf( "%s\n", str_result.Data() );
     }
   }
 
