@@ -180,16 +180,22 @@ public:
 		this->g_CenV_Shifted->SetMarkerStyle(20);
 		this->g_CenV_Shifted->SetFillColorAlpha(kWhite, 0);
 
-		TLegend *legend = new TLegend(0.15, 0.32, 0.75, 0.60);
-		legend->SetBorderSize(0);
-		legend->SetFillStyle(0);
-		legend->SetTextFont(62);
-		legend->AddEntry( this->g_CenV_Shifted, "Data", "EP" );
+		TLegend *legend1 = new TLegend(0.21, 0.45, 0.45, 0.53);
+		legend1->SetBorderSize(0);
+		legend1->SetFillStyle(0);
+		legend1->SetTextFont(62);
+		legend1->AddEntry( this->g_CenV_Shifted, "      Data", "EP" );
+		legend1->Draw();
 
+		// -- split legend to adjust the box size inside of the legend
+		TLegend *legend2 = new TLegend(0.15, 0.35, 0.85, 0.45);
+		legend2->SetBorderSize(0);
+		legend2->SetFillStyle(0);
+		legend2->SetTextFont(62);
 		TH1D* h_forLegend = (TH1D*)this->h_NNLO_FineBin->Clone();
 		h_forLegend->SetFillColorAlpha( kBlue, 1 );
-		legend->AddEntry( h_forLegend, "FEWZ (NNLO, NNPDF3.0)");
-		legend->Draw();
+		legend2->AddEntry( h_forLegend, "FEWZ (NNLO QCD + NLO EW)");
+		legend2->Draw();
 
 		TLatex latex; DrawLatexNDC( latex );
 
