@@ -346,6 +346,31 @@ TH1D* QuadSum_NoError( TH1D* h1, TH1D* h2 )
   return h_QuadSum;
 }
 
+TH1D* Extract_RelUnc( TH1D* h, TString HistName = "", Bool_t ConvertToPercent = kFALSE )
+{
+  TH1D* h_RelUnc = (TH1D*)h->Clone();
+  if( HistName != "" )
+    h_RelUnc->SetName(HistName);
+
+  Int_t nBin = h->GetNbinsX();
+  for(Int_t i=0; i<nBin; i++)
+  {
+    Int_t i_bin = i+1;
+
+    Double_t value = h->GetBinContent(i_bin);
+    Double_t error = h->GetBinError(i_bin);
+
+    Double_t RelUnc = error / value;
+    if( ConvertToPercent )
+      RelUnc = RelUnc * 100;
+
+    h_RelUnc->SetBinContent(i_bin, RelUnc );
+    h_RelUnc->SetBinError(i_bin, 0);
+  }
+
+  return h_RelUnc;
+}
+
 struct HistInfo
 {
   TH1D* h;
