@@ -97,6 +97,7 @@ void SetAxis_TopPad( TAxis *axisX, TAxis *axisY, TString titleY )
   axisY->SetTitleFont(42);
   axisY->SetTitleSize(0.05);
   axisY->SetTitleOffset(1.25);
+  axisY->SetNoExponent(kFALSE);
 
   axisY->SetLabelFont(42);
   axisY->SetLabelSize(0.04);
