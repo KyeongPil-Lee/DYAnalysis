@@ -64,24 +64,19 @@ public:
 	{
 		this->Load_TheoryHistograms();
 
-		TString FileName_CenV = GetBasePath() + "Include/Results_ROOTFiles_76X/dyll-combi-_corr_wLumi_inpYieldUnc-20171204.root";
-		// -- convert TH1F to TH1D -- //
-		TFile *f_input = TFile::Open( FileName_CenV );
-		f_input->cd();
-		TH1F* h_temp = (TH1F*)f_input->Get( "h1Combi" )->Clone();
-		this->h_CenV = new TH1D();
-		h_temp->Copy( *this->h_CenV );
-		this->h_CenV->SetTitle("");
+		TString fileName = GetBasePath() + "Include/Results_ROOTFiles_76X/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+
+		this->h_CenV = Get_Hist( fileName, "ll/h_dXSec" ); this->h_CenV->SetLineWidth(1.0);
 		this->h_CenV->SetName(this->HistName_CenV);
-		///////////////////////////////////////////
 
 		this->g_CenV_Shifted = Get_Graph( "ROOTFile_Histograms_XDataPoint.root", "g_DiffXSec_xShifted", this->GraphName_CenV_Shifted );
 		this->ChangeValues_ShiftedGraph( this->g_CenV_Shifted, this->h_CenV );
 
-		TH1D* h_AbsStatUnc = Get_Hist( FileName_CenV, "h1_dCS_from_statYield" );
-		this->h_RelStatUnc = ConvertHist_AbsToRel( this->h_CenV, h_AbsStatUnc );
+		this->h_RelStatUnc = Get_Hist( fileName, "ll/h_relUnc_stat" ); this->h_RelStatUnc->Scale(0.01);
 		this->h_RelStatUnc->SetName( this->HistName_RelStatUnc );
-		this->h_RelTotUnc = Extract_RelUnc( this->h_CenV, this->HistName_RelTotUnc );
+
+		this->h_RelTotUnc = Extract_RelUnc( this->h_CenV );
+		this->h_RelTotUnc->SetName(this->HistName_RelTotUnc);
 
 		this->MakeInputFile( "Combined" );
 	}
@@ -370,18 +365,18 @@ protected:
 		if( this->ChannelType == "Dimuon" )
 		{
 			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
-			latex.DrawLatexNDC(0.65, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow #mu^{+}#mu^{-}}}");
+			latex.DrawLatexNDC(0.65, 0.90, "#font[42]{#scale[0.9]{#gamma*/Z #rightarrow #mu^{+}#mu^{-}}}");
 		}
 		else if( this->ChannelType == "Dielectron" )
 		{
 			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (13 TeV)}}");
-			latex.DrawLatexNDC(0.65, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow e^{+}e^{-}}}");
+			latex.DrawLatexNDC(0.65, 0.90, "#font[42]{#scale[0.9]{#gamma*/Z #rightarrow e^{+}e^{-}}}");
 		}
 		else if( this->ChannelType == "Combined" )
 		{
 			latex.DrawLatexNDC(0.48, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (ee) 2.8 fb^{-1} (#mu#mu) (13 TeV)}}");
 			// latex.DrawLatexNDC(0.48, 0.96, TString::Format("#font[42]{#scale[0.7]{%.1lf fb^{-1} (ee) %.1lf fb^{-1} (#mu#mu)} #scale[0.8]{(13 TeV)}}", lumi_EE, lumi_MM) );
-			latex.DrawLatexNDC(0.65, 0.90, "#font[42]{#scale[0.9]{Z/#gamma* #rightarrow e^{+}e^{-}, #mu^{+}#mu^{-}}}");
+			latex.DrawLatexNDC(0.65, 0.90, "#font[42]{#scale[0.9]{#gamma*/Z #rightarrow e^{+}e^{-}, #mu^{+}#mu^{-}}}");
 		}
 	}
 
