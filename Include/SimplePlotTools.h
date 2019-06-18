@@ -371,6 +371,26 @@ TH1D* Extract_RelUnc( TH1D* h, TString HistName = "", Bool_t ConvertToPercent = 
   return h_RelUnc;
 }
 
+TH1D* Extract_AbsUnc( TH1D* h, TString HistName = "" )
+{
+  TH1D* h_absUnc = (TH1D*)h->Clone();
+  if( HistName != "" )
+    h_absUnc->SetName(HistName);
+
+  Int_t nBin = h->GetNbinsX();
+  for(Int_t i=0; i<nBin; i++)
+  {
+    Int_t i_bin = i+1;
+
+    Double_t error = h->GetBinError(i_bin);
+
+    h_absUnc->SetBinContent(i_bin, error );
+    h_absUnc->SetBinError(i_bin, 0);
+  }
+
+  return h_absUnc;
+}
+
 struct HistInfo
 {
   TH1D* h;
