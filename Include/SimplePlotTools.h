@@ -391,6 +391,46 @@ TH1D* Extract_AbsUnc( TH1D* h, TString HistName = "" )
   return h_absUnc;
 }
 
+TH1D* HistOperation(TString histName, TH1D* h1, TH1D* h2, TString operation)
+{
+  if( !(operation == "+" || operation == "-" || operation == "*" || operation == "/") )
+  {
+    cout << "[HistOperation] operation = " << operation << " is not supported ... return nullptr" << endl;
+    return nullptr;
+  }
+
+  Int_t nBin1 = h1->GetNbinsX();
+  Int_t nBin2 = h2->GetNbinsX();
+  if( nBin1 != nBin2 )
+  {
+    printf("[HistOperation] (nBin1, nBin2) = (%d, %d): not same ... return nullptr\n", nBin1, nBin2);
+    return nullptr;
+  }
+
+  TH1D* h_return = (TH1D*)h1->Clone();
+  h_return->SetName(histName);
+
+  for(Int_t i=0; i<nBin1; i++)
+  {
+    Int_t i_bin = i+1;
+
+    Double_t value1 = h1->GetBinContent(i_bin);
+    Double_t value2 = h2->GetBinContent(i_bin);
+
+    Double_t value_return = -1;
+
+    if( operation == "+" ) value_return = value1 + value2;
+    if( operation == "-" ) value_return = value1 - value2;
+    if( operation == "*" ) value_return = value1 * value2;
+    if( operation == "/" ) value_return = value1 / value2;
+
+    h_return->SetBinContent(i_bin, value_return);
+    h_return->SetBinError(i_bin, 0); // -- no error propagation considered for now
+  }
+
+  return h_return;
+}
+
 struct HistInfo
 {
   TH1D* h;

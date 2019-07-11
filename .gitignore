@@ -1,6 +1,9 @@
 # Plots, Big files...
 Local/
 
+# Plots
+*.pdf
+
 # log files
 *.log
 
