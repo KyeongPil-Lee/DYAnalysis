@@ -431,6 +431,45 @@ TH1D* HistOperation(TString histName, TH1D* h1, TH1D* h2, TString operation)
   return h_return;
 }
 
+TGraphAsymmErrors* GraphOperation(TString graphName, TGraphAsymmErrors* g1, TGraphAsymmErrors* g2, TString operation)
+{
+  if( !(operation == "+" || operation == "-" || operation == "*" || operation == "/") )
+  {
+    cout << "[HistOperation] operation = " << operation << " is not supported ... return nullptr" << endl;
+    return nullptr;
+  }
+
+  Int_t nPoint1 = g1->GetN();
+  Int_t nPoint2 = g2->GetN();
+  if( nPoint1 != nPoint2 )
+  {
+    printf("[HistOperation] (nPoint1, nPoint2) = (%d, %d): not same ... return nullptr\n", nPoint1, nPoint2);
+    return nullptr;
+  }
+
+  TGraphAsymmErrors* g_return = (TGraphAsymmErrors*)g1->Clone();
+  g_return->SetName(graphName);
+
+  for(Int_t i=0; i<nPoint1; i++)
+  {
+    Double_t x1, y1, x2, y2;
+
+    g1->GetPoint(i, x1, y1);
+    g2->GetPoint(i, x2, y2);
+
+    Double_t y_return = -1;
+
+    if( operation == "+" ) y_return = y1 + y2;
+    if( operation == "-" ) y_return = y1 - y2;
+    if( operation == "*" ) y_return = y1 * y2;
+    if( operation == "/" ) y_return = y1 / y2;
+
+    g_return->SetPoint(i, x1, y_return);
+  }
+
+  return g_return;
+}
+
 struct HistInfo
 {
   TH1D* h;
