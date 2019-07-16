@@ -56,5 +56,30 @@ namespace DYTool
     return new TH1D(histName, "", 43, arr_massBinEdge);
   }
 
+  static inline void loadBar(int x, int n, int r, int w)
+  {
+      // Only update r times.
+      if( x == n )
+        cout << endl;
+
+      if ( x % (n/r +1) != 0 ) return;
+
+   
+      // Calculuate the ratio of complete-to-incomplete.
+      float ratio = x/(float)n;
+      int   c     = ratio * w;
+   
+      // Show the percentage complete.
+      printf("%3d%% [", (int)(ratio*100) );
+   
+      // Show the load bar.
+      for (int x=0; x<c; x++) cout << "=";
+   
+      for (int x=c; x<w; x++) cout << " ";
+   
+      // ANSI Control codes to go back to the
+      // previous line and clear it.
+    cout << "]\r" << flush;
+  }
 };
 // -- end of namespace

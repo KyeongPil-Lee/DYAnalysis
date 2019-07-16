@@ -25,6 +25,8 @@ public:
     Double_t sumWeight = 0;
     for(Int_t i_ev=0; i_ev<nEvent; i_ev++)
     {
+      DYTool::loadBar(i_ev+1, nEvent, 100, 100);
+
       ntuple->GetEvent(i_ev);
 
       vector<DYGenEle_preFSR> vec_ele = DYTool::GetAllGenEle_preFSR(ntuple);
