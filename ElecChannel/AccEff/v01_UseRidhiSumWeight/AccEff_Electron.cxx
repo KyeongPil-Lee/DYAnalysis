@@ -18,7 +18,7 @@ public:
 
   void Produce()
   {
-    vector<DYTool::SampleInfo> vec_sampleInfo_signal = DYTool::GetSampleInfo_Signal();
+    vector<DYTool::SampleInfo> vec_sampleInfo_signal = DYTool::GetSampleInfo_Signal_Ridhi();
     for(const auto& sampleInfo : vec_sampleInfo_signal )
       ProduceMassHist(sampleInfo);
 
