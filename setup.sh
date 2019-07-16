@@ -38,6 +38,17 @@ then
 		
 elif [ $HOSTNAME == "cms.snu.ac.kr" ]; then
 	KP_DATA_PATH=/home/kplee/data1/DYntuple/76X
+
+elif [ $HOSTNAME == "muon" ]; then
+	KP_DATA_PATH="/scratch/kplee/DY2015Ntuple_ee"
+
+	export SCRAM_ARCH=slc6_amd64_gcc491
+	export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
+	source $VO_CMS_SW_DIR/cmsset_default.sh
+	cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_1 # -- has ROOT 6.02/05, and unfolding package was compiled under this version! -- #
+	eval `scramv1 runtime -sh`
+
+	cd $KP_ANALYZER_PATH
 fi
 
 # -- RooUnfold package path -- #
