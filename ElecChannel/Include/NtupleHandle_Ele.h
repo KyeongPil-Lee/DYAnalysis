@@ -64,6 +64,7 @@ public:
   Double_t genWeight;
   Int_t    nPU;
   Int_t    nGenEle;
+  Int_t    tauFlag; // -- True if there are 2 gen tau with fromHardProcessDecayed == 1
   std::vector<bool>    *genFlag_fromHardProcessFinalState;
 
   // -- gen photons with mother check (is it true?)
@@ -216,6 +217,9 @@ public:
 
     chain->SetBranchStatus("genPreFSR_En", 1);
     chain->SetBranchAddress("genPreFSR_En", &genEle_preFSR_energy);
+
+    chain->SetBranchStatus("tauFlag", 1);
+    chain->SetBranchAddress("tauFlag", &tauFlag);
 
     chain->SetBranchStatus("ptElec", 1);
     chain->SetBranchAddress("ptElec", &ele_pt);
