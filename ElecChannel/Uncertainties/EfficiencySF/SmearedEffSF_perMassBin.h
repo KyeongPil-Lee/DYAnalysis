@@ -19,9 +19,18 @@ public:
   TH1D* h_mass_effPass_withSF_smeared_[nEffMap];
   TH1D* h_effSF_perMassBin_smeared_[nEffMap];
 
+  Bool_t doFlipFlop_ = kFALSE;
+
   SmearedEffSFTool(TString uncType)
   {
     uncType_ = uncType;
+    Init();
+  }
+
+  SmearedEffSFTool(TString uncType, Bool_t doFlipFlop )
+  {
+    uncType_ = uncType;
+    doFlipFlop_ = doFlipFlop;
     Init();
   }
 
@@ -44,6 +53,7 @@ private:
     for(Int_t i=0; i<nEffMap; i++)
     {
       tnpEff_smeared_[i] = new TnPEfficiency();
+      if( doFlipFlop_ ) tnpEff_smeared_[i]->doFlipFlop_ = kTRUE;
       tnpEff_smeared_[i]->SmearingEff_GivenUncType(uncType_);
 
       TString numbering = TString::Format("%d", i);

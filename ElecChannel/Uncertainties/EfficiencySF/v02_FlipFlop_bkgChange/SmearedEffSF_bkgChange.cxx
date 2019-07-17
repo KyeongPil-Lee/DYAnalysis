@@ -1,7 +1,7 @@
-#include "SmearedEffSF_perMassBin.h"
+#include <ElecChannel/Uncertainties/EfficiencySF/SmearedEffSF_perMassBin.h>
 void SmearedEffSF_bkgChange()
 {
-  SmearedEffSFTool* tool = new SmearedEffSFTool("bkgChange");
-  tool->doFlipFlop_ = kTRUE;
+  Bool_t doFlipFlop = kTRUE;
+  SmearedEffSFTool* tool = new SmearedEffSFTool("bkgChange", doFlipFlop);
   tool->Produce();
 }

@@ -308,6 +308,8 @@ private:
         cout << "dataType = " << dataType << " is not supported for doing flipflop" << endl;
       else
       {
+        cout << "doFlipFlop: activated! ... uncType = " << uncType << endl;
+
         Int_t i_count = 0;
         for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
         {
