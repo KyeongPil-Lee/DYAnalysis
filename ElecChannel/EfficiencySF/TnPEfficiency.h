@@ -294,7 +294,7 @@ private:
           absUnc_ID_MC_[i_eta][i_pt]   = h_relUnc_ID->GetBinContent(i_etaBin, i_ptBin) * eff_ID_MC_[i_eta][i_pt];
           absUnc_trig_MC_[i_eta][i_pt] = h_relUnc_trig->GetBinContent(i_etaBin, i_ptBin) * eff_trig_MC_[i_eta][i_pt];
 
-          printf("[(i_eta, i_pt) = (%d, %d)] absUnc: (reco, ID, trig) = (%lf, %lf, %lf)\n", i_eta, i_pt, absUnc_reco_MC_[i_eta][i_pt], absUnc_ID_MC_[i_eta][i_pt], absUnc_trig_MC_[i_eta][i_pt]);
+          // printf("[(i_eta, i_pt) = (%d, %d)] absUnc: (reco, ID, trig) = (%lf, %lf, %lf)\n", i_eta, i_pt, absUnc_reco_MC_[i_eta][i_pt], absUnc_ID_MC_[i_eta][i_pt], absUnc_trig_MC_[i_eta][i_pt]);
         }
       }
     }
