@@ -1,7 +1,7 @@
 #include <ElecChannel/EfficiencySF/TnPEfficiency.h>
 
-// #define nEffMap 2000
-#define nEffMap 10
+#define nEffMap 2000
+// #define nEffMap 10
 
 class SmearedEffSFTool
 {
