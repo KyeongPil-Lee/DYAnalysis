@@ -22,6 +22,12 @@ void Comp_KP_vs_Ridhi(TString type)
     histName_KP = "h_mass_effPass_all";
     histName_Ridhi = "h_mass_EffPass";
   }
+  else if( type == "effPass_M100to200" )
+  {
+    histName_KP = "h_mass_effPass_100to200";
+    fileName_Ridhi = "../DYEE_M100to200.root";
+    histName_Ridhi = "h_mass_EffPass";
+  }
 
   TString canvasName = histName_KP;
   canvasName.ReplaceAll("h_", "c_");
@@ -41,7 +47,12 @@ void Comp_KP_vs_Ridhi(TString type)
   canvas->RegisterLatex(0.16, 0.91, "#font[42]{#scale[0.6]{"+histInfo+"}}");
 
   canvas->SetRangeY(1e-1, 1e7);
-  canvas->SetRangeRatio(0.97, 1.03);
+  canvas->SetRangeRatio(0.99, 1.01);
+  if( type == "effPass_M100to200" )
+  {
+    canvas->SetRangeX(50, 200);
+    canvas->SetRangeRatio(0.99, 1.01);
+  }
 
   canvas->SetLegendPosition(0.70, 0.75, 0.95, 0.90);
 
@@ -55,4 +66,6 @@ void Comp_KP_vs_Ridhi()
   Comp_KP_vs_Ridhi("accTotal");
   Comp_KP_vs_Ridhi("accPass");
   Comp_KP_vs_Ridhi("effPass");
+
+  Comp_KP_vs_Ridhi("effPass_M100to200");
 }
