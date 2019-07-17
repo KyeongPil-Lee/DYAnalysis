@@ -5,6 +5,10 @@
 #include <TLorentzVector.h>
 #include <math.h>
 
+// -- added by KP to be compiled
+#include <TFile.h>
+#include <TSystem.h>
+
 Double_t deltaPhi(Double_t phi1, Double_t phi2)
 {
   Double_t pi = 3.1415927;
