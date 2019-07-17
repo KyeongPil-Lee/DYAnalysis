@@ -1,6 +1,7 @@
 #include <ElecChannel/EfficiencySF/TnPEfficiency.h>
 
-#define nEffMap 2000
+// #define nEffMap 2000
+#define nEffMap 10
 
 class SmearedEffSFTool
 {
@@ -26,25 +27,14 @@ public:
 
   void Produce()
   {
-    vector<DYTool::SampleInfo> vec_sampleInfo_signal = DYTool::GetSampleInfo_Signal();
-    for(const auto& sampleInfo : vec_sampleInfo_signal )
-      ProduceMassHist(sampleInfo);
-
-    Save();
-  }
-
-  void Produce_LocalTest()
-  {
-    DYTool::SampleInfo sampleInfo("/Users/KyeongPil_Lee/Physics/DYAnalysis_76X_LumiUpdate/ElecChannel/Include/Example/DY_2000to3000.root", 0.00054/3, 159.616, 2000, 3000);
-    ProduceMassHist(sampleInfo);
-
+    ProduceMassHist();
     Save();
   }
 
 private:
   void Init()
   {
-    h_mass_effPass_noSF_      = DYTool::MakeHist_DXSecBin("h_mass_effPass_noSF");
+    h_mass_effPass_noSF_ = DYTool::MakeHist_DXSecBin("h_mass_effPass_noSF");
 
     tnpEff_cv_ = new TnPEfficiency();
 
@@ -62,23 +52,27 @@ private:
     }
   }
 
-  void ProduceMassHist(DYTool::SampleInfo sampleInfo)
+  void ProduceMassHist()
   {
-    cout << "[EffSFTool::ProduceMassHist] ntuple = " << sampleInfo.ntuplePath_ << endl;
+    TString dataPath = gSystem->Getenv("KP_DATA_PATH");
+    TFile *f_ntuple = TFile::Open(dataPath+"/DY_forEff_M10to3000.root");
+    Double_t pt1, pt2, eta1, eta2, diM, lumiWeight, genWeight;
 
-    TChain *chain = new TChain("ntupler/ElectronTree");
-    chain->Add(sampleInfo.ntuplePath_);
+    TTree *ntuple;
+    ntuple = (TTree*)f_ntuple->Get("tree");
+    Long64_t nTotEvent = ntuple->GetEntries();
+    cout << "Total # events: "<< nTotEvent << endl;
+    cout << endl;
 
-    NtupleHandle_Ele *ntuple = new NtupleHandle_Ele(chain);
+    ntuple->SetBranchAddress("Ele1PT",&pt1);
+    ntuple->SetBranchAddress("Ele1Eta",&eta1);
+    ntuple->SetBranchAddress("Ele2PT",&pt2);
+    ntuple->SetBranchAddress("Ele2Eta",&eta2);
+    ntuple->SetBranchAddress("ZMass",&diM);
+    ntuple->SetBranchAddress("lumiWeights",&lumiWeight);
+    ntuple->SetBranchAddress("genWeights",&genWeight);
 
-    // -- setup for weights
-    Double_t normFactor = sampleInfo.normFactor();
-    // DYTool::PUWeightTool* puWeightTool = new DYTool::PUWeightTool(); // -- PU weight is not used as it will be canceled anyway
-
-    // -- TnP efficiency information
-    TnPEfficiency* tnpEff = new TnPEfficiency();
-
-    Int_t nEvent = chain->GetEntries();
+    Int_t nEvent = ntuple->GetEntries();
     cout << "nEvent: " << nEvent << endl;
 
     for(Int_t i_ev=0; i_ev<nEvent; i_ev++)
@@ -87,43 +81,16 @@ private:
 
       ntuple->GetEvent(i_ev);
 
-      Double_t genWeight = ntuple->genWeight;
-      // Double_t PUWeight = puWeightTool->Weight(ntuple->nPU);
+      h_mass_effPass_noSF_->Fill( diM, lumiWeight*genWeight );
 
-      Bool_t doTrancate = kFALSE;
-      if( sampleInfo.maxM_ == 100 ) doTrancate = kTRUE;
+      Double_t eventSF_cv = tnpEff_cv_->EfficiencySF_EventWeight( pt1, eta1, pt2, eta2 );
+      h_mass_effPass_withSF_cv_->Fill( diM, lumiWeight*genWeight*eventSF_cv );
 
-      if( DYTool::IsDYEEEvent(ntuple, doTrancate) )
+      for(Int_t i=0; i<nEffMap; i++)
       {
-        Bool_t flag_passAcc = kFALSE;
-
-        vector<DYGenEle_postFSR> vec_genEle = DYTool::GetAllGenEle_postFSR(ntuple);
-
-        Double_t m_postFSR = (vec_genEle[0].vec_P + vec_genEle[1].vec_P).M();
-
-        flag_passAcc = DYTool::DoPassAcc_ee( vec_genEle[0].pt, vec_genEle[0].eta, vec_genEle[1].pt, vec_genEle[1].eta );
-
-        // -- check the efficiency only for the event passing acceptance
-        if( flag_passAcc )
-        {
-          vector<DYElectron> vec_recoEle;
-          Bool_t flag_passEff = DYTool::IsDYEECandidate( ntuple, vec_recoEle );
-
-          if( flag_passEff )
-          {
-            h_mass_effPass_noSF_->Fill( m_postFSR, genWeight*normFactor );
-
-            Double_t eventSF_cv = tnpEff_cv_->EfficiencySF_EventWeight( vec_recoEle[0].pt, vec_recoEle[0].eta, vec_recoEle[1].pt, vec_recoEle[1].eta );
-            h_mass_effPass_withSF_cv_->Fill( m_postFSR, genWeight*normFactor*eventSF_cv );
-
-            for(Int_t i=0; i<nEffMap; i++)
-            {
-              Double_t eventSF_smeared = tnpEff_smeared_[i]->EfficiencySF_EventWeight( vec_recoEle[0].pt, vec_recoEle[0].eta, vec_recoEle[1].pt, vec_recoEle[1].eta );
-              h_mass_effPass_withSF_smeared_[i]->Fill( m_postFSR, genWeight*normFactor*eventSF_smeared );
-            }
-          }
-        } // -- end of if( flag_passAcc )
-      } // -- end of if( DYTool::IsDYEEEvent(ntuple, doTrancate) )
+        Double_t eventSF_smeared = tnpEff_smeared_[i]->EfficiencySF_EventWeight( pt1, eta1, pt2, eta2 );
+        h_mass_effPass_withSF_smeared_[i]->Fill( diM, lumiWeight*genWeight*eventSF_smeared );
+      }
     } // -- end of event iteration
 
     h_effSF_perMassBin_cv_ = (TH1D*)h_mass_effPass_noSF_->Clone();
@@ -163,6 +130,5 @@ private:
 void SmearedEffSF_perMassBin()
 {
   SmearedEffSFTool* tool = new SmearedEffSFTool("bkgChange");
-  // tool->Produce();
-  tool->Produce_LocalTest();
+  tool->Produce();
 }
