@@ -71,9 +71,9 @@ private:
 
       if( DYTool::IsDYEEEvent(ntuple, doTrancate) )
       {
-        if( ntuple->tagFlag )
+        if( ntuple->tauFlag )
         {
-          cout << "It is DYEE event, but tagFlag == 1 ... ignored" << endl;
+          cout << "It is DYEE event, but tauFlag == 1 ... ignored" << endl;
           continue;
         }
 
