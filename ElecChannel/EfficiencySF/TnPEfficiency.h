@@ -24,15 +24,15 @@ public:
   Double_t eff_trig_data_[nEtaBin][nPtBin];
   Double_t eff_trig_MC_[nEtaBin][nPtBin];
 
-  // -- for the uncertainty estimation:  |eff(central value) - eff(alt. value)| 
-  Double_t absUnc_reco_data_[nEtaBin][nPtBin];
-  Double_t absUnc_reco_MC_[nEtaBin][nPtBin];
+  // -- for the uncertainty estimation:  eff(alt. value) - eff(central value) <- it should not be a abolute value!! 
+  Double_t diff_reco_data_[nEtaBin][nPtBin];
+  Double_t diff_reco_MC_[nEtaBin][nPtBin];
 
-  Double_t absUnc_ID_data_[nEtaBin][nPtBin];
-  Double_t absUnc_ID_MC_[nEtaBin][nPtBin];
+  Double_t diff_ID_data_[nEtaBin][nPtBin];
+  Double_t diff_ID_MC_[nEtaBin][nPtBin];
 
-  Double_t absUnc_trig_data_[nEtaBin][nPtBin];
-  Double_t absUnc_trig_MC_[nEtaBin][nPtBin];
+  Double_t diff_trig_data_[nEtaBin][nPtBin];
+  Double_t diff_trig_MC_[nEtaBin][nPtBin];
 
   TnPEfficiency()
   {
@@ -153,12 +153,12 @@ private:
         eff_trig_data_[i_eta][i_pt] = 0;
         eff_trig_MC_[i_eta][i_pt] = 0;
 
-        absUnc_reco_data_[i_eta][i_pt] = 0;
-        absUnc_reco_MC_[i_eta][i_pt] = 0;
-        absUnc_ID_data_[i_eta][i_pt] = 0;
-        absUnc_ID_MC_[i_eta][i_pt] = 0;
-        absUnc_trig_data_[i_eta][i_pt] = 0;
-        absUnc_trig_MC_[i_eta][i_pt] = 0;
+        diff_reco_data_[i_eta][i_pt] = 0;
+        diff_reco_MC_[i_eta][i_pt] = 0;
+        diff_ID_data_[i_eta][i_pt] = 0;
+        diff_ID_MC_[i_eta][i_pt] = 0;
+        diff_trig_data_[i_eta][i_pt] = 0;
+        diff_trig_MC_[i_eta][i_pt] = 0;
       }
     }
 
@@ -208,6 +208,7 @@ private:
     TString histName_data = "h_statUnc_data";
     TString histName_MC   = "h_statUnc_mc";
 
+    // -- stat. unc case: diff = stat unc.
     TH2D* h_absUnc_stat_reco_data = PlotTool::Get_Hist2D(fileName_reco_, histName_data);
     TH2D* h_absUnc_stat_reco_MC   = PlotTool::Get_Hist2D(fileName_reco_, histName_MC);
     TH2D* h_absUnc_stat_ID_data   = PlotTool::Get_Hist2D(fileName_ID_, histName_data);
@@ -222,14 +223,14 @@ private:
         Int_t i_etaBin = i_eta + 1;
         Int_t i_ptBin  = i_pt + 1;
 
-        absUnc_reco_data_[i_eta][i_pt] = h_absUnc_stat_reco_data->GetBinContent(i_etaBin, i_ptBin);
-        absUnc_reco_MC_[i_eta][i_pt]   = h_absUnc_stat_reco_MC->GetBinContent(i_etaBin, i_ptBin);
+        diff_reco_data_[i_eta][i_pt] = h_absUnc_stat_reco_data->GetBinContent(i_etaBin, i_ptBin);
+        diff_reco_MC_[i_eta][i_pt]   = h_absUnc_stat_reco_MC->GetBinContent(i_etaBin, i_ptBin);
 
-        absUnc_ID_data_[i_eta][i_pt] = h_absUnc_stat_ID_data->GetBinContent(i_etaBin, i_ptBin);
-        absUnc_ID_MC_[i_eta][i_pt]   = h_absUnc_stat_ID_MC->GetBinContent(i_etaBin, i_ptBin);
+        diff_ID_data_[i_eta][i_pt] = h_absUnc_stat_ID_data->GetBinContent(i_etaBin, i_ptBin);
+        diff_ID_MC_[i_eta][i_pt]   = h_absUnc_stat_ID_MC->GetBinContent(i_etaBin, i_ptBin);
 
-        absUnc_trig_data_[i_eta][i_pt] = h_absUnc_stat_trig_data->GetBinContent(i_etaBin, i_ptBin);
-        absUnc_trig_MC_[i_eta][i_pt]   = h_absUnc_stat_trig_MC->GetBinContent(i_etaBin, i_ptBin);
+        diff_trig_data_[i_eta][i_pt] = h_absUnc_stat_trig_data->GetBinContent(i_etaBin, i_ptBin);
+        diff_trig_MC_[i_eta][i_pt]   = h_absUnc_stat_trig_MC->GetBinContent(i_etaBin, i_ptBin);
       }
     }
 
@@ -240,14 +241,14 @@ private:
     {
       for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
       {
-        eff_reco_data_[i_eta][i_pt] = eff_reco_data_[i_eta][i_pt] + ran.Gaus(0.0, 1.0) * absUnc_reco_data_[i_eta][i_pt];
-        eff_reco_MC_[i_eta][i_pt]   = eff_reco_MC_[i_eta][i_pt]   + ran.Gaus(0.0, 1.0) * absUnc_reco_MC_[i_eta][i_pt];
+        eff_reco_data_[i_eta][i_pt] = eff_reco_data_[i_eta][i_pt] + ran.Gaus(0.0, 1.0) * diff_reco_data_[i_eta][i_pt];
+        eff_reco_MC_[i_eta][i_pt]   = eff_reco_MC_[i_eta][i_pt]   + ran.Gaus(0.0, 1.0) * diff_reco_MC_[i_eta][i_pt];
 
-        eff_ID_data_[i_eta][i_pt] = eff_ID_data_[i_eta][i_pt] + ran.Gaus(0.0, 1.0) * absUnc_ID_data_[i_eta][i_pt];
-        eff_ID_MC_[i_eta][i_pt]   = eff_ID_MC_[i_eta][i_pt]   + ran.Gaus(0.0, 1.0) * absUnc_ID_MC_[i_eta][i_pt];
+        eff_ID_data_[i_eta][i_pt] = eff_ID_data_[i_eta][i_pt] + ran.Gaus(0.0, 1.0) * diff_ID_data_[i_eta][i_pt];
+        eff_ID_MC_[i_eta][i_pt]   = eff_ID_MC_[i_eta][i_pt]   + ran.Gaus(0.0, 1.0) * diff_ID_MC_[i_eta][i_pt];
 
-        eff_trig_data_[i_eta][i_pt] = eff_trig_data_[i_eta][i_pt] + ran.Gaus(0.0, 1.0) * absUnc_trig_data_[i_eta][i_pt];
-        eff_trig_MC_[i_eta][i_pt]   = eff_trig_MC_[i_eta][i_pt]   + ran.Gaus(0.0, 1.0) * absUnc_trig_MC_[i_eta][i_pt];
+        eff_trig_data_[i_eta][i_pt] = eff_trig_data_[i_eta][i_pt] + ran.Gaus(0.0, 1.0) * diff_trig_data_[i_eta][i_pt];
+        eff_trig_MC_[i_eta][i_pt]   = eff_trig_MC_[i_eta][i_pt]   + ran.Gaus(0.0, 1.0) * diff_trig_MC_[i_eta][i_pt];
       }
     }    
   }
@@ -257,23 +258,23 @@ private:
     TString dataType = "";
     if( uncType == "bkgChange" || uncType == "sgnChange" ) dataType = "data";
     if( uncType == "tagChange" || uncType == "nlo" )       dataType = "mc";
-    TString histName = "h_absRelDiff_"+uncType+"_"+dataType;
+    TString histName = "h_relDiff_"+uncType+"_"+dataType; // -- keep the sign information
 
-    TH2D* h_relUnc_reco = nullptr;
-    TH2D* h_relUnc_ID   = nullptr;
-    TH2D* h_relUnc_trig = nullptr;
+    TH2D* h_relDiff_reco = nullptr;
+    TH2D* h_relDiff_ID   = nullptr;
+    TH2D* h_relDiff_trig = nullptr;
 
     if( dataType == "data" )
     {
-      h_relUnc_reco = PlotTool::Get_Hist2D(fileName_reco_, histName);
-      h_relUnc_ID   = PlotTool::Get_Hist2D(fileName_ID_,   histName);
+      h_relDiff_reco = PlotTool::Get_Hist2D(fileName_reco_, histName);
+      h_relDiff_ID   = PlotTool::Get_Hist2D(fileName_ID_,   histName);
       // -- no uncertainty on the data in the trigger efficiency (cut & count)
     }
     else if( dataType == "mc" )
     {
-      h_relUnc_reco = PlotTool::Get_Hist2D(fileName_reco_, histName);
-      h_relUnc_ID   = PlotTool::Get_Hist2D(fileName_ID_,   histName);
-      h_relUnc_trig = PlotTool::Get_Hist2D(fileName_trig_, histName);
+      h_relDiff_reco = PlotTool::Get_Hist2D(fileName_reco_, histName);
+      h_relDiff_ID   = PlotTool::Get_Hist2D(fileName_ID_,   histName);
+      h_relDiff_trig = PlotTool::Get_Hist2D(fileName_trig_, histName);
     }
 
     for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
@@ -285,16 +286,14 @@ private:
 
         if( dataType == "data" )
         {
-          absUnc_reco_data_[i_eta][i_pt] = h_relUnc_reco->GetBinContent(i_etaBin, i_ptBin) * eff_reco_data_[i_eta][i_pt];
-          absUnc_ID_data_[i_eta][i_pt]   = h_relUnc_ID->GetBinContent(i_etaBin, i_ptBin) * eff_ID_data_[i_eta][i_pt];
+          diff_reco_data_[i_eta][i_pt] = h_relDiff_reco->GetBinContent(i_etaBin, i_ptBin) * eff_reco_data_[i_eta][i_pt];
+          diff_ID_data_[i_eta][i_pt]   = h_relDiff_ID->GetBinContent(i_etaBin, i_ptBin) * eff_ID_data_[i_eta][i_pt];
         }
         else if( dataType == "mc" )
         {
-          absUnc_reco_MC_[i_eta][i_pt] = h_relUnc_reco->GetBinContent(i_etaBin, i_ptBin) * eff_reco_MC_[i_eta][i_pt];
-          absUnc_ID_MC_[i_eta][i_pt]   = h_relUnc_ID->GetBinContent(i_etaBin, i_ptBin) * eff_ID_MC_[i_eta][i_pt];
-          absUnc_trig_MC_[i_eta][i_pt] = h_relUnc_trig->GetBinContent(i_etaBin, i_ptBin) * eff_trig_MC_[i_eta][i_pt];
-
-          // printf("[(i_eta, i_pt) = (%d, %d)] absUnc: (reco, ID, trig) = (%lf, %lf, %lf)\n", i_eta, i_pt, absUnc_reco_MC_[i_eta][i_pt], absUnc_ID_MC_[i_eta][i_pt], absUnc_trig_MC_[i_eta][i_pt]);
+          diff_reco_MC_[i_eta][i_pt] = h_relDiff_reco->GetBinContent(i_etaBin, i_ptBin) * eff_reco_MC_[i_eta][i_pt];
+          diff_ID_MC_[i_eta][i_pt]   = h_relDiff_ID->GetBinContent(i_etaBin, i_ptBin) * eff_ID_MC_[i_eta][i_pt];
+          diff_trig_MC_[i_eta][i_pt] = h_relDiff_trig->GetBinContent(i_etaBin, i_ptBin) * eff_trig_MC_[i_eta][i_pt];
         }
       }
     }
@@ -313,14 +312,14 @@ private:
       {
         if( dataType == "data" )
         {
-          eff_reco_data_[i_eta][i_pt] = eff_reco_data_[i_eta][i_pt] + rndNum_reco * absUnc_reco_data_[i_eta][i_pt];
-          eff_ID_data_[i_eta][i_pt]   = eff_ID_data_[i_eta][i_pt]   + rndNum_ID   * absUnc_ID_data_[i_eta][i_pt];
+          eff_reco_data_[i_eta][i_pt] = eff_reco_data_[i_eta][i_pt] + rndNum_reco * diff_reco_data_[i_eta][i_pt];
+          eff_ID_data_[i_eta][i_pt]   = eff_ID_data_[i_eta][i_pt]   + rndNum_ID   * diff_ID_data_[i_eta][i_pt];
         }
         else if( dataType == "mc" )
         {
-          eff_reco_MC_[i_eta][i_pt] = eff_reco_MC_[i_eta][i_pt] + rndNum_reco * absUnc_reco_MC_[i_eta][i_pt];
-          eff_ID_MC_[i_eta][i_pt]   = eff_ID_MC_[i_eta][i_pt]   + rndNum_ID   * absUnc_ID_MC_[i_eta][i_pt];
-          eff_trig_MC_[i_eta][i_pt] = eff_trig_MC_[i_eta][i_pt] + rndNum_trig * absUnc_trig_MC_[i_eta][i_pt];
+          eff_reco_MC_[i_eta][i_pt] = eff_reco_MC_[i_eta][i_pt] + rndNum_reco * diff_reco_MC_[i_eta][i_pt];
+          eff_ID_MC_[i_eta][i_pt]   = eff_ID_MC_[i_eta][i_pt]   + rndNum_ID   * diff_ID_MC_[i_eta][i_pt];
+          eff_trig_MC_[i_eta][i_pt] = eff_trig_MC_[i_eta][i_pt] + rndNum_trig * diff_trig_MC_[i_eta][i_pt];
         }
       }
     }
