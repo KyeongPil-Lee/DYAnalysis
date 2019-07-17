@@ -34,6 +34,8 @@ public:
   Double_t diff_trig_data_[nEtaBin][nPtBin];
   Double_t diff_trig_MC_[nEtaBin][nPtBin];
 
+  Bool_t doFlipFlop_;
+
   TnPEfficiency()
   {
     TH1::AddDirectory(kFALSE);
@@ -41,6 +43,8 @@ public:
       cout << "Warning: nPtBin != vec_ptBinEdge_.size() - 1" << endl;
     if( nEtaBin != vec_etaBinEdge_.size() - 1 )
       cout << "Warning: nEtaBin != vec_etaBinEdge_.size() - 1" << endl;
+
+    doFlipFlop_ = kFALSE;
 
     Init();
   }
@@ -297,6 +301,34 @@ private:
         }
       }
     }
+
+    if( doFlipFlop_ )
+    {
+      if( dataType != "data" )
+        cout << "dataType = " << dataType << " is not supported for doing flipflop" << endl;
+      else
+      {
+        Int_t i_count = 0;
+        for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
+        {
+          for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
+          {
+            if( i_count % 2 == 0 ) // -- set as +
+            {
+              diff_reco_data_[i_eta][i_pt] = fabs(diff_reco_data_[i_eta][i_pt]);
+              diff_ID_data_[i_eta][i_pt]   = fabs(diff_ID_data_[i_eta][i_pt]);
+            }
+            else // -- set as -
+            {
+              diff_reco_data_[i_eta][i_pt] = (-1)*fabs(diff_reco_data_[i_eta][i_pt]);
+              diff_ID_data_[i_eta][i_pt]   = (-1)*fabs(diff_ID_data_[i_eta][i_pt]);
+            }
+
+            i_count++;
+          } // -- end of pt iteration
+        } // -- end of eta iteration
+      } // -- else statement
+    } // -- if( doFlipFlop_ )
 
     // -- randomization
     TRandom3 ran;
