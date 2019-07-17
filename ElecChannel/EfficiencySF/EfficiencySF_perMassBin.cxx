@@ -19,6 +19,8 @@ public:
     vector<DYTool::SampleInfo> vec_sampleInfo_signal = DYTool::GetSampleInfo_Signal();
     for(const auto& sampleInfo : vec_sampleInfo_signal )
       ProduceMassHist(sampleInfo);
+
+    Save();
   }
 
   void Produce_LocalTest()
