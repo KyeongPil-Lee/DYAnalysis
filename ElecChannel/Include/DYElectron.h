@@ -1,3 +1,5 @@
+#pragma once
+
 #include <ElecChannel/Include/NtupleHandle_Ele.h>
 #include <TLorentzVector.h>
 

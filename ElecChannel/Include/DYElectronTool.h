@@ -1,3 +1,5 @@
+#pragma once
+
 #include <ElecChannel/Include/DYElectron.h>
 #include <Include/SimplePlotTools.h>
 #include <TH1D.h>

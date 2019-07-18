@@ -1,8 +1,9 @@
 #include <Include/SimplePlotTools.h>
 #include <ElecChannel/Include/DYElectronTool.h>
 
-#include <src/RooUnfoldBayes.h>
 #include <src/RooUnfold.h>
+#include <src/RooUnfoldResponse.h>
+#include <src/RooUnfoldBayes.h>
 
 class DXSecProducer
 {
