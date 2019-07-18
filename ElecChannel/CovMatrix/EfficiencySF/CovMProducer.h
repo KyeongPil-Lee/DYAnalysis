@@ -17,6 +17,7 @@ public:
   CovMProducer(TString uncType)
   {
     uncType_ = uncType;
+    Init();
   }
 
   void Produce()
@@ -34,7 +35,7 @@ private:
   void Init()
   {
     h_cov_ = DYTool::MakeHist2D_DXSecBin("h_cov_"+uncType_);
-    Generated_SmearedDXSec();
+    Generate_SmearedDXSec();
   }
 
   void MakeCovM()
@@ -44,13 +45,12 @@ private:
     {
       Int_t i_bin = i+1;
 
-      Double_t dXSec_cv_i = h_dXSec_cv_->GetBinContent(i_bin);
-      Double_t dXSec_cv_j = h_dXSec_cv_->GetBinContent(j_bin);
-
-
       for(Int_t j=0; j<nBin; j++)
       {
         Int_t j_bin = j+1;
+
+        Double_t dXSec_cv_i = h_dXSec_cv_->GetBinContent(i_bin);
+        Double_t dXSec_cv_j = h_dXSec_cv_->GetBinContent(j_bin);
 
         Double_t sum_ij = 0;
         for(Int_t i_map=0; i_map<nEffMap; i_map++)
@@ -70,12 +70,12 @@ private:
     } // -- i iteration
   }
 
-  void Generated_SmearedDXSec()
+  void Generate_SmearedDXSec()
   {
     TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
     TString fileName_effSF = analyzerPath+"/ElecChannel/Uncertainties/EfficiencySF/ROOTFile_SmearedEffSF_perMassBin_"+uncType_+".root";
 
-    h_effSF_cv = PlotTool::Get_Hist( fileName_effSF, "h_effSF_perMassBin_cv" );
+    TH1D* h_effSF_cv = PlotTool::Get_Hist( fileName_effSF, "h_effSF_perMassBin_cv" );
     DXSecProducer* dXSecProducer_cv = new DXSecProducer();
     dXSecProducer_cv->UpdateEffSF( h_effSF_cv );
     dXSecProducer_cv->Produce();
@@ -85,8 +85,8 @@ private:
     for(Int_t i=0; i<nEffMap; i++)
     {
       TString numbering = TString::Format("%d", i);
-      histName_smearedEffSF = "h_effSF_perMassBin_smeared_"+numbering;
-      h_smearedEffSF = PlotTool::Get_Hist( fileName_effSF, histName_smearedEffSF );
+      TString histName_smearedEffSF = "h_effSF_perMassBin_smeared_"+numbering;
+      TH1D* h_smearedEffSF = PlotTool::Get_Hist( fileName_effSF, histName_smearedEffSF );
 
       DXSecProducer* dXSecProducer = new DXSecProducer();
       dXSecProducer->UpdateEffSF( h_smearedEffSF );
