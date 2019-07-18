@@ -85,6 +85,13 @@ namespace DYTool
     return new TH1D(histName, "", 43, arr_massBinEdge);
   }
 
+  // -- used for cov. M
+  TH2D* MakeHist2D_DXSecBin(TString histName)
+  {
+    Double_t arr_massBinEdge[44] = {15,20,25,30,35,40,45,50,55,60,64,68,72,76,81,86,91,96,101,106,110,115,120,126,133,141,150,160,171,185,200,220,243,273,320,380,440,510,600,700,830,1000,1500,3000};
+    return new TH2D(histName, "", 43, arr_massBinEdge, 43, arr_massBinEdge);
+  }
+
   // -- select DY->ee event @ pre-FSR level (to separate from DY->mm and DY->tautau events)
   Bool_t IsDYEEEvent(NtupleHandle_Ele* ntuple, Bool_t doTruncate_M100 = kFALSE)
   {
@@ -105,6 +112,40 @@ namespace DYTool
     }
 
     return flag;
+  }
+
+  TH2D* Convert_CovMToCorrM( TH2D* h_cov, TString histName )
+  {
+    TH2D* h_corr = (TH2D*)h_cov->Clone();
+    h_corr->SetName(histName);
+    Int_t nBin = h_cov->GetNbinsX();
+
+    vector<Double_t> vec_sigma; // -- uncertainties in each bin
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+      Double_t variance = h_cov->GetBinContent(i_bin, i_bin);
+      Double_t sigma = sqrt(variance);
+      vec_sigma.push_back(sigma);
+    }
+
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+      Double_t sigma_i = vec_sigma[i];
+
+      for(Int_t j=0; j<nBin; j++)
+      {
+        Int_t j_bin = j+1;
+        Double_t sigma_j = vec_sigma[j];
+
+        Double_t cov = h_cov->GetBinContent(i_bin, j_bin);
+        Double_t corr = cov / (sigma_i * sigma_j);
+        h_corr->SetBinContent(i_bin, j_bin, corr);
+      }
+    }
+
+    return h_corr;
   }
 
   class PUWeightTool
