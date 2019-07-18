@@ -1,5 +1,9 @@
-#include <Include/SimplePlotTools.h>
-#include <ElecChannel/Include/DYElectronTool.h>
+// -- remove dependence on the header files... to be complied under ROOT5 for RooUnfold usage
+
+#include <TSystem.h>
+#include <TFile.h>
+#include <TH1D.h>
+#include <TString.h>
 
 #include <src/RooUnfold.h>
 #include <src/RooUnfoldResponse.h>
@@ -59,7 +63,7 @@ private:
     FSR_Corrected->SetName("h_FSRCorrected");
 
     // -- Obtain differential cross section -- //
-    h_dXSec_ = PlotTool::DivideEachBin_ByBinWidth(FSR_Corrected); // -- differential cross section -- //    
+    h_dXSec_ = DivideEachBin_ByBinWidth(FSR_Corrected); // -- differential cross section -- //    
     h_dXSec_->Scale(1/2258.066); // -- cross section -- //
   }
   void Init()
@@ -140,7 +144,7 @@ private:
 
     TString fileName = analyzerPath_+"/ElecChannel/EfficiencySF/ROOTFile_EfficiencySF_perMassBin.root";
     TString histName = "h_effSF_perMassBin";
-    h_effSF_ = PlotTool::Get_Hist(fileName, histName);
+    h_effSF_ = Get_Hist(fileName, histName);
   }
 
   // -- values in Ridhi's input file
@@ -160,7 +164,7 @@ private:
 
   TH1D* Calc_SFCorr(TH1D *h_den, TH1D *h_num)
   {
-    TH1D* h_EfficiencySF = DYTool::MakeHist_DXSecBin("h_effSF");
+    TH1D* h_EfficiencySF = MakeHist_DXSecBin("h_effSF");
 
     int n = h_num->GetNbinsX();
     
@@ -190,7 +194,7 @@ private:
 
   TH1D* Calc_AccEff(TH1D *AccTotal, TH1D *AccPass, TH1D *EffTotal, TH1D *EffPass)
   {
-    TH1D* AccEff = DYTool::MakeHist_DXSecBin("h_accEff");
+    TH1D* AccEff = MakeHist_DXSecBin("h_accEff");
 
     int n = AccPass->GetNbinsX();
     
@@ -222,7 +226,7 @@ private:
 
   TH1D* MakeYieldHist(TH1D *h_Data, TH1D *h_EMu, TH1D *h_WZ, TH1D *h_ZZ, TH1D *h_Dijet, TH1D *h_Wjet)
   {
-    TH1D* h_final = DYTool::MakeHist_DXSecBin("h_yield");
+    TH1D* h_final = MakeHist_DXSecBin("h_yield");
 
     int n = h_final->GetNbinsX();
     
@@ -266,7 +270,7 @@ private:
 
   TH1D* ApplyFinal_EffCorr(TH1D *unfold, TH1D *effCorr)
   {
-    TH1D* effCorrFinal = DYTool::MakeHist_DXSecBin("effCorrFinal");
+    TH1D* effCorrFinal = MakeHist_DXSecBin("effCorrFinal");
     int n = effCorrFinal->GetNbinsX();
     
     for(int i=1;i<n+1; i++){
@@ -284,6 +288,50 @@ private:
     }
 
     return effCorrFinal;
+  }
+
+  TH1D* DivideEachBin_ByBinWidth( TH1D* h, TString HistName = "" )
+  {
+    TH1D* h_return = (TH1D*)h->Clone();
+    if( HistName != "" )
+      h_return->SetName(HistName);
+
+    Int_t nBin = h->GetNbinsX();
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+      Double_t Entry_before = h->GetBinContent(i_bin);
+      Double_t Error_before = h->GetBinError(i_bin);
+      Double_t BinWidth = h->GetBinWidth(i_bin);
+
+      Double_t Entry_after = Entry_before / BinWidth;
+      Double_t Error_after = Error_before / BinWidth;
+
+      h_return->SetBinContent(i_bin, Entry_after);
+      h_return->SetBinError(i_bin, Error_after);
+    }
+
+    return h_return;
+  }
+
+  TH1D* Get_Hist(TString fileName, TString histName, TString histName_new = "" )
+  {
+    TH1::AddDirectory(kFALSE);
+
+    TFile* f_input = TFile::Open( fileName );
+    TH1D* h_temp = (TH1D*)f_input->Get(histName)->Clone();
+    if( histName_new != "" )
+      h_temp->SetName( histName_new );
+
+    f_input->Close();
+
+    return h_temp;
+  }
+
+  TH1D* MakeHist_DXSecBin(TString histName)
+  {
+    Double_t arr_massBinEdge[44] = {15,20,25,30,35,40,45,50,55,60,64,68,72,76,81,86,91,96,101,106,110,115,120,126,133,141,150,160,171,185,200,220,243,273,320,380,440,510,600,700,830,1000,1500,3000};
+    return new TH1D(histName, "", 43, arr_massBinEdge);
   }
 
 };
