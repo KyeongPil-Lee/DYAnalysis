@@ -57,6 +57,8 @@ if [ $HOME == "/Users/KyeongPil_Lee" ]; then # -- macbook -- #
 	KP_ROOUNFOLD_PATH=/Users/KyeongPil_Lee/ROOT5/Unfolding/RooUnfold
 elif [ $HOSTNAME == "tamsa2.snu.ac.kr" ]; then
 	KP_ROOUNFOLD_PATH=/share_home/kplee/Unfolding
+elif [ $HOSTNAME == "muon" ]; then
+	KP_ROOUNFOLD_PATH=/home/kplee/Physics/RooUnfold
 fi
 export ROOT_INCLUDE_PATH=${KP_ROOUNFOLD_PATH}:${ROOT_INCLUDE_PATH}
 
