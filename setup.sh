@@ -49,6 +49,9 @@ elif [ $HOSTNAME == "muon" ]; then
 	eval `scramv1 runtime -sh`
 
 	cd $KP_ANALYZER_PATH
+
+elif [ $HOME == "/Users/KyeongPil_Lee" ]; then # -- macbook -- #
+	KP_DATA_PATH="/Users/KyeongPil_Lee/Physics/Data/DY2015"
 fi
 
 # -- RooUnfold package path -- #
@@ -91,13 +94,14 @@ fi
 export KP_PLOT_PATH=$KP_ANALYZER_PATH/Local/Plots
 
 echo "================ environment ================"
-echo "KP_ANALYZER_PATH:" ${KP_ANALYZER_PATH}
-echo "KP_INCLUDE_PATH:" ${KP_INCLUDE_PATH}
-echo "KP_ROOTFILE_PATH:" ${KP_ROOTFILE_PATH}
-echo "KP_ROOT5_PATH:" ${KP_ROOT5_PATH}
-echo "KP_ROOT6_PATH:" ${KP_ROOT6_PATH}
+echo "KP_ANALYZER_PATH: " ${KP_ANALYZER_PATH}
+echo "KP_INCLUDE_PATH:  " ${KP_INCLUDE_PATH}
+echo "KP_ROOTFILE_PATH: " ${KP_ROOTFILE_PATH}
+echo "KP_ROOT5_PATH:    " ${KP_ROOT5_PATH}
+echo "KP_ROOT6_PATH:    " ${KP_ROOT6_PATH}
+echo "KP_PLOT_PATH:     " ${KP_PLOT_PATH}
 
-echo "KP_DATA_PATH:" ${KP_DATA_PATH}
+echo "KP_DATA_PATH:     " ${KP_DATA_PATH}
 if [ -z $KP_DATA_PATH ]; then
     echo "     [WARNING]: ntuples are not available in this machine"
 fi
@@ -107,6 +111,5 @@ if [ -z $KP_ROOUNFOLD_PATH ]; then
 	echo "     [WARNING]: RooUnfold package is not available in this machine"
 fi
 
-echo "KP_PLOT_PATH:" ${KP_PLOT_PATH}
 echo "============================================="
 echo "setup is finished. Welcome :)"
