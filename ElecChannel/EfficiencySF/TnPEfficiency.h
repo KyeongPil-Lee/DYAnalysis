@@ -34,7 +34,11 @@ public:
   Double_t diff_trig_data_[nEtaBin][nPtBin];
   Double_t diff_trig_MC_[nEtaBin][nPtBin];
 
+  // -- features for the tests
   Bool_t doFlipFlop_;
+
+  Bool_t doIgnorePtBinUnc_ = kFALSE;
+  Int_t  thePtIndex_ignore_ = -1;
 
   TnPEfficiency()
   {
@@ -47,6 +51,13 @@ public:
     doFlipFlop_ = kFALSE;
 
     Init();
+  }
+
+  void IngorePtBinUnc(Int_t thePtIndex_ignore)
+  {
+    doIgnorePtBinUnc_ = kTRUE;
+    thePtIndex_ignore_ = thePtIndex_ignore;
+    cout << "[TnPEfficiency::IngorePtBinUnc] Activated: the uncertainty in the pT bin index = " << thePtIndex_ignore << " will be ignored" << endl;
   }
 
   void SmearingEff_GivenUncType(TString uncType)
@@ -259,9 +270,100 @@ private:
 
   void SmearingEff_Syst(TString uncType)
   {
-    TString dataType = "";
-    if( uncType == "bkgChange" || uncType == "sgnChange" ) dataType = "data";
-    if( uncType == "tagChange" || uncType == "nlo" )       dataType = "mc";
+    FillDiffArray(uncType);
+    if( doFlipFlop_ ) ModifyDiffArray_FlipFlop(uncType);
+    if( doIgnorePtBinUnc_ ) ModifyDiffArray_IgnorePtBinUnc(thePtIndex_ignore_, uncType);
+
+    Randomization_Syst(uncType);
+  }
+
+  void Randomization_Syst(uncType)
+  {
+    TString dataType = FindDataType(uncType);
+
+    // -- randomization
+    TRandom3 ran;
+    ran.SetSeed(0);
+
+    // -- random number: should be same for all pt-eta bins in each efficiency
+    Double_t rndNum_reco = ran.Gaus(0.0, 1.0);
+    Double_t rndNum_ID   = ran.Gaus(0.0, 1.0);
+    Double_t rndNum_trig = ran.Gaus(0.0, 1.0);
+    for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
+    {
+      for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
+      {
+        if( dataType == "data" )
+        {
+          eff_reco_data_[i_eta][i_pt] = eff_reco_data_[i_eta][i_pt] + rndNum_reco * diff_reco_data_[i_eta][i_pt];
+          eff_ID_data_[i_eta][i_pt]   = eff_ID_data_[i_eta][i_pt]   + rndNum_ID   * diff_ID_data_[i_eta][i_pt];
+        }
+        else if( dataType == "mc" )
+        {
+          eff_reco_MC_[i_eta][i_pt] = eff_reco_MC_[i_eta][i_pt] + rndNum_reco * diff_reco_MC_[i_eta][i_pt];
+          eff_ID_MC_[i_eta][i_pt]   = eff_ID_MC_[i_eta][i_pt]   + rndNum_ID   * diff_ID_MC_[i_eta][i_pt];
+          eff_trig_MC_[i_eta][i_pt] = eff_trig_MC_[i_eta][i_pt] + rndNum_trig * diff_trig_MC_[i_eta][i_pt];
+        }
+      }
+    }
+  }
+
+  void ModifyDiffArray_FlipFlop(TString uncType)
+  {
+    TString dataType = FindDataType(uncType);
+
+    if( dataType != "data" )
+      cout << "dataType = " << dataType << " is not supported for doing flipflop" << endl;
+    else
+    {
+      cout << "doFlipFlop: activated! ... uncType = " << uncType << endl;
+
+      Int_t i_count = 0;
+      for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
+      {
+        for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
+        {
+          if( i_count % 2 == 0 ) // -- set as +
+          {
+            diff_reco_data_[i_eta][i_pt] = fabs(diff_reco_data_[i_eta][i_pt]);
+            diff_ID_data_[i_eta][i_pt]   = fabs(diff_ID_data_[i_eta][i_pt]);
+          }
+          else // -- set as -
+          {
+            diff_reco_data_[i_eta][i_pt] = (-1)*fabs(diff_reco_data_[i_eta][i_pt]);
+            diff_ID_data_[i_eta][i_pt]   = (-1)*fabs(diff_ID_data_[i_eta][i_pt]);
+          }
+
+          i_count++;
+        } // -- end of pt iteration
+      } // -- end of eta iteration
+    } // -- else statement
+  }
+
+  // -- difference = 0 for a specific pt bin for the test
+  void ModifyDiffArray_IgnorePtBinUnc(Int_t thePtIndex, TString uncType)
+  {
+    TString dataType = FindDataType(uncType);
+
+    for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
+    {
+      if( dataType == "data" )
+      {
+        diff_reco_data_[i_eta][thePtIndex] = 0;
+        diff_ID_data_[i_eta][thePtIndex]   = 0;
+      }
+      else if( dataType == "mc" )
+      {
+        diff_reco_MC_[i_eta][thePtIndex] = 0;
+        diff_ID_MC_[i_eta][thePtIndex]   = 0;
+        diff_trig_MC_[i_eta][thePtIndex] = 0;
+      }
+    }
+  }
+
+  void FillDiffArray(TString uncType)
+  {
+    TString dataType = FindDataType(uncType);
     TString histName = "h_relDiff_"+uncType+"_"+dataType; // -- keep the sign information
 
     TH2D* h_relDiff_reco = nullptr;
@@ -301,62 +403,15 @@ private:
         }
       }
     }
+  }
 
-    if( doFlipFlop_ )
-    {
-      if( dataType != "data" )
-        cout << "dataType = " << dataType << " is not supported for doing flipflop" << endl;
-      else
-      {
-        cout << "doFlipFlop: activated! ... uncType = " << uncType << endl;
+  TString FindDataType(TString uncType)
+  {
+    TString dataType = "";
+    if( uncType == "bkgChange" || uncType == "sgnChange" ) dataType = "data";
+    if( uncType == "tagChange" || uncType == "nlo" )       dataType = "mc";
 
-        Int_t i_count = 0;
-        for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
-        {
-          for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
-          {
-            if( i_count % 2 == 0 ) // -- set as +
-            {
-              diff_reco_data_[i_eta][i_pt] = fabs(diff_reco_data_[i_eta][i_pt]);
-              diff_ID_data_[i_eta][i_pt]   = fabs(diff_ID_data_[i_eta][i_pt]);
-            }
-            else // -- set as -
-            {
-              diff_reco_data_[i_eta][i_pt] = (-1)*fabs(diff_reco_data_[i_eta][i_pt]);
-              diff_ID_data_[i_eta][i_pt]   = (-1)*fabs(diff_ID_data_[i_eta][i_pt]);
-            }
-
-            i_count++;
-          } // -- end of pt iteration
-        } // -- end of eta iteration
-      } // -- else statement
-    } // -- if( doFlipFlop_ )
-
-    // -- randomization
-    TRandom3 ran;
-    ran.SetSeed(0);
-
-    // -- random number: should be same for all pt-eta bins in each efficiency
-    Double_t rndNum_reco = ran.Gaus(0.0, 1.0);
-    Double_t rndNum_ID   = ran.Gaus(0.0, 1.0);
-    Double_t rndNum_trig = ran.Gaus(0.0, 1.0);
-    for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
-    {
-      for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
-      {
-        if( dataType == "data" )
-        {
-          eff_reco_data_[i_eta][i_pt] = eff_reco_data_[i_eta][i_pt] + rndNum_reco * diff_reco_data_[i_eta][i_pt];
-          eff_ID_data_[i_eta][i_pt]   = eff_ID_data_[i_eta][i_pt]   + rndNum_ID   * diff_ID_data_[i_eta][i_pt];
-        }
-        else if( dataType == "mc" )
-        {
-          eff_reco_MC_[i_eta][i_pt] = eff_reco_MC_[i_eta][i_pt] + rndNum_reco * diff_reco_MC_[i_eta][i_pt];
-          eff_ID_MC_[i_eta][i_pt]   = eff_ID_MC_[i_eta][i_pt]   + rndNum_ID   * diff_ID_MC_[i_eta][i_pt];
-          eff_trig_MC_[i_eta][i_pt] = eff_trig_MC_[i_eta][i_pt] + rndNum_trig * diff_trig_MC_[i_eta][i_pt];
-        }
-      }
-    }
+    return dataType;
   }
 
   Int_t FindPtBin(Double_t pt )   { return FindBin(pt,  vec_ptBinEdge_ ); }
