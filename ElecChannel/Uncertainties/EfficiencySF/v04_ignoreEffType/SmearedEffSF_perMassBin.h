@@ -31,7 +31,7 @@ public:
     Init();
   }
 
-  SmearedEffSFTool(TString uncType, TString effType_ignore_ )
+  SmearedEffSFTool(TString uncType, TString effType_ignore )
   {
     uncType_ = uncType;
     effType_ignore_ = effType_ignore;
