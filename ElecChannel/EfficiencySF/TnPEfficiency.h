@@ -40,6 +40,9 @@ public:
   Bool_t doIgnorePtBinUnc_ = kFALSE;
   Int_t  thePtIndex_ignore_ = -1;
 
+  Bool_t doIgnoreUnc_effType_ = kFALSE;
+  TString effType_ignore_ = "";
+
   TnPEfficiency()
   {
     TH1::AddDirectory(kFALSE);
@@ -58,6 +61,18 @@ public:
     doIgnorePtBinUnc_ = kTRUE;
     thePtIndex_ignore_ = thePtIndex_ignore;
     cout << "[TnPEfficiency::IngorePtBinUnc] Activated: the uncertainty in the pT bin index = " << thePtIndex_ignore << " will be ignored" << endl;
+  }
+
+  void IgnoreSpecificEffTypeUnc(TString effType_ignore)
+  {
+    if( !(effType_ignore == "reco" || effType_ignore == "ID" || effType_ignore == "trig") )
+    {
+      cout << "effType_ignore = " << effType_ignore << " is not supported" << endl;
+      return;
+    }
+
+    doIgnoreUnc_effType_ = kTRUE;
+    effType_ignore_ = effType_ignore;
   }
 
   void SmearingEff_GivenUncType(TString uncType)
@@ -273,6 +288,7 @@ private:
     FillDiffArray(uncType);
     if( doFlipFlop_ ) ModifyDiffArray_FlipFlop(uncType);
     if( doIgnorePtBinUnc_ ) ModifyDiffArray_IgnorePtBinUnc(thePtIndex_ignore_, uncType);
+    if( doIgnoreUnc_effType_ ) ModifyDiffArray_IgnoreEffTypeUnc(effType_ignore_, uncType);
 
     Randomization_Syst(uncType);
   }
@@ -359,6 +375,30 @@ private:
         diff_trig_MC_[i_eta][thePtIndex] = 0;
       }
     }
+  }
+
+  // -- diff = 0 for a specific eff type (reco, ID, trig)
+  void ModifyDiffArray_IgnoreEffTypeUnc(TString effType_ignore, TString uncType)
+  {
+    TString dataType = FindDataType(uncType);
+
+    for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
+    {
+      for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
+      {
+        if( dataType == "data" )
+        {
+          if( effType_ignore == "reco" ) diff_reco_data_[i_eta][i_pt] = 0;
+          if( effType_ignore == "ID" )   diff_ID_data_[i_eta][i_pt] = 0;
+        }
+        else if( dataType == "mc" )
+        {
+          if( effType_ignore == "reco" ) diff_reco_MC_[i_eta][i_pt] = 0;
+          if( effType_ignore == "ID" )   diff_ID_MC_[i_eta][i_pt] = 0;
+          if( effType_ignore == "trig" ) diff_trig_MC_[i_eta][i_pt] = 0;
+        }
+      } // -- end of pt iteration
+    } // -- end of eta iteration
   }
 
   void FillDiffArray(TString uncType)
