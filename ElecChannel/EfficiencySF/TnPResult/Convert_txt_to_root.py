@@ -140,6 +140,11 @@ class Converter:
             self.list_etaBinEdge = list(self.list_unfoldedEtaBinEdge) # -- to propagate changed bin edges to the other functions using self.list_etaBinEdge
 
 
+        h_diff_bkgChange = self.Make2DHist_Diff(h_eff_data, h_eff_bkgChange_data)
+        h_diff_sgnChange = self.Make2DHist_Diff(h_eff_data, h_eff_sgnChange_data)
+        h_diff_tagChange = self.Make2DHist_Diff(h_eff_mc,   h_eff_tagChange_mc)
+        h_diff_nlo       = self.Make2DHist_Diff(h_eff_mc,   h_eff_nlo_mc)
+
         h_relDiff_bkgChange = self.Make2DHist_RelDiff(h_eff_data, h_eff_bkgChange_data)
         h_relDiff_sgnChange = self.Make2DHist_RelDiff(h_eff_data, h_eff_sgnChange_data)
         h_relDiff_tagChange = self.Make2DHist_RelDiff(h_eff_mc, h_eff_tagChange_mc)
@@ -195,6 +200,11 @@ class Converter:
         h_eff_tagChange_mc.Write()
         h_eff_nlo_mc.Write()
 
+        h_diff_bkgChange.Write()
+        h_diff_sgnChange.Write()
+        h_diff_tagChange.Write()
+        h_diff_nlo.Write()
+
         h_relDiff_bkgChange.Write()
         h_relDiff_sgnChange.Write()
         h_relDiff_tagChange.Write()
@@ -214,6 +224,11 @@ class Converter:
         self.Make1DHist_from2DHist( h_eff_sgnChange_data, f_output )
         self.Make1DHist_from2DHist( h_eff_tagChange_mc, f_output )
         self.Make1DHist_from2DHist( h_eff_nlo_mc, f_output )
+
+        self.Make1DHist_from2DHist( h_diff_bkgChange, f_output )
+        self.Make1DHist_from2DHist( h_diff_sgnChange, f_output )
+        self.Make1DHist_from2DHist( h_diff_tagChange, f_output )
+        self.Make1DHist_from2DHist( h_diff_nlo,       f_output )
 
         self.Make1DHist_from2DHist( h_relDiff_bkgChange, f_output )
         self.Make1DHist_from2DHist( h_relDiff_sgnChange, f_output )
@@ -291,6 +306,31 @@ class Converter:
 
         return h_relDiff
 
+    def Make2DHist_Diff( self, h_cv, h_alt ):
+        histName_alt = h_alt.GetName()
+        uncType = histName_alt.split("h_eff_")[-1]
+
+        histName = "h_diff_"+uncType
+
+        h_diff = TH2D(histName, "", len(self.list_etaBinEdge)-1, array("d", self.list_etaBinEdge), len(self.list_ptBinEdge)-1, array("d", self.list_ptBinEdge) )
+
+        nPtBin  = h_cv.GetNbinsY()
+        nEtaBin = h_cv.GetNbinsX()
+        for i_pt in range(0, nPtBin):
+            i_ptBin = i_pt+1
+
+            for i_eta in range(0, nEtaBin):
+                i_etaBin = i_eta+1
+
+                cenValue = h_cv.GetBinContent(i_etaBin, i_ptBin)
+                altValue = h_alt.GetBinContent(i_etaBin, i_ptBin)
+
+                diff = altValue - cenValue
+
+                h_diff.SetBinContent(i_etaBin, i_ptBin, diff)
+                h_diff.SetBinError(i_etaBin, i_ptBin, 0)
+
+        return h_diff
 
     def Make2DHist_AbsValue( self, h_2D ):
         h_2D_absValue = h_2D.Clone()
