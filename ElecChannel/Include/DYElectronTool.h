@@ -143,6 +143,10 @@ namespace DYTool
 
         Double_t cov = h_cov->GetBinContent(i_bin, j_bin);
         Double_t corr = cov / (sigma_i * sigma_j);
+
+        // if( i == j )
+        //   cout << "i = j = " << i << " -> corr = " << corr << endl;
+
         h_corr->SetBinContent(i_bin, j_bin, corr);
       }
     }
