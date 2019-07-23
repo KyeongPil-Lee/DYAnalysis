@@ -277,7 +277,7 @@ private:
     Randomization_Syst(uncType);
   }
 
-  void Randomization_Syst(uncType)
+  void Randomization_Syst(TString uncType)
   {
     TString dataType = FindDataType(uncType);
 

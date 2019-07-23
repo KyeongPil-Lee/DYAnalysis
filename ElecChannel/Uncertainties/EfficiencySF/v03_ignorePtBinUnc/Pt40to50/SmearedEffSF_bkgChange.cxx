@@ -8,7 +8,7 @@ void SmearedEffSF_bkgChange()
   // -- [40, 50]: 3
   // -- [50, 200]: 4
 
-  Int_t ptBinIndex_ignore = 3
+  Int_t ptBinIndex_ignore = 3;
   SmearedEffSFTool* tool = new SmearedEffSFTool("bkgChange", ptBinIndex_ignore);
   tool->Produce();
 }
