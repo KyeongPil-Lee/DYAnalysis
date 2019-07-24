@@ -1,4 +1,3 @@
-#include <ElecChannel/DXSec/DXSecProducer.h>
 #include <ElecChannel/Include/DYElectronTool.h>
 
 #define nEffMap 2000
@@ -16,6 +15,7 @@ public:
 
   CovMProducer(TString uncType)
   {
+    cout << "[CovMProducer] uncType = " << uncType << endl;
     uncType_ = uncType;
     Init();
   }
@@ -31,15 +31,46 @@ public:
     Save();
   }
 
+  void Validation()
+  {
+    Validation_CV_MeanOfSmearedDXSec();
+
+  }
+
 private:
+  void Validation_CV_MeanOfSmearedDXSec()
+  {
+    Int_t nBin = h_dXSec_cv_->GetNbinsX();
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+
+      Double_t dXSec_cv = h_dXSec_cv_->GetBinContent(i_bin);
+
+      Double_t sum_dXSec = 0;
+      for(Int_t i_map=0; i_map<nEffMap; i_map++)
+      {
+        Double_t dXSec_i = vec_hist_smearedDXSec_[i_map]->GetBinContent(i_bin);
+        sum_dXSec += dXSec_i;
+      }
+
+      Double_t mean_dXSec = sum_dXSec / nEffMap;
+
+      Double_t relDiff = (mean_dXSec - dXSec_cv ) / dXSec_cv;
+
+      printf("[%d bin] (central value, mean) = (%lf, %lf) -> rel.diff = %lf\n", i_bin, dXSec_cv, mean_dXSec, relDiff);
+    }
+  }
+
   void Init()
   {
     h_cov_ = DYTool::MakeHist2D_DXSecBin("h_cov_"+uncType_);
-    Generate_SmearedDXSec();
+    Get_SmearedDXSec();
   }
 
   void MakeCovM()
   {
+    cout << "[CovMProducer::MakeCovM] start" << endl;
     Int_t nBin = h_dXSec_cv_->GetNbinsX();
     for(Int_t i=0; i<nBin; i++)
     {
@@ -52,48 +83,47 @@ private:
         Double_t dXSec_cv_i = h_dXSec_cv_->GetBinContent(i_bin);
         Double_t dXSec_cv_j = h_dXSec_cv_->GetBinContent(j_bin);
 
-        Double_t sum_ij = 0;
+        Double_t sum_diff_ij = 0;
         for(Int_t i_map=0; i_map<nEffMap; i_map++)
         {
           Double_t dXSec_i = vec_hist_smearedDXSec_[i_map]->GetBinContent(i_bin);
           Double_t dXSec_j = vec_hist_smearedDXSec_[i_map]->GetBinContent(j_bin);
 
-          sum_ij += dXSec_i*dXSec_j;
+          Double_t diff_i = (dXSec_i - dXSec_cv_i);
+          Double_t diff_j = (dXSec_j - dXSec_cv_j);
+
+          sum_diff_ij += diff_i*diff_j;
         }
 
-        Double_t cov = (sum_ij - nEffMap*dXSec_cv_i*dXSec_cv_j) / (nEffMap - 1); // -- unbiased estimator for cov
+        Double_t N = nEffMap;
+
+        Double_t cov = sum_diff_ij / (N - 1); // -- unbiased estimator for cov
+
+        // if( i == j )
+        //   cout << "i = j = " << i << " -> cov = " << cov << endl;
 
         h_cov_->SetBinContent(i_bin, j_bin, cov);
         h_cov_->SetBinError(i_bin, j_bin, 0);
 
       } // -- j iteration
     } // -- i iteration
+
+    cout << "[CovMProducer::MakeCovM] end" << endl;
+    cout << endl;
   }
 
-  void Generate_SmearedDXSec()
+  void Get_SmearedDXSec()
   {
-    TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
-    TString fileName_effSF = analyzerPath+"/ElecChannel/Uncertainties/EfficiencySF/ROOTFile_SmearedEffSF_perMassBin_"+uncType_+".root";
-
-    TH1D* h_effSF_cv = PlotTool::Get_Hist( fileName_effSF, "h_effSF_perMassBin_cv" );
-    DXSecProducer* dXSecProducer_cv = new DXSecProducer();
-    dXSecProducer_cv->UpdateEffSF( h_effSF_cv );
-    dXSecProducer_cv->Produce();
-    h_dXSec_cv_ = dXSecProducer_cv->DXSecHist();
-    h_dXSec_cv_->SetName("h_dXSec_cv");
+    TString fileName = "ROOTFile_SmearedDXSecProducer_"+uncType_+".root";
+    h_dXSec_cv_ = PlotTool::Get_Hist(fileName, "h_dXSec_cv");
 
     for(Int_t i=0; i<nEffMap; i++)
     {
       TString numbering = TString::Format("%d", i);
-      TString histName_smearedEffSF = "h_effSF_perMassBin_smeared_"+numbering;
-      TH1D* h_smearedEffSF = PlotTool::Get_Hist( fileName_effSF, histName_smearedEffSF );
+      TString histName_smearedDXSec = "h_dXSec_smeared_"+numbering;
 
-      DXSecProducer* dXSecProducer = new DXSecProducer();
-      dXSecProducer->UpdateEffSF( h_smearedEffSF );
-      dXSecProducer->Produce();
-      TH1D* h_dXSec_temp = dXSecProducer->DXSecHist();
-      h_dXSec_temp->SetName("h_dXSec_smeared_"+numbering);
-      vec_hist_smearedDXSec_.push_back( h_dXSec_temp );
+      TH1D* h_dXSec_smeared = PlotTool::Get_Hist(fileName, histName_smearedDXSec);
+      vec_hist_smearedDXSec_.push_back( h_dXSec_smeared );
     }
   }
 

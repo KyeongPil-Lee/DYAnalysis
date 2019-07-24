@@ -1,5 +1,5 @@
 #include <ElecChannel/DXSec/DXSecProducer.h>
-
+#include <vector>
 // -- when using ROOT5 for RooUnfold, SimplePlotTools.h makes error ... it should be excluded in the code
 // -- when using ROOT6 (v6.02) in muon server, RooUnfold doesn't work... :(
 // #include <ElecChannel/Include/DYElectronTool.h>
@@ -10,6 +10,7 @@ class SmearedDXSecProducer
 {
 public:
   TString uncType_;
+  TString fileName_effSF_;
 
   TH1D* h_dXSec_cv_;
   vector<TH1D*> vec_hist_smearedDXSec_;
@@ -17,6 +18,14 @@ public:
   SmearedDXSecProducer(TString uncType)
   {
     uncType_ = uncType;
+    fileName_effSF_ = "";
+    Init();
+  }
+
+  SmearedDXSecProducer(TString uncType, TString fileName_effSF)
+  {
+    uncType_ = uncType;
+    fileName_effSF_ = fileName_effSF;
     Init();
   }
 
@@ -28,15 +37,19 @@ public:
 private:
   void Init()
   {
+    vec_hist_smearedDXSec_.clear();
     Generate_SmearedDXSec();
   }
 
   void Generate_SmearedDXSec()
   {
-    TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
-    TString fileName_effSF = analyzerPath+"/ElecChannel/Uncertainties/EfficiencySF/ROOTFile_SmearedEffSF_perMassBin_"+uncType_+".root";
+    if( fileName_effSF_ == "" )
+    {
+      TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
+      TString fileName_effSF_ = analyzerPath+"/ElecChannel/Uncertainties/EfficiencySF/ROOTFile_SmearedEffSF_perMassBin_"+uncType_+".root";
+    }
 
-    TH1D* h_effSF_cv = Get_Hist( fileName_effSF, "h_effSF_perMassBin_cv" );
+    TH1D* h_effSF_cv = Get_Hist( fileName_effSF_, "h_effSF_perMassBin_cv" );
     DXSecProducer* dXSecProducer_cv = new DXSecProducer();
     dXSecProducer_cv->UpdateEffSF( h_effSF_cv );
     dXSecProducer_cv->Produce();
@@ -47,7 +60,7 @@ private:
     {
       TString numbering = TString::Format("%d", i);
       TString histName_smearedEffSF = "h_effSF_perMassBin_smeared_"+numbering;
-      TH1D* h_smearedEffSF = Get_Hist( fileName_effSF, histName_smearedEffSF );
+      TH1D* h_smearedEffSF = Get_Hist( fileName_effSF_, histName_smearedEffSF );
 
       DXSecProducer* dXSecProducer = new DXSecProducer();
       dXSecProducer->UpdateEffSF( h_smearedEffSF );
@@ -64,8 +77,8 @@ private:
     f_output->cd();
 
     h_dXSec_cv_->Write();
-    for(const auto& h_dXSec : vec_hist_smearedDXSec_ )
-      h_dXSec->Write();
+    for(Int_t i=0; i<nEffMap; i++)
+      vec_hist_smearedDXSec_[i]->Write();
 
     f_output->Close();
   }
