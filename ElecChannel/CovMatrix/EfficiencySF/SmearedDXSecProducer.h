@@ -1,3 +1,5 @@
+#pragma once
+
 #include <ElecChannel/DXSec/DXSecProducer.h>
 #include <vector>
 // -- when using ROOT5 for RooUnfold, SimplePlotTools.h makes error ... it should be excluded in the code
