@@ -14,6 +14,7 @@ public:
   TString fileName_reco_;
   TString fileName_ID_;
   TString fileName_trig_;
+  Bool_t usePrivateTnP_ = kFALSE;
 
   Double_t eff_reco_data_[nEtaBin][nPtBin];
   Double_t eff_reco_MC_[nEtaBin][nPtBin];
@@ -35,7 +36,7 @@ public:
   Double_t diff_trig_MC_[nEtaBin][nPtBin];
 
   // -- features for the tests
-  Bool_t doFlipFlop_;
+  Bool_t doFlipFlop_ = kFALSE;
 
   Bool_t doIgnorePtBinUnc_ = kFALSE;
   Int_t  thePtIndex_ignore_ = -1;
@@ -52,6 +53,28 @@ public:
       cout << "Warning: nEtaBin != vec_etaBinEdge_.size() - 1" << endl;
 
     doFlipFlop_ = kFALSE;
+
+    Init();
+  }
+
+  TnPEfficiency(TString fileName_reco, TString fileName_ID, TString fileName_trig )
+  {
+    usePrivateTnP_ = kTRUE;
+
+    TH1::AddDirectory(kFALSE);
+    if( nPtBin != vec_ptBinEdge_.size() - 1 )
+      cout << "Warning: nPtBin != vec_ptBinEdge_.size() - 1" << endl;
+    if( nEtaBin != vec_etaBinEdge_.size() - 1 )
+      cout << "Warning: nEtaBin != vec_etaBinEdge_.size() - 1" << endl;
+
+    fileName_reco_ = fileName_reco;
+    fileName_ID_   = fileName_ID;
+    fileName_trig_ = fileName_trig;
+
+    cout << "use private TnP root file" << endl;
+    cout << "  reconstruction efficiency: " << fileName_reco_ << endl;
+    cout << "  ID efficiency: "             << fileName_ID_   << endl;
+    cout << "  Trigger efficiency: "        << fileName_trig_ << endl;
 
     Init();
   }
@@ -192,12 +215,15 @@ private:
       }
     }
 
-    TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
-    TString baseDir = analyzerPath+"/ElecChannel/EfficiencySF/TnPResult";
+    if( !usePrivateTnP_ )
+    {
+      TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
+      TString baseDir = analyzerPath+"/ElecChannel/EfficiencySF/TnPResult";
 
-    fileName_reco_ = baseDir+"/ROOTFile_RecoSF_April2019.root";
-    fileName_ID_   = baseDir+"/ROOTFile_IDSF_April2019.root";
-    fileName_trig_ = baseDir+"/ROOTFile_trigSF_SMP17001.root";
+      fileName_reco_ = baseDir+"/ROOTFile_RecoSF_April2019.root";
+      fileName_ID_   = baseDir+"/ROOTFile_IDSF_April2019.root";
+      fileName_trig_ = baseDir+"/ROOTFile_trigSF_SMP17001.root";
+    }
 
     TString histName_data = "h_eff_data";
     TString histName_MC   = "h_eff_mc";

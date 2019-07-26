@@ -21,6 +21,11 @@ public:
 
   Bool_t doFlipFlop_ = kFALSE;
 
+  TString fileName_reco_ = "";
+  TString fileName_ID_   = "";
+  TString fileName_trig_ = "";
+  Bool_t usePrivateTnP_ = kFALSE;
+
   SmearedEffSFTool(TString uncType)
   {
     uncType_ = uncType;
@@ -31,6 +36,23 @@ public:
   {
     uncType_ = uncType;
     doFlipFlop_ = doFlipFlop;
+    Init();
+  }
+
+  SmearedEffSFTool(TString uncType, TString fileName_reco, TString fileName_ID, TString fileName_trig )
+  {
+    usePrivateTnP_ = kTRUE;
+
+    uncType_ = uncType;
+
+    fileName_reco_ = fileName_reco;
+    fileName_ID_   = fileName_ID;
+    fileName_trig_ = fileName_trig;
+
+    cout << "use private TnP root file" << endl;
+    cout << "  reconstruction efficiency: " << fileName_reco_ << endl;
+    cout << "  ID efficiency: "             << fileName_ID_   << endl;
+    cout << "  Trigger efficiency: "        << fileName_trig_ << endl;
     Init();
   }
 
@@ -45,14 +67,17 @@ private:
   {
     h_mass_effPass_noSF_ = DYTool::MakeHist_DXSecBin("h_mass_effPass_noSF");
 
-    tnpEff_cv_ = new TnPEfficiency();
+    if( !usePrivateTnP_ ) tnpEff_cv_ = new TnPEfficiency();
+    else                  tnpEff_cv_ = new TnPEfficiency(fileName_reco_, fileName_ID_, fileName_trig_);
 
     h_mass_effPass_withSF_cv_ = DYTool::MakeHist_DXSecBin("h_mass_effPass_withSF_cv");
     h_effSF_perMassBin_cv_ = nullptr; // -- will be made at the end of ProduceMassHist
 
     for(Int_t i=0; i<nEffMap; i++)
     {
-      tnpEff_smeared_[i] = new TnPEfficiency();
+      if( !usePrivateTnP_ ) tnpEff_smeared_[i] = new TnPEfficiency();
+      else                  tnpEff_smeared_[i] = new TnPEfficiency(fileName_reco_, fileName_ID_, fileName_trig_);
+
       if( doFlipFlop_ ) tnpEff_smeared_[i]->doFlipFlop_ = kTRUE;
       tnpEff_smeared_[i]->SmearingEff_GivenUncType(uncType_);
 
@@ -60,6 +85,9 @@ private:
       h_mass_effPass_withSF_smeared_[i] = DYTool::MakeHist_DXSecBin("h_mass_effPass_withSF_smeared_"+numbering);
       h_effSF_perMassBin_smeared_[i] = nullptr;
     }
+
+    cout << "[SmearedEffSFTool::Init] Generation of " << nEffMap << " randomized efficiency maps: done" << endl;
+    cout << endl;
   }
 
   void ProduceMassHist()
@@ -70,9 +98,6 @@ private:
 
     TTree *ntuple;
     ntuple = (TTree*)f_ntuple->Get("tree");
-    Long64_t nTotEvent = ntuple->GetEntries();
-    cout << "Total # events: "<< nTotEvent << endl;
-    cout << endl;
 
     ntuple->SetBranchAddress("Ele1PT",&pt1);
     ntuple->SetBranchAddress("Ele1Eta",&eta1);
@@ -82,7 +107,7 @@ private:
     ntuple->SetBranchAddress("lumiWeights",&lumiWeight);
     ntuple->SetBranchAddress("genWeights",&genWeight);
 
-    Int_t nEvent = ntuple->GetEntries();
+    Long64_t nEvent = ntuple->GetEntries();
     cout << "nEvent: " << nEvent << endl;
 
     for(Int_t i_ev=0; i_ev<nEvent; i_ev++)
