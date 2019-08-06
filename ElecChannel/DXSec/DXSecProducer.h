@@ -18,12 +18,14 @@ public:
   // -- input for diff. x-sections
   TH1D* h_yield_;
   RooUnfoldResponse* rooUnfoldRes_detRes_;
+  TH1D* h_eff_;
   TH1D* h_accEff_;
   TH1D* h_effSF_;
   RooUnfoldResponse* rooUnfoldRes_FSR_;
 
   // -- output
   TH1D* h_dXSec_;
+  TH1D* h_FpoF_dXSec_;
 
   DXSecProducer()
   {
@@ -36,6 +38,7 @@ public:
   }
 
   TH1D* DXSecHist() { return h_dXSec_; }
+  TH1D* FpoF_DXSecHist() { return h_FpoF_dXSec_; }
 
   void UpdateEffSF( TH1D* h_effSF_new )
   {
@@ -65,7 +68,19 @@ private:
     // -- Obtain differential cross section -- //
     h_dXSec_ = DivideEachBin_ByBinWidth(FSR_Corrected); // -- differential cross section -- //    
     h_dXSec_->Scale(1/2258.066); // -- cross section -- //
+
+    // -- Obtain differential cross section -- //
+    // h_dXSec_ = DivideEachBin_ByBinWidth(h_yield_Unfolded_AccEff); // -- differential cross section -- //    
+    // h_dXSec_->Scale(1/2258.066); // -- cross section -- //
+
+
+    // -- fiducial cross sections
+    TH1D* h_yield_Unfolded_Eff = ApplyFinal_EffCorr(h_yield_Unfolded_SFCorr, h_eff_); // Apply eff corrections
+    h_FpoF_dXSec_ = DivideEachBin_ByBinWidth(h_yield_Unfolded_Eff);
+    h_FpoF_dXSec_->Scale(1/2258.066); // -- cross section -- //
   }
+
+
   void Init()
   {
     TH1::AddDirectory(kFALSE);
@@ -77,6 +92,7 @@ private:
     Init_RooUnfoldRes();
     Init_AccEff();
     Init_EffSF();
+    // Init_EffSF_Old();
   }
 
   void Init_Yield()
@@ -130,7 +146,8 @@ private:
     TH1D *h_EffPass = (TH1D*)f1->Get("h_mass_EffPass");
     TH1D *h_EffTotal = (TH1D*)f1->Get("h_mass_EffTotal");
 
-    h_accEff_ = Calc_AccEff(h_AccTotal, h_AccPass, h_EffTotal, h_EffPass); //Computing Acceptance * Eff
+    h_eff_     = Calc_Eff(h_EffTotal, h_EffPass); //Computing Efficiency: for fiducial cross sections
+    h_accEff_  = Calc_AccEff(h_AccTotal, h_AccPass, h_EffTotal, h_EffPass); //Computing Acceptance * Eff
 
     delete f1;
     delete h_AccPass;
@@ -141,7 +158,6 @@ private:
 
   void Init_EffSF()
   {
-
     TString fileName = analyzerPath_+"/ElecChannel/EfficiencySF/ROOTFile_EfficiencySF_perMassBin.root";
     TString histName = "h_effSF_perMassBin";
     h_effSF_ = Get_Hist(fileName, histName);
@@ -152,6 +168,8 @@ private:
   void Init_EffSF_Old()
   {
     TFile *f2 = TFile::Open(basePath_+"/ROOTFile_EffSF.root");
+    // TFile *f2 = TFile::Open("/Users/KyeongPil_Lee/Physics/DYAnalysis_76X_LumiUpdate/ElecChannel/Code_Ridhi/CentralValue/Fiducial/ROOTFile_EffSF.root");
+
     TH1D *h_mass_num = (TH1D*)f2->Get("hist_mass_num");
     TH1D *h_mass_den = (TH1D*)f2->Get("hist_mass_den");
 
@@ -190,6 +208,34 @@ private:
     }
 
     return h_EfficiencySF;
+  }
+
+  TH1D* Calc_Eff(TH1D *Total, TH1D *Pass)
+  {
+    TH1D* h = (TH1D*)Total->Clone();
+
+    int n = Pass->GetNbinsX();
+    
+    for(int i=1;i<n+1; i++)
+    {
+      double low  = Pass->GetBinLowEdge(i);
+      double high = Pass->GetBinLowEdge(i+1);
+    
+      double num = Pass->GetBinContent(i);
+      double den = Total->GetBinContent(i);
+      double denerr = (Total->GetBinContent(i)*Total->GetBinContent(i))/(Total->GetBinError(i)*Total->GetBinError(i));
+      double Val = num/den;
+      double errVal = sqrt(Val*(1-Val)/denerr);
+    
+      h->SetBinContent(i, Val);
+      h->SetBinError(i, errVal);
+        
+      //cout<<low<<"   "<<high<<endl;
+      //cout<<h->GetBinContent(i)<<endl;
+      //cout<<""<<endl;
+    }
+
+    return h;
   }
 
   TH1D* Calc_AccEff(TH1D *AccTotal, TH1D *AccPass, TH1D *EffTotal, TH1D *EffPass)
