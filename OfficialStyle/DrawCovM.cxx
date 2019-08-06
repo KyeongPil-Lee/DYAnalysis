@@ -51,6 +51,7 @@ public:
   {
     // -- covariance matric (without lumi.)
     DrawPlot_givenTH2D( "cov_noLumi",  h_cov_noLumi_ );
+    DrawPlot_givenTH2D( "corr_noLumi",  h_corr_noLumi_ );
 
     // -- individual sources
     DrawPlot_givenTH2D( "cov_statYield",  h_cov_statYield_ );
@@ -71,8 +72,6 @@ public:
       // -- total covariance/correlation matrix including luminosity
       DrawPlot_givenTH2D( "cov", h_cov_ );
       DrawPlot_givenTH2D( "corr", h_corr_ );
-
-      DrawPlot_givenTH2D( "corr_noLumi", h_corr_noLumi_ );
 
       // -- others
       DrawPlot_givenTH2D( "cov_lumiOnly",  h_cov_lumiOnly_ );
@@ -96,7 +95,8 @@ private:
   {
     TFile *f_input = TFile::Open(fileName_);
     TMatrixD *covM_noLumi = (TMatrixD*)f_input->Get("BLUE_inp/covTotMM_noLumi");
-    h_cov_noLumi_ = Convert_TMatrixDToMassBinnedTH2D(covM_noLumi, "h_covM_noLumi_"+type_);
+    h_cov_noLumi_  = Convert_TMatrixDToMassBinnedTH2D(covM_noLumi, "h_covM_noLumi_"+type_);
+    h_corr_noLumi_ = Convert_CovMToCorrM(h_cov_noLumi_);
 
     // -- individual sources
     h_cov_statYield_  = GetTH2DInCanvas(f_input, "c2CovStatYield_mmCov_onFile_adj", "c2CovStatYield_mmCov_onFile_adj_1", "h2CovStatYield_mmCov_onFile_adj");
@@ -110,13 +110,50 @@ private:
 
     h_cov_systNonAcc_  = GetTH2DInCanvas(f_input, "c2CovSystNonAcc_mmCov_onFile_adj", "c2CovSystNonAcc_mmCov_onFile_adj_1", "h2CovSystNonAcc_mmCov_onFile_adj");
     h_corr_systNonAcc_ = GetTH2DInCanvas(f_input, "c2CovSystNonAcc_mmCov_onFile_adj", "c2CovSystNonAcc_mmCov_onFile_adj_2", "h2CovSystNonAcc_mmCov_onFile_adj_corr");
+
+    // -- save 2D histograms (for HEPData entry creation)
+    TFile *f_output = TFile::Open("ROOTFile_covM_muon.root", "RECREATE");
+    f_output->cd();
+
+    h_cov_noLumi_->SetName("h_cov_noLumi");
+    h_cov_noLumi_->Write();
+
+    h_corr_noLumi_->SetName("h_corr_noLumi");
+    h_corr_noLumi_->Write();
+
+    h_cov_statYield_->SetName("h_cov_statYield");
+    h_cov_statYield_->Write();
+
+    h_corr_statYield_->SetName("h_corr_statYield");
+    h_corr_statYield_->Write();
+
+    h_cov_statNonYield_->SetName("h_cov_statNonYield");
+    h_cov_statNonYield_->Write();
+
+    h_corr_statNonYield_->SetName("h_corr_statNonYield");
+    h_corr_statNonYield_->Write();
+
+    h_cov_systAcc_->SetName("h_cov_systAcc");
+    h_cov_systAcc_->Write();
+
+    h_corr_systAcc_->SetName("h_corr_systAcc");
+    h_corr_systAcc_->Write();
+
+    h_cov_systNonAcc_->SetName("h_cov_systNonAcc");
+    h_cov_systNonAcc_->Write();
+
+    h_corr_systNonAcc_->SetName("h_corr_systNonAcc");
+    h_corr_systNonAcc_->Write();
+
+    f_output->Close();
   }
 
   void Init_Electron()
   {
     TFile *f_input = TFile::Open(fileName_);
     TMatrixD *covM_noLumi = (TMatrixD*)f_input->Get("BLUE_inp/covTotEE_noLumi");
-    h_cov_noLumi_ = Convert_TMatrixDToMassBinnedTH2D(covM_noLumi, "h_covM_noLumi_"+type_);
+    h_cov_noLumi_  = Convert_TMatrixDToMassBinnedTH2D(covM_noLumi, "h_covM_noLumi_"+type_);
+    h_corr_noLumi_ = Convert_CovMToCorrM(h_cov_noLumi_);
 
     // -- individual sources
     h_cov_statYield_  = GetTH2DInCanvas(f_input, "c2CovStatYield_eeCov_onFile_adj", "c2CovStatYield_eeCov_onFile_adj_1", "h2CovStatYield_eeCov_onFile_adj");
@@ -131,6 +168,42 @@ private:
     h_cov_systNonAcc_  = GetTH2DInCanvas(f_input, "c2CovSystNonAcc_eeCov_onFile_adj", "c2CovSystNonAcc_eeCov_onFile_adj_1", "h2CovSystNonAcc_eeCov_onFile_adj");
     h_corr_systNonAcc_ = GetTH2DInCanvas(f_input, "c2CovSystNonAcc_eeCov_onFile_adj", "c2CovSystNonAcc_eeCov_onFile_adj_2", "h2CovSystNonAcc_eeCov_onFile_adj_corr");
 
+
+    // -- save 2D histograms (for HEPData entry creation)
+    TFile *f_output = TFile::Open("ROOTFile_covM_electron.root", "RECREATE");
+    f_output->cd();
+
+    h_cov_noLumi_->SetName("h_cov_noLumi");
+    h_cov_noLumi_->Write();
+
+    h_corr_noLumi_->SetName("h_corr_noLumi");
+    h_corr_noLumi_->Write();
+
+    h_cov_statYield_->SetName("h_cov_statYield");
+    h_cov_statYield_->Write();
+
+    h_corr_statYield_->SetName("h_corr_statYield");
+    h_corr_statYield_->Write();
+
+    h_cov_statNonYield_->SetName("h_cov_statNonYield");
+    h_cov_statNonYield_->Write();
+
+    h_corr_statNonYield_->SetName("h_corr_statNonYield");
+    h_corr_statNonYield_->Write();
+
+    h_cov_systAcc_->SetName("h_cov_systAcc");
+    h_cov_systAcc_->Write();
+
+    h_corr_systAcc_->SetName("h_corr_systAcc");
+    h_corr_systAcc_->Write();
+
+    h_cov_systNonAcc_->SetName("h_cov_systNonAcc");
+    h_cov_systNonAcc_->Write();
+
+    h_corr_systNonAcc_->SetName("h_corr_systNonAcc");
+    h_corr_systNonAcc_->Write();
+
+    f_output->Close();
   }
 
   void Init_Comb()
@@ -171,6 +244,61 @@ private:
     TMatrixD *covM_lumiCov2NBin = (TMatrixD*)f_input->Get("BLUE_inp/covTotLumi");
     h_lumiCov2NBin_ = new TH2D(*covM_lumiCov2NBin);
     h_lumiCov2NBin_->SetName("h_lumiCov2NBin");
+
+
+    // -- save 2D histograms (for HEPData entry creation)
+    TFile *f_output = TFile::Open("ROOTFile_covM_combined.root", "RECREATE");
+    f_output->cd();
+
+    h_cov_->SetName("h_cov");
+    h_cov_->Write();
+
+    h_corr_->SetName("h_corr");
+    h_corr_->Write();
+
+    h_cov_noLumi_->SetName("h_cov_noLumi");
+    h_cov_noLumi_->Write();
+
+    h_corr_noLumi_->SetName("h_corr_noLumi");
+    h_corr_noLumi_->Write();
+
+    h_cov_statYield_->SetName("h_cov_statYield");
+    h_cov_statYield_->Write();
+
+    h_corr_statYield_->SetName("h_corr_statYield");
+    h_corr_statYield_->Write();
+
+    h_cov_statNonYield_->SetName("h_cov_statNonYield");
+    h_cov_statNonYield_->Write();
+
+    h_corr_statNonYield_->SetName("h_corr_statNonYield");
+    h_corr_statNonYield_->Write();
+
+    h_cov_systAcc_->SetName("h_cov_systAcc");
+    h_cov_systAcc_->Write();
+
+    h_corr_systAcc_->SetName("h_corr_systAcc");
+    h_corr_systAcc_->Write();
+
+    h_cov_systNonAcc_->SetName("h_cov_systNonAcc");
+    h_cov_systNonAcc_->Write();
+
+    h_corr_systNonAcc_->SetName("h_corr_systNonAcc");
+    h_corr_systNonAcc_->Write();
+
+    h_cov_lumiOnly_->SetName("h_cov_lumiOnly");
+    h_cov_lumiOnly_->Write();
+
+    h_corr_lumiOnly_->SetName("h_corr_lumiOnly");
+    h_corr_lumiOnly_->Write();
+
+    h_crossCovEM_->SetName("h_crossCovEM");
+    h_crossCovEM_->Write();
+
+    h_lumiCov2NBin_->SetName("h_lumiCov2NBin");
+    h_lumiCov2NBin_->Write();
+
+    f_output->Close();
   }
 
   TH2D* GetTH2DInCanvas( TFile *f_input, TString canvasName, TString padName, TString histName )
@@ -410,6 +538,71 @@ private:
     }
 
     printf("\n[CovMatrices::Print_2DHist] Finished\n");
+  }
+
+  TH2D* Convert_CovMToCorrM( TH2D* h_cov )
+  {
+    TH2D* h_corr = (TH2D*)h_cov->Clone();
+    Int_t nBin = h_cov->GetNbinsX();
+
+    vector<Double_t> vec_sigma; // -- uncertainties in each bin
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+      Double_t variance = h_cov->GetBinContent(i_bin, i_bin);
+      Double_t sigma = sqrt(variance);
+      vec_sigma.push_back(sigma);
+    }
+
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+      Double_t sigma_i = vec_sigma[i];
+
+      for(Int_t j=0; j<nBin; j++)
+      {
+        Int_t j_bin = j+1;
+        Double_t sigma_j = vec_sigma[j];
+
+        Double_t cov = h_cov->GetBinContent(i_bin, j_bin);
+        Double_t corr = cov / (sigma_i * sigma_j);
+        h_corr->SetBinContent(i_bin, j_bin, corr);
+      }
+    }
+
+    return h_corr;
+  }
+
+  void Comparison_TH2D(TH2D* h1, TH2D* h2)
+  {
+    Int_t nBin = h1->GetNbinsX();
+
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+      for(Int_t j=0; j<nBin; j++)
+      {
+        Int_t j_bin = j+1;
+
+        Double_t value1 = h1->GetBinContent(i_bin, j_bin);
+        Double_t value2 = h2->GetBinContent(i_bin, j_bin);
+        Double_t relDiff = (value2 - value1) / value1;
+
+        cout << "[i_bin, j_bin] = [" << i_bin << ", " << j_bin << "]"
+             << "  (h1, h2, rel.diff) = (" 
+             << value1 << ", "
+             << value2 << ", "
+             << relDiff*100 << "%)" << endl;
+
+        if( relDiff*100 > 0.001 ) // -- 0.001%
+        {
+          cout << "**********************************************" << endl;
+          cout << "  Large (>0.001%) relative difference is found" <<endl;
+          cout << "**********************************************" << endl;
+        }
+        // cout << endl;
+      }
+    }
   }
 
 };

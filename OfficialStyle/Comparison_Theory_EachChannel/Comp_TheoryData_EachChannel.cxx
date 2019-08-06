@@ -139,12 +139,16 @@ public:
 			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.8 fb^{-1} (13 TeV)}}");
 			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow #mu#mu");
+			latex.DrawLatexNDC(0.65, 0.78, "#font[42]{#scale[0.5]{p_{T}^{lead}(#mu) > 22 GeV, p_{T}^{sub}(#mu) > 10 GeV}}");
+			latex.DrawLatexNDC(0.65, 0.73, "#font[42]{#scale[0.5]{|#eta(#mu)| < 2.4}}");
 		}
 		else if( this->Type_Channel == "Electron" )
 		{
 			latex.DrawLatexNDC(0.74, 0.96, "#font[62]{#scale[0.7]{2.3 fb^{-1} (13 TeV)}}");
 			latex.SetTextSize(0.045);
 			latex.DrawLatexNDC(0.65, 0.85, "#gamma* /#font[122]{Z} #rightarrow ee");
+			latex.DrawLatexNDC(0.65, 0.78, "#font[42]{#scale[0.5]{p_{T}^{lead}(e) > 30 GeV, p_{T}^{sub}(e) > 10 GeV}}");
+			latex.DrawLatexNDC(0.65, 0.73, "#font[42]{#scale[0.5]{|#eta(e)| < 2.5, |#eta(e)| #notin (1.44, 1.57)}}");
 		}
 
 		//////////////////////

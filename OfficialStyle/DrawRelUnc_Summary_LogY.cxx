@@ -190,7 +190,7 @@ protected:
 		h->GetXaxis()->SetTitleOffset(0.95);
 		h->GetXaxis()->SetTitleSize(0.06);
 		h->GetXaxis()->SetTitleFont(42);
-		h->GetYaxis()->SetTitle("Relative uncertainty (%)");
+		h->GetYaxis()->SetTitle("Relative uncertainty [%]");
 		h->GetYaxis()->SetLabelFont(42);
 		h->GetYaxis()->SetLabelOffset(0.007);
 		h->GetYaxis()->SetLabelSize(0.05);

@@ -424,36 +424,12 @@ private:
     }
     else if( channel_ == "Combined" )
     {
-      TString fileName = rootFilePath+"/dyll-combi-_corr_wLumi_inpYieldUnc-20171204.root";
-      h_diffXSec_ = Get_Hist(fileName, "h1Combi");
+      TString fileName = rootFilePath+"/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+      h_diffXSec_ = Get_Hist(fileName, "ll/h_dXSec");
     }
+
+    SaveHistogram();
   }
-
-  // void RemoveMomCorrUnc_MuonChannel( TH1D* h_relUnc_syst_detRes, TH1D* h_relUnc_syst_momEngCorr )
-  // {
-  //   for(Int_t i=0; i<nMassBin; i++)
-  //   {
-  //     Int_t i_bin = i+1;
-  //     Double_t relUnc_detRes_before = h_relUnc_syst_detRes->GetBinContent(i_bin);
-  //     Double_t relUnc_syst_momEngCorr = h_relUnc_syst_momEngCorr->GetBinContent(i_bin);
-  //     Double_t relUnc_detRes_after = sqrt( relUnc_detRes_before*relUnc_detRes_before - relUnc_syst_momEngCorr*relUnc_syst_momEngCorr);
-
-  //     h_relUnc_syst_detRes->SetBinContent(i_bin, relUnc_detRes_after);
-  //   }
-  // }
-
-  // void RemoveLumiUnc( TH1D* h_relUnc_syst_tot, TH1D* h_relUnc_lumi )
-  // {
-  //   for(Int_t i=0; i<nMassBin; i++)
-  //   {
-  //     Int_t i_bin = i+1;
-  //     Double_t relUnc_tot_before = h_relUnc_syst_tot->GetBinContent(i_bin);
-  //     Double_t relUnc_lumi = h_relUnc_lumi->GetBinContent(i_bin);
-  //     Double_t relUnc_tot_after = sqrt( relUnc_tot_before*relUnc_tot_before - relUnc_lumi*relUnc_lumi);
-
-  //     h_relUnc_syst_tot->SetBinContent(i_bin, relUnc_tot_after);
-  //   }
-  // }
 
   TString Transform_TexFormat( Double_t value )
   {
@@ -484,33 +460,212 @@ private:
     }
   }
 
-  // TH1D* QaudSum_TwoHists( TH1D* h1, TH1D* h2 )
-  // {
-  //   Int_t nBin = h1->GetNbinsX();
-  //   Int_t nBin2 = h2->GetNbinsX();
-  //   if( nBin != nBin2 )
-  //   {
-  //     printf("[QaudSum_TwoHists] (nBin1, nBin2) = (%d, %d) ... different!!\n", nBin, nBin2);
-  //     return nullptr;
-  //   }
+  void SaveHistogram()
+  {
+    TFile *f_output = TFile::Open("ROOTFile_PrintNumbersInTable_"+channel_+".root", "RECREATE");
+    f_output->cd();
 
-  //   TH1D* h_return = (TH1D*)h1->Clone();
+    if( channel_ == "Combined" )
+    {
+      h_diffXSec_->SetName("h_dXSec");
+      TH1D* h_relUnc_tot = Extract_RelUnc(h_diffXSec_, "h_relUnc_tot");
+      TH1D* h_absUnc_tot = ConvertToAbsUnc(h_diffXSec_, h_relUnc_tot, kFALSE, "h_absUnc_tot");
 
-  //   for(Int_t i=0; i<nBin; i++)
-  //   {
-  //     Int_t i_bin = i+1;
+      h_diffXSec_->Write();
+      h_relUnc_tot->Write();
+      h_absUnc_tot->Write();
+    }
+    else // -- electron or muon
+    {
+      h_diffXSec_->SetName("h_dXSec");
+      h_relUnc_stat_->SetName("h_relUnc_stat");
+      TH1D* h_absUnc_stat = ConvertToAbsUnc(h_diffXSec_, h_relUnc_stat_, kTRUE, "h_absUnc_stat");
 
-  //     Double_t value1 = h1->GetBinContent(i_bin);
-  //     Double_t value2 = h2->GetBinContent(i_bin);
+      h_relUnc_lumi_->SetName("h_relUnc_lumi");
+      TH1D* h_absUnc_lumi = ConvertToAbsUnc(h_diffXSec_, h_relUnc_lumi_, kTRUE, "h_absUnc_lumi");
 
-  //     Double_t quadSum = sqrt(value1*value1 + value2*value2);
+      h_relUnc_syst_eff_->SetName("h_relUnc_syst_eff");
+      TH1D* h_absUnc_syst_eff = ConvertToAbsUnc(h_diffXSec_, h_relUnc_syst_eff_, kTRUE, "h_absUnc_syst_eff");
 
-  //     h_return->SetBinContent(i_bin, quadSum);
-  //     h_return->SetBinError(i_bin, 0);
-  //   }
+      h_relUnc_syst_detRes_->SetName("h_relUnc_syst_detRes");
+      TH1D* h_absUnc_syst_detRes = ConvertToAbsUnc(h_diffXSec_, h_relUnc_syst_detRes_, kTRUE, "h_absUnc_syst_detRes");
 
-  //   return h_return;
-  // }
+      h_relUnc_syst_bkg_->SetName("h_relUnc_syst_bkg");
+      TH1D* h_absUnc_syst_bkg = ConvertToAbsUnc(h_diffXSec_, h_relUnc_syst_bkg_, kTRUE, "h_absUnc_syst_bkg");
+
+      h_relUnc_syst_FSR_->SetName("h_relUnc_syst_FSR");
+      TH1D* h_absUnc_syst_FSR = ConvertToAbsUnc(h_diffXSec_, h_relUnc_syst_FSR_, kTRUE, "h_absUnc_syst_FSR");
+
+      h_relUnc_syst_tot_->SetName("h_relUnc_syst_tot");
+      TH1D* h_absUnc_syst_tot = ConvertToAbsUnc(h_diffXSec_, h_relUnc_syst_tot_, kTRUE, "h_absUnc_syst_tot");
+
+      h_relUnc_syst_accPDF_->SetName("h_relUnc_syst_accPDF");
+      TH1D* h_absUnc_syst_accPDF = ConvertToAbsUnc(h_diffXSec_, h_relUnc_syst_accPDF_, kTRUE, "h_absUnc_syst_accPDF");
+
+      // -- total systematic + luminosity
+      vector<TH1D*> vec_relUncHist_expUnc = {
+        h_relUnc_lumi_,
+        h_relUnc_syst_tot_
+      };
+      TH1D* h_relUnc_exp = QuadSumHist("h_relUnc_exp", vec_relUncHist_expUnc);
+      TH1D* h_absUnc_exp = ConvertToAbsUnc(h_diffXSec_, h_relUnc_exp, kTRUE, "h_absUnc_exp");
+
+      // -- stat. + experimental + theory
+      vector<TH1D*> vec_relUncHist_tot = {
+        h_relUnc_stat_,
+        h_relUnc_exp,
+        h_relUnc_syst_accPDF_
+      };
+      TH1D* h_relUnc_tot = QuadSumHist("h_relUnc_tot", vec_relUncHist_tot);
+      TH1D* h_absUnc_tot = ConvertToAbsUnc(h_diffXSec_, h_relUnc_tot, kTRUE, "h_absUnc_tot");
+
+      // -- write
+      h_diffXSec_->Write();
+
+      h_relUnc_stat_->Write();
+      h_absUnc_stat->Write();
+
+      h_relUnc_lumi_->Write();
+      h_absUnc_lumi->Write();
+
+      h_relUnc_syst_eff_->Write();
+      h_absUnc_syst_eff->Write();
+
+      h_relUnc_syst_detRes_->Write();
+      h_absUnc_syst_detRes->Write();
+
+      h_relUnc_syst_bkg_->Write();
+      h_absUnc_syst_bkg->Write();
+
+      h_relUnc_syst_FSR_->Write();
+      h_absUnc_syst_FSR->Write();
+
+      h_relUnc_syst_tot_->Write();
+      h_absUnc_syst_tot->Write();
+
+      h_relUnc_syst_accPDF_->Write();
+      h_absUnc_syst_accPDF->Write();
+
+      h_relUnc_exp->Write();
+      h_absUnc_exp->Write();
+
+      h_relUnc_tot->Write();
+      h_absUnc_tot->Write();
+
+
+      // --  fiducial, post-FSR results
+      h_FpoF_diffXSec_->SetName("h_FpoF_dXSec");
+      h_FpoF_relUnc_stat_->SetName("h_FpoF_relUnc_stat");
+      TH1D* h_FpoF_absUnc_stat = ConvertToAbsUnc(h_FpoF_diffXSec_, h_FpoF_relUnc_stat_, kTRUE, "h_FpoF_absUnc_stat");
+
+      // -- relative uncertainty is same with the full phase space case, but absolute uncertainty is different -> need to save separately
+      TH1D* h_FpoF_absUnc_lumi        = ConvertToAbsUnc(h_FpoF_diffXSec_, h_relUnc_lumi_,        kTRUE, "h_FpoF_absUnc_lumi");
+      TH1D* h_FpoF_absUnc_syst_eff    = ConvertToAbsUnc(h_FpoF_diffXSec_, h_relUnc_syst_eff_,    kTRUE, "h_FpoF_absUnc_syst_eff");
+      TH1D* h_FpoF_absUnc_syst_detRes = ConvertToAbsUnc(h_FpoF_diffXSec_, h_relUnc_syst_detRes_, kTRUE, "h_FpoF_absUnc_syst_detRes");
+      TH1D* h_FpoF_absUnc_syst_bkg    = ConvertToAbsUnc(h_FpoF_diffXSec_, h_relUnc_syst_bkg_,    kTRUE, "h_FpoF_absUnc_syst_bkg");
+
+      h_FpoF_relUnc_syst_tot_->SetName("h_FpoF_relUnc_syst_tot"); // -- only eff, detRes and bkg.
+      TH1D* h_FpoF_absUnc_syst_tot = ConvertToAbsUnc(h_FpoF_diffXSec_, h_FpoF_relUnc_syst_tot_, kTRUE, "h_FpoF_absUnc_syst_tot");
+
+      vector<TH1D*> vec_FpoF_relUncHist_expUnc = {
+        h_relUnc_lumi_,
+        h_FpoF_relUnc_syst_tot_
+      };
+      TH1D* h_FpoF_relUnc_exp = QuadSumHist("h_FpoF_relUnc_exp", vec_FpoF_relUncHist_expUnc);
+      TH1D* h_FpoF_absUnc_exp = ConvertToAbsUnc(h_FpoF_diffXSec_, h_FpoF_relUnc_exp, kTRUE, "h_FpoF_absUnc_exp");
+
+      vector<TH1D*> vec_FpoF_relUncHist_tot = {
+        h_FpoF_relUnc_stat_,
+        h_FpoF_relUnc_exp
+      };
+      TH1D* h_FpoF_relUnc_tot = QuadSumHist("h_FpoF_relUnc_tot", vec_FpoF_relUncHist_tot);
+      TH1D* h_FpoF_absUnc_tot = ConvertToAbsUnc(h_FpoF_diffXSec_, h_FpoF_relUnc_tot, kTRUE, "h_FpoF_absUnc_tot");
+
+      // -- write
+      h_FpoF_diffXSec_->Write();
+
+      h_FpoF_relUnc_stat_->Write();
+      h_FpoF_absUnc_stat->Write();
+
+      h_FpoF_absUnc_lumi->Write();
+      h_FpoF_absUnc_syst_eff->Write();
+      h_FpoF_absUnc_syst_detRes->Write();
+      h_FpoF_absUnc_syst_bkg->Write();
+
+      h_FpoF_relUnc_syst_tot_->Write();
+      h_FpoF_absUnc_syst_tot->Write();
+
+      h_FpoF_relUnc_exp->Write();
+      h_FpoF_absUnc_exp->Write();
+
+      h_FpoF_relUnc_tot->Write();
+      h_FpoF_absUnc_tot->Write();
+    }
+  }
+
+  TH1D* ConvertToAbsUnc( TH1D* h_cv, TH1D* h_relUnc, Bool_t isPercent = kFALSE,  TString newHistName = "" )
+  {
+    cout << "[ConvertToAbsUnc] converting: " << h_relUnc->GetName() << " -> " << newHistName << endl;
+    TH1D* h_absUnc = (TH1D*)h_relUnc->Clone();
+    if( newHistName != "" )
+      h_absUnc->SetName(newHistName);
+
+    Int_t nBin = h_absUnc->GetNbinsX();
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+      Double_t cv     = h_cv->GetBinContent(i_bin);
+      Double_t relUnc = h_relUnc->GetBinContent(i_bin);
+      if( isPercent ) relUnc = relUnc / 100.0;
+
+      Double_t absUnc = cv * relUnc;
+      // cout << "[" << i_bin << "th bin]  "
+      //      << "(central value, rel.unc. -> abs. unc) "
+      //      << cv << ", "
+      //      << relUnc << " -> "
+      //      << absUnc << endl;
+
+      printf("[%02d th bin] (central value, rel.unc. -> abs. unc) %.15e, %.15e -> %.15e\n",
+               i_bin, cv, relUnc, absUnc);
+
+      h_absUnc->SetBinContent(i_bin, absUnc);
+      h_absUnc->SetBinError(i_bin, 0);
+    }
+
+    cout << endl;
+
+    return h_absUnc;
+  }
+
+  TH1D* QuadSumHist( TString histName, vector<TH1D*> vec_hist )
+  {
+    TH1D* h_quadSum = (TH1D*)vec_hist[0]->Clone();
+    // TString histName = "h_"+dataType_+"_relUnc_"+uncType;
+    h_quadSum->SetName(histName);
+
+    Int_t nHist = (Int_t)vec_hist.size();
+
+    Int_t nBin = vec_hist[0]->GetNbinsX();
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+
+      Double_t quadSumSq = 0;
+      for(Int_t i_hist=0; i_hist<nHist; i_hist++)
+      {
+        Double_t binContent = vec_hist[i_hist]->GetBinContent(i_bin);
+        quadSumSq += binContent*binContent;
+      }
+
+      Double_t quadSum = sqrt(quadSumSq);
+
+      h_quadSum->SetBinContent(i_bin, quadSum);
+      h_quadSum->SetBinError(i_bin, 0);
+    }
+
+    return h_quadSum;
+  }
+
 };
 
 void PrintNumbersInTable()
