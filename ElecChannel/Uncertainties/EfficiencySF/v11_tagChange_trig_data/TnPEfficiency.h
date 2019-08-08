@@ -340,13 +340,13 @@ private:
           eff_reco_data_[i_eta][i_pt] = eff_reco_data_[i_eta][i_pt] + rndNum_reco * diff_reco_data_[i_eta][i_pt];
           eff_ID_data_[i_eta][i_pt]   = eff_ID_data_[i_eta][i_pt]   + rndNum_ID   * diff_ID_data_[i_eta][i_pt];
         }
-        else if( dataType == "nlo" ) // -- MC variation, including trigger
+        else if( uncType == "nlo" ) // -- MC variation, including trigger
         {
           eff_reco_MC_[i_eta][i_pt] = eff_reco_MC_[i_eta][i_pt] + rndNum_reco * diff_reco_MC_[i_eta][i_pt];
           eff_ID_MC_[i_eta][i_pt]   = eff_ID_MC_[i_eta][i_pt]   + rndNum_ID   * diff_ID_MC_[i_eta][i_pt];
           eff_trig_MC_[i_eta][i_pt] = eff_trig_MC_[i_eta][i_pt] + rndNum_trig * diff_trig_MC_[i_eta][i_pt];
         }
-        else if( dataType == "tagChange" ) // -- MC variation for reco+ID & data variation for the trigger
+        else if( uncType == "tagChange" ) // -- MC variation for reco+ID & data variation for the trigger
         {
           eff_reco_MC_[i_eta][i_pt]   = eff_reco_MC_[i_eta][i_pt]   + rndNum_reco * diff_reco_MC_[i_eta][i_pt];
           eff_ID_MC_[i_eta][i_pt]     = eff_ID_MC_[i_eta][i_pt]     + rndNum_ID   * diff_ID_MC_[i_eta][i_pt];
