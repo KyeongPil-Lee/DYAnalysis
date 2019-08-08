@@ -196,6 +196,7 @@ public:
 private:
   void Init()
   {
+    cout << "[TnPEfficiency::Init] tag change for the trigger efficiency: data in this code" << endl;
     for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
     {
       for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
