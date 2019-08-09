@@ -71,10 +71,11 @@ public:
     fileName_ID_   = fileName_ID;
     fileName_trig_ = fileName_trig;
 
-    cout << "use private TnP root file" << endl;
-    cout << "  reconstruction efficiency: " << fileName_reco_ << endl;
+    cout << "[TnPEfficiency::Constructor] use the private TnP root files" << endl;
+    cout << "  Reconstruction efficiency: " << fileName_reco_ << endl;
     cout << "  ID efficiency: "             << fileName_ID_   << endl;
     cout << "  Trigger efficiency: "        << fileName_trig_ << endl;
+    cout << endl;
 
     Init();
   }
@@ -195,6 +196,7 @@ public:
 private:
   void Init()
   {
+    cout << "[TnPEfficiency::Init] tag change for the trigger efficiency: data in this code" << endl;
     for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
     {
       for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
@@ -321,8 +323,6 @@ private:
 
   void Randomization_Syst(TString uncType)
   {
-    TString dataType = FindDataType(uncType);
-
     // -- randomization
     TRandom3 ran;
     ran.SetSeed(0);
@@ -335,16 +335,22 @@ private:
     {
       for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
       {
-        if( dataType == "data" )
+        if( uncType == "bkgChange" || uncType == "sgnChange" ) // -- data variation, without trigger
         {
           eff_reco_data_[i_eta][i_pt] = eff_reco_data_[i_eta][i_pt] + rndNum_reco * diff_reco_data_[i_eta][i_pt];
           eff_ID_data_[i_eta][i_pt]   = eff_ID_data_[i_eta][i_pt]   + rndNum_ID   * diff_ID_data_[i_eta][i_pt];
         }
-        else if( dataType == "mc" )
+        else if( uncType == "nlo" ) // -- MC variation, including trigger
         {
           eff_reco_MC_[i_eta][i_pt] = eff_reco_MC_[i_eta][i_pt] + rndNum_reco * diff_reco_MC_[i_eta][i_pt];
           eff_ID_MC_[i_eta][i_pt]   = eff_ID_MC_[i_eta][i_pt]   + rndNum_ID   * diff_ID_MC_[i_eta][i_pt];
           eff_trig_MC_[i_eta][i_pt] = eff_trig_MC_[i_eta][i_pt] + rndNum_trig * diff_trig_MC_[i_eta][i_pt];
+        }
+        else if( uncType == "tagChange" ) // -- MC variation for reco+ID & data variation for the trigger
+        {
+          eff_reco_MC_[i_eta][i_pt]   = eff_reco_MC_[i_eta][i_pt]   + rndNum_reco * diff_reco_MC_[i_eta][i_pt];
+          eff_ID_MC_[i_eta][i_pt]     = eff_ID_MC_[i_eta][i_pt]     + rndNum_ID   * diff_ID_MC_[i_eta][i_pt];
+          eff_trig_data_[i_eta][i_pt] = eff_trig_data_[i_eta][i_pt] + rndNum_trig * diff_trig_data_[i_eta][i_pt];
         }
       }
     }
@@ -352,10 +358,8 @@ private:
 
   void ModifyDiffArray_FlipFlop(TString uncType)
   {
-    TString dataType = FindDataType(uncType);
-
-    if( dataType != "data" )
-      cout << "dataType = " << dataType << " is not supported for doing flipflop" << endl;
+    if( !(uncType == "sgnChange" || uncType == "bkgChange") )
+      cout << "uncType = " << uncType << " is not supported for doing flipflop" << endl;
     else
     {
       cout << "doFlipFlop: activated! ... uncType = " << uncType << endl;
@@ -385,20 +389,24 @@ private:
   // -- difference = 0 for a specific pt bin for the test
   void ModifyDiffArray_IgnorePtBinUnc(Int_t thePtIndex, TString uncType)
   {
-    TString dataType = FindDataType(uncType);
-
     for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
     {
-      if( dataType == "data" )
+      if( uncType == "sgnChange" || uncType == "bkgChange" )
       {
         diff_reco_data_[i_eta][thePtIndex] = 0;
         diff_ID_data_[i_eta][thePtIndex]   = 0;
       }
-      else if( dataType == "mc" )
+      else if( uncType == "nlo" )
       {
         diff_reco_MC_[i_eta][thePtIndex] = 0;
         diff_ID_MC_[i_eta][thePtIndex]   = 0;
         diff_trig_MC_[i_eta][thePtIndex] = 0;
+      }
+      else if( uncType == "tagChange" )
+      {
+        diff_reco_MC_[i_eta][thePtIndex]   = 0;
+        diff_ID_MC_[i_eta][thePtIndex]     = 0;
+        diff_trig_data_[i_eta][thePtIndex] = 0;
       }
     }
   }
@@ -406,22 +414,26 @@ private:
   // -- diff = 0 for a specific eff type (reco, ID, trig)
   void ModifyDiffArray_IgnoreEffTypeUnc(TString effType_ignore, TString uncType)
   {
-    TString dataType = FindDataType(uncType);
-
     for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
     {
       for(Int_t i_pt = 0; i_pt < nPtBin; i_pt++)
       {
-        if( dataType == "data" )
+        if( uncType == "sgnChange" || uncType == "bkgChange" )
         {
           if( effType_ignore == "reco" ) diff_reco_data_[i_eta][i_pt] = 0;
           if( effType_ignore == "ID" )   diff_ID_data_[i_eta][i_pt] = 0;
         }
-        else if( dataType == "mc" )
+        else if( uncType == "nlo" )
         {
           if( effType_ignore == "reco" ) diff_reco_MC_[i_eta][i_pt] = 0;
           if( effType_ignore == "ID" )   diff_ID_MC_[i_eta][i_pt] = 0;
           if( effType_ignore == "trig" ) diff_trig_MC_[i_eta][i_pt] = 0;
+        }
+        else if( uncType == "tagChange" )
+        {
+          if( effType_ignore == "reco" ) diff_reco_MC_[i_eta][i_pt] = 0;
+          if( effType_ignore == "ID" )   diff_ID_MC_[i_eta][i_pt] = 0;
+          if( effType_ignore == "trig" ) diff_trig_data_[i_eta][i_pt] = 0;
         }
       } // -- end of pt iteration
     } // -- end of eta iteration
@@ -429,24 +441,30 @@ private:
 
   void FillDiffArray(TString uncType)
   {
-    TString dataType = FindDataType(uncType);
-    TString histName = "h_relDiff_"+uncType+"_"+dataType; // -- keep the sign information
-
     TH2D* h_relDiff_reco = nullptr;
     TH2D* h_relDiff_ID   = nullptr;
     TH2D* h_relDiff_trig = nullptr;
 
-    if( dataType == "data" )
+    if( uncType == "bkgChange" || uncType == "sgnChange" )
     {
+      TString histName = "h_relDiff_"+uncType+"_data"; // -- keep the sign information
       h_relDiff_reco = PlotTool::Get_Hist2D(fileName_reco_, histName);
       h_relDiff_ID   = PlotTool::Get_Hist2D(fileName_ID_,   histName);
-      // -- no uncertainty on the data in the trigger efficiency (cut & count)
     }
-    else if( dataType == "mc" )
+    else if( uncType == "nlo" )
     {
+      TString histName = "h_relDiff_"+uncType+"_mc"; // -- keep the sign information
       h_relDiff_reco = PlotTool::Get_Hist2D(fileName_reco_, histName);
       h_relDiff_ID   = PlotTool::Get_Hist2D(fileName_ID_,   histName);
       h_relDiff_trig = PlotTool::Get_Hist2D(fileName_trig_, histName);
+    }
+    else if( uncType == "tagChange" )
+    {
+      TString histName_recoID = "h_relDiff_"+uncType+"_mc"; // -- keep the sign information
+      TString histName_trig   = "h_relDiff_"+uncType+"_data"; // -- tag change: data variation in the trigger case
+      h_relDiff_reco = PlotTool::Get_Hist2D(fileName_reco_, histName_recoID);
+      h_relDiff_ID   = PlotTool::Get_Hist2D(fileName_ID_,   histName_recoID);
+      h_relDiff_trig = PlotTool::Get_Hist2D(fileName_trig_, histName_trig);
     }
 
     for(Int_t i_eta = 0; i_eta < nEtaBin; i_eta++)
@@ -456,28 +474,25 @@ private:
         Int_t i_etaBin = i_eta + 1;
         Int_t i_ptBin  = i_pt + 1;
 
-        if( dataType == "data" )
+        if( uncType == "bkgChange" || uncType == "sgnChange" ) // -- data variation, no trigger
         {
           diff_reco_data_[i_eta][i_pt] = h_relDiff_reco->GetBinContent(i_etaBin, i_ptBin) * eff_reco_data_[i_eta][i_pt];
-          diff_ID_data_[i_eta][i_pt]   = h_relDiff_ID->GetBinContent(i_etaBin, i_ptBin) * eff_ID_data_[i_eta][i_pt];
+          diff_ID_data_[i_eta][i_pt]   = h_relDiff_ID->GetBinContent(i_etaBin, i_ptBin)   * eff_ID_data_[i_eta][i_pt];
         }
-        else if( dataType == "mc" )
+        else if( uncType == "nlo" ) // -- MC variation, including trigger
         {
           diff_reco_MC_[i_eta][i_pt] = h_relDiff_reco->GetBinContent(i_etaBin, i_ptBin) * eff_reco_MC_[i_eta][i_pt];
-          diff_ID_MC_[i_eta][i_pt]   = h_relDiff_ID->GetBinContent(i_etaBin, i_ptBin) * eff_ID_MC_[i_eta][i_pt];
+          diff_ID_MC_[i_eta][i_pt]   = h_relDiff_ID->GetBinContent(i_etaBin, i_ptBin)   * eff_ID_MC_[i_eta][i_pt];
           diff_trig_MC_[i_eta][i_pt] = h_relDiff_trig->GetBinContent(i_etaBin, i_ptBin) * eff_trig_MC_[i_eta][i_pt];
+        }
+        else if( uncType == "tagChange" ) // -- MC variation for reco+ID & data variation for trigger
+        {
+          diff_reco_MC_[i_eta][i_pt]   = h_relDiff_reco->GetBinContent(i_etaBin, i_ptBin) * eff_reco_MC_[i_eta][i_pt];
+          diff_ID_MC_[i_eta][i_pt]     = h_relDiff_ID->GetBinContent(i_etaBin, i_ptBin)   * eff_ID_MC_[i_eta][i_pt];
+          diff_trig_data_[i_eta][i_pt] = h_relDiff_trig->GetBinContent(i_etaBin, i_ptBin) * eff_trig_data_[i_eta][i_pt];
         }
       }
     }
-  }
-
-  TString FindDataType(TString uncType)
-  {
-    TString dataType = "";
-    if( uncType == "bkgChange" || uncType == "sgnChange" ) dataType = "data";
-    if( uncType == "tagChange" || uncType == "nlo" )       dataType = "mc";
-
-    return dataType;
   }
 
   Int_t FindPtBin(Double_t pt )   { return FindBin(pt,  vec_ptBinEdge_ ); }
