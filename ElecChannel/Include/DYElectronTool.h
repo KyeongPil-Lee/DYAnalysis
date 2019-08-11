@@ -143,6 +143,16 @@ namespace DYTool
 
         Double_t cov = h_cov->GetBinContent(i_bin, j_bin);
         Double_t corr = cov / (sigma_i * sigma_j);
+        if( (corr - 1.0) > 1e-3 )
+        {
+          cout << "Correlation = " << corr << " exceeds 1 !!! ... something wrong happens" << endl;
+          printf("(%d, %d) (cov, sigma_i, sigma_j, sigma_i*sigma_j) = (%lf,  %lf, %lf, %lf) -> corr = %lf\n",
+                   i, j, cov, sigma_i, sigma_j, sigma_i*sigma_j, corr);
+          return nullptr;
+        }
+
+        // printf("(%d, %d) (cov, sigma_i, sigma_j, sigma_i*sigma_j) = (%lf,  %lf, %lf, %lf) -> corr = %lf\n",
+        //          i, j, cov, sigma_i, sigma_j, sigma_i*sigma_j, corr);
 
         // if( i == j )
         //   cout << "i = j = " << i << " -> corr = " << corr << endl;
@@ -380,5 +390,37 @@ namespace DYTool
       // previous line and clear it.
     cout << "]\r" << flush;
   }
+
+  void MakeROOTFileAndReplaceObject(TString fileName_old, TString fileName_new, TString objName, TObject* obj_new)
+  {
+    gSystem->CopyFile(fileName_old, fileName_new, kTRUE);
+
+    TFile *f_input = TFile::Open(fileName_new, "UPDATE");
+    f_input->cd();
+    f_input->Delete(objName);
+    f_input->Close();
+
+    TFile *f_input2 = TFile::Open(fileName_new, "UPDATE");
+    f_input2->cd();
+    obj_new->Write(objName);
+    f_input2->Close();
+
+    cout << "[DYTool::MakeROOTFileAndReplaceObject] " << fileName_old << " -> " << fileName_new << endl;
+  }
+
+  void ReplaceObject(TString fileName, TString objName, TObject* obj_new)
+  {
+    TFile *f_input = TFile::Open(fileName, "UPDATE");
+    f_input->cd();
+    f_input->Delete(objName+";1");
+    f_input->Close();
+
+    TFile *f_input2 = TFile::Open(fileName, "UPDATE");
+    f_input2->cd();
+    obj_new->Write(objName);
+    f_input2->Close();
+
+    cout << "[DYTool::ReplaceObject] " << fileName << ": " << objName << " is updated" << endl;
+  }
 };
-// -- end of namespace
+// -- end of namespace DYTool
