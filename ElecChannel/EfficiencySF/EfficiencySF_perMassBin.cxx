@@ -40,7 +40,7 @@ private:
   {
     TString dataPath = gSystem->Getenv("KP_DATA_PATH");
     TFile *f_ntuple = TFile::Open(dataPath+"/DY_forEff_M10to3000.root");
-    Double_t pt1, pt2, eta1, eta2, diM, lumiWeight, genWeight;
+    Double_t pt1, pt2, eta1, eta2, diM, lumiWeight, genWeight, puWeight;
 
     TTree *ntuple;
     ntuple = (TTree*)f_ntuple->Get("tree");
@@ -55,6 +55,7 @@ private:
     ntuple->SetBranchAddress("ZMass",&diM);
     ntuple->SetBranchAddress("lumiWeights",&lumiWeight);
     ntuple->SetBranchAddress("genWeights",&genWeight);
+    ntuple->SetBranchAddress("PUWeights",&puWeight);
 
     // -- TnP efficiency information
     TnPEfficiency* tnpEff = new TnPEfficiency();
@@ -65,10 +66,10 @@ private:
 
       ntuple->GetEntry(i_ev);
 
-      h_mass_effPass_noSF_->Fill( diM, lumiWeight*genWeight );
+      h_mass_effPass_noSF_->Fill( diM, lumiWeight*genWeight*puWeight );
 
       Double_t eventSF = tnpEff->EfficiencySF_EventWeight( pt1, eta1, pt2, eta2 );
-      h_mass_effPass_withSF_->Fill( diM, lumiWeight*genWeight*eventSF );
+      h_mass_effPass_withSF_->Fill( diM, lumiWeight*genWeight*puWeight*eventSF );
     }
 
     h_effSF_perMassBin_ = (TH1D*)h_mass_effPass_withSF_->Clone();
