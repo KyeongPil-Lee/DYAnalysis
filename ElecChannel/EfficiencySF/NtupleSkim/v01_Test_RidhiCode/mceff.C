@@ -4,6 +4,8 @@
 #include <iostream>
 #include <TLorentzVector.h>
 #include <TSystem.h>
+#include <TFile.h>
+#include <TTree.h>
 #include <math.h>
 
 void mceff() {
@@ -18,7 +20,7 @@ void mceff() {
   
   // workdir = "/tmp/rchawla/eos/cms/store/group/phys_higgs/cmshww/arun/DYAnalysis_76X_Calibrated/DY_Signal/";
   TString dataPath = gSystem->Getenv("KP_DATA_PATH");
-  workdir = dataPath;
+  workdir = dataPath + "/";
 
   InputFiles_signal_DY.clear();
 
@@ -34,7 +36,7 @@ void mceff() {
   InputFiles_signal_DY.push_back(TFile::Open(workdir+"DY_1500to2000.root"));
   InputFiles_signal_DY.push_back(TFile::Open(workdir+"DY_2000to3000.root"));
 
-  int nsample = InputFiles_signal_DY.size();
+  unsigned int nsample = InputFiles_signal_DY.size();
   TFile* file[11];
 
   for(unsigned int jentry = 0; jentry < nsample; ++jentry) {
@@ -112,7 +114,7 @@ void mceff() {
     tree->Branch("lumiWeights", &lumiWeights, "lumiWeights/D");
     tree->Branch("genWeights", &genWeights, "genWeights/D");
 
-    double massGen;
+    double massGen = 0;
     TLorentzVector gen1,gen2,diGen;
     TLorentzVector ele1,ele2,dielectron;
     vector <double> newgenPt; vector <double> newgenEta; vector <double> newgenEnr; vector <double> newgenPhi;
