@@ -87,7 +87,7 @@ void SkimNtuple()
     TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
     TString basePath = analyzerPath+"/ElecChannel/Include";
     TFile *f1 = TFile::Open(basePath + "/dataPUDist.root");
-    TFile *f2 = TFile::Open(basePath+ " /PileUp_MC.root");
+    TFile *f2 = TFile::Open(basePath + "/PileUp_MC.root");
 
     //data PU histo
     TH1F *DATA_puDist = (TH1F*)f1->Get("pileup");
@@ -278,7 +278,7 @@ void SkimNtuple()
     cout<<"DY Sample: "<<mass[j]<<"to"<<mass[j+1]<<endl;
     //cout << "Lumiweight = " << lumiWeight << endl;
 
-    int nentries = tmpTree->GetEntries();
+    unsigned int nentries = tmpTree->GetEntries();
     cout<<"entries: "<<nentries<<endl;
 
 
