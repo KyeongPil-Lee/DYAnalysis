@@ -48,7 +48,7 @@ private:
     if( fileName_effSF_ == "" )
     {
       TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
-      TString fileName_effSF_ = analyzerPath+"/ElecChannel/Uncertainties/EfficiencySF/ROOTFile_SmearedEffSF_perMassBin_"+uncType_+".root";
+      TString fileName_effSF_ = analyzerPath+"/ElecChannel/Uncertainties/EfficiencySF/SmearedEff/ROOTFile_SmearedEffSF_perMassBin_"+uncType_+".root";
     }
 
     TH1D* h_effSF_cv = Get_Hist( fileName_effSF_, "h_effSF_perMassBin_cv" );

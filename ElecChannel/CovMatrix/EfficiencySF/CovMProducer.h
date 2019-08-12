@@ -7,17 +7,33 @@ class CovMProducer
 public:
   TString uncType_;
 
+  TString fileName_dXSec_ = "";
   TH1D* h_dXSec_cv_;
   vector<TH1D*> vec_hist_smearedDXSec_;
 
   TH2D* h_cov_;
   TH2D* h_corr_;
 
+  Bool_t saveAllDXSec_ = kFALSE;
+
   CovMProducer(TString uncType)
   {
     cout << "[CovMProducer] uncType = " << uncType << endl;
     uncType_ = uncType;
     Init();
+  }
+
+  CovMProducer(TString uncType, TString fileName_dXSec)
+  {
+    cout << "[CovMProducer] uncType = " << uncType << endl;
+    uncType_ = uncType;
+    fileName_dXSec_ = fileName_dXSec;
+    Init();
+  }
+
+  void Set_SaveAllDXSec()
+  {
+    saveAllDXSec_ = kTRUE;
   }
 
   void Produce()
@@ -114,15 +130,22 @@ private:
 
   void Get_SmearedDXSec()
   {
-    TString fileName = "ROOTFile_SmearedDXSecProducer_"+uncType_+".root";
-    h_dXSec_cv_ = PlotTool::Get_Hist(fileName, "h_dXSec_cv");
+    if( fileName_dXSec_ == "" )
+    {
+      fileName_dXSec_ = "ROOTFile_SmearedDXSecProducer_"+uncType_+".root";
+      cout << "[CovMProducer::Get_SmearedDXSec] Use the default root file: " << fileName_dXSec_ << endl;
+    }
+    else
+      cout << "[CovMProducer::Get_SmearedDXSec] Use the private root file: " << fileName_dXSec_ << endl;
+
+    h_dXSec_cv_ = PlotTool::Get_Hist(fileName_dXSec_, "h_dXSec_cv");
 
     for(Int_t i=0; i<nEffMap; i++)
     {
       TString numbering = TString::Format("%d", i);
       TString histName_smearedDXSec = "h_dXSec_smeared_"+numbering;
 
-      TH1D* h_dXSec_smeared = PlotTool::Get_Hist(fileName, histName_smearedDXSec);
+      TH1D* h_dXSec_smeared = PlotTool::Get_Hist(fileName_dXSec_, histName_smearedDXSec);
       vec_hist_smearedDXSec_.push_back( h_dXSec_smeared );
     }
   }
@@ -135,9 +158,12 @@ private:
     h_cov_->Write();
     h_corr_->Write();
 
-    h_dXSec_cv_->Write();
-    for(const auto& h_dXSec : vec_hist_smearedDXSec_ )
-      h_dXSec->Write();
+    if( saveAllDXSec_ )
+    {
+      h_dXSec_cv_->Write();
+      for(const auto& h_dXSec : vec_hist_smearedDXSec_ )
+        h_dXSec->Write();
+    }
 
     f_output->Close();
   }
