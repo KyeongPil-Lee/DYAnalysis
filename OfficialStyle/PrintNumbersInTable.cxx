@@ -376,7 +376,10 @@ private:
       // TString fileName_smear = rootFilePath+"/ROOTFile_SmearingUnc_Electron.root";
       // TH1D* h_relUnc_syst_smear = Get_Hist(fileName_smear, "h_RelUnc_Syst_Smear");
 
-      TString fileName_unc = rootFilePath+"/ROOTFile_RelUnc_All_Electron_v2.root";
+      // TString fileName_unc = rootFilePath+"/ROOTFile_RelUnc_All_Electron_v2.root";
+      // TString fileName_unc = rootFilePath+"/ROOTFile_RelUnc_All_Electron_v4.root";
+      TString fileName_unc = rootFilePath+"/ROOTFile_RelUnc_All_Electron_v5_byKP.root"; // -- new differential cross secitons & uncertainties w/ new TnP efficiency once more (fix bug in the ntuple)
+
       h_relUnc_lumi_        = Get_Hist(fileName_unc, "h_RelLumiUnc_Percent"); 
       h_relUnc_syst_eff_    = Get_Hist(fileName_unc, "h_RelSysUnc_Eff.SF._Percent");
 
@@ -387,7 +390,9 @@ private:
       h_relUnc_syst_accPDF_ = Get_Hist(fileName_unc, "h_RelSysUnc_Acc._Percent");
 
       // TString fileName_xSec = rootFilePath+"/DiffXsec_Electron_v8.root";
-      TString fileName_xSec = rootFilePath+"/DiffXsec_Electron_v10.root"; // -- after electron channel update in fiducial x-sec
+      // TString fileName_xSec = rootFilePath+"/DiffXsec_Electron_v10.root"; // -- after electron channel update in fiducial x-sec
+      // TString fileName_xSec = rootFilePath+"/DiffXsec_Electron_v12_byKP.root"; // -- new differential cross secitons & uncertainties w/ new TnP efficiency
+      TString fileName_xSec = rootFilePath+"/DiffXsec_Electron_v13_byKP.root"; // -- new differential cross secitons & uncertainties w/ new TnP efficiency once more (fix bug in the ntuple)
       h_diffXSec_    = Get_Hist(fileName_xSec, "h_DiffXSec");
       h_relUnc_stat_ = Get_Hist(fileName_xSec, "h_RelUnc_Stat");
 
@@ -424,7 +429,9 @@ private:
     }
     else if( channel_ == "Combined" )
     {
-      TString fileName = rootFilePath+"/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+      // TString fileName = rootFilePath+"/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+      TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
+      TString fileName = analyzerPath+"/Combination/ROOTFile_Combination.root";
       h_diffXSec_ = Get_Hist(fileName, "ll/h_dXSec");
     }
 
@@ -625,8 +632,8 @@ private:
       //      << relUnc << " -> "
       //      << absUnc << endl;
 
-      printf("[%02d th bin] (central value, rel.unc. -> abs. unc) %.15e, %.15e -> %.15e\n",
-               i_bin, cv, relUnc, absUnc);
+      // printf("[%02d th bin] (central value, rel.unc. -> abs. unc) %.15e, %.15e -> %.15e\n",
+      //          i_bin, cv, relUnc, absUnc);
 
       h_absUnc->SetBinContent(i_bin, absUnc);
       h_absUnc->SetBinError(i_bin, 0);

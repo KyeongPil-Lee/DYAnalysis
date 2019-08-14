@@ -64,7 +64,8 @@ public:
 	{
 		this->Load_TheoryHistograms();
 
-		TString fileName = GetBasePath() + "Include/Results_ROOTFiles_76X/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+		// TString fileName = GetBasePath() + "Include/Results_ROOTFiles_76X/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+		TString fileName = GetBasePath() + "Combination/ROOTFile_Combination.root";
 
 		this->h_CenV = Get_Hist( fileName, "ll/h_dXSec" ); this->h_CenV->SetLineWidth(1.0);
 		this->h_CenV->SetName(this->HistName_CenV);
@@ -85,7 +86,9 @@ public:
 	{
 		this->Load_TheoryHistograms();
 
-		TString FileName = GetBasePath() + "Include/Results_ROOTFiles_76X/DiffXsec_Electron_v8.root";
+		// TString FileName = GetBasePath() + "Include/Results_ROOTFiles_76X/DiffXsec_Electron_v8.root";
+		// TString FileName = GetBasePath() + "Include/Results_ROOTFiles_76X/DiffXsec_Electron_v12_byKP.root";
+		TString FileName = GetBasePath() + "Include/Results_ROOTFiles_76X/DiffXsec_Electron_v13_byKP.root";
 
 		this->h_CenV = Get_Hist( FileName, "h_DiffXSec", this->HistName_CenV );
 		// Print_Histogram( this->h_CenV );
@@ -339,6 +342,10 @@ protected:
 	{
 		TFile *f_output = TFile::Open("./Local/ROOTFile_Input_"+ChannelType+".root", "RECREATE");
 		f_output->cd();
+
+		this->h_CenV->SetStats(kFALSE);
+		this->h_RelStatUnc->SetStats(kFALSE);
+		this->h_RelTotUnc->SetStats(kFALSE);
 
 		this->g_CenV_Shifted->Write();
 		this->h_CenV->Write();

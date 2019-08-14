@@ -103,7 +103,7 @@ public:
 
 		h_TotUnc_temp->SetTitle("");
 		SetHistFormat_SinglePad(h_TotUnc_temp, "m [GeV]", "Theory/Data");
-		h_TotUnc_temp->GetYaxis()->SetRangeUser(0.0, 3.0);
+		h_TotUnc_temp->GetYaxis()->SetRangeUser(0.0, 4.0);
 
 		TLegend *legend1;
 		SetLegend( legend1, 0.15, 0.85, 0.65, 0.95 );
@@ -153,7 +153,9 @@ protected:
 	{
 		this->Set_Histograms_Theory();
 
-		TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v8.root";
+		// TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v8.root";
+		// TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v12_byKP.root";
+		TString FileName_Data = ROOTFilePath + "/DiffXsec_Electron_v13_byKP.root";
 		this->h_data = Get_Hist(FileName_Data, "h_DiffXSec");
 		this->h_RelStatUnc = Get_Hist( FileName_Data, "h_RelUnc_Stat" ); this->h_RelStatUnc->Scale( 1.0 / 100 );
 
@@ -163,6 +165,10 @@ protected:
 		TH1D* h_RelLumiUnc = this->MakeHist_RelLumiUnc( 0.023 );
 		this->h_RelTotUnc = QuadSum_NoError( this->h_RelTotUnc, h_RelLumiUnc ); // -- add up lumi. uncertainty -- //
 
+		this->h_data->SetStats(kFALSE);
+		this->h_RelStatUnc->SetStats(kFALSE);
+		this->h_RelTotUnc->SetStats(kFALSE);
+
 		this->Set_Histograms_Ratio();
 	}
 
@@ -171,10 +177,16 @@ protected:
 		this->Set_Histograms_Theory();
 		// -- fill -- //
 
-		TString fileName = this->ROOTFilePath + "/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+		// TString fileName = this->ROOTFilePath + "/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+		TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
+		TString fileName = analyzerPath + "/Combination/ROOTFile_Combination.root";
 		this->h_data = Get_Hist( fileName, "ll/h_dXSec" ); this->h_data->SetLineWidth(1.0);
 		this->h_RelStatUnc = Get_Hist( fileName, "ll/h_relUnc_stat" ); this->h_RelStatUnc->Scale(0.01);
 		this->h_RelTotUnc = Extract_RelUnc( this->h_data );
+
+		this->h_data->SetStats(kFALSE);
+		this->h_RelStatUnc->SetStats(kFALSE);
+		this->h_RelTotUnc->SetStats(kFALSE);
 		
 		////////////////
 		this->Set_Histograms_Ratio();
