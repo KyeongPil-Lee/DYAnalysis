@@ -8,7 +8,9 @@ class Chi2CompTool {
 public:
   Chi2CompTool():
     y_(1, nBin),
-    mCov_(nBin, nBin) 
+    mCov_(nBin, nBin),
+    mCov_theory_(nBin, nBin),
+    mCov_tot_(nBin, nBin)
   { 
     Init();
   }
@@ -19,16 +21,31 @@ public:
     // -- sum
     for(Int_t i=0; i<nBin; i++) {
       Double_t diff = y_[0][i];
-      Double_t sigma = sqrt(mCov_[i][i]);
+      Double_t sigma = sqrt(mCov_[i][i] + mCov_theory_[i][i]);
       simpleChi2 += (diff * diff) / sigma;
     }
 
     Double_t pValue = ROOT::Math::chisquared_cdf_c(simpleChi2, nBin);
     printf("[without correlation] (simpleChi2, p-value) = (%lf, %lf)\n", simpleChi2, pValue);
+
+    cout << "Individual contribution" << endl;
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Double_t diff = y_[0][i];
+      Double_t sigma = sqrt(mCov_[i][i] + mCov_theory_[i][i]);
+
+      Double_t chi2_thisBin = (diff * diff) / sigma;
+      Double_t frac_wrtTot =  chi2_thisBin / simpleChi2;
+
+      Int_t i_bin = i+1;
+      printf("[%02d bin: %.0lf < M < %.0lf] chi2 = %lf -> fraction w.r.t. total chi2 = %lf\n", i_bin, massBinEdges_[i], massBinEdges_[i+1], chi2_thisBin, frac_wrtTot);
+    }
+    cout << endl;
   }
 
   void CalcChi2() {
-    TMatrixD mCovInvert(mCov_);
+    mCov_tot_ = mCov_ + mCov_theory_; // -- take into account both data and theory uncertainties & their correlations
+    TMatrixD mCovInvert(mCov_tot_);
     mCovInvert.Invert();
 
     TMatrixD yT(y_);
@@ -43,6 +60,17 @@ public:
     Double_t chi2 = mChi2[0][0];
     Double_t pValue = ROOT::Math::chisquared_cdf_c(chi2, nBin);
     printf("[with correlation] (chi2, p-value) = (%lf, %lf)\n", chi2, pValue);
+
+    // for(Int_t i=0; i<nBin; i++)
+    // {
+    //   Int_t i_bin = i+1;
+    //   for(Int_t j=0; j<nBin; j++)
+    //   {
+    //     Int_t j_bin = j+1;
+    //     if(i < j )
+    //       printf("(%02d, %02d): cov. = %.3lf\n", i_bin, j_bin, mCov_[i][j]);
+    //   }
+    // }
   }
 
   void Test_pValueCalc() {
@@ -80,28 +108,32 @@ public:
   }
 
 private:
+  Double_t massBinEdges_[nBin+1];
+  
   TH1D* hData_;
-  // -- no corresponding covariance matrix for each channel in Andrius' input file?
-  // TH1D* hData_elec;
-  // TH1D* hData_mu;
+
   TH1D* hTheory_;
   TH2D* h2DCov_;
 
   TMatrixD y_; // y_i = x_i - mu_i
-  TMatrixD mCov_;
+  TMatrixD mCov_; // -- data
+  TMatrixD mCov_theory_; // -- from FEWZ, fully correlated matrix
+  TMatrixD mCov_tot_; // -- (data + theory)
 
   void Init() {
+    Double_t massBinEdges_temp[nBin+1] = {15, 20, 25, 30, 35, 40, 45, 50, 55, 60,
+                       64, 68, 72, 76, 81, 86, 91, 96, 101, 106,
+                       110, 115, 120, 126, 133, 141, 150, 160, 171, 185,
+                       200, 220, 243, 273, 320, 380, 440, 510, 600, 700,
+                       830, 1000, 1500, 3000};
+    for(Int_t i=0; i<nBin+1; i++)
+      massBinEdges_[i] = massBinEdges_temp[i];
+    
     TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
 
     // -- Data: combined result
-    TString fileName_data = rootFilePath + "/dyll-combi-_corr_wLumi_inpYieldUnc-20171204.root";
-    // -- convert TH1F to TH1D -- //
-    TFile *f_input = TFile::Open( fileName_data );
-    f_input->cd();
-    TH1F* h_temp = (TH1F*)f_input->Get( "h1Combi" )->Clone();
-    hData_ = new TH1D();
-    h_temp->Copy( *hData_ );
-    hData_->SetTitle("");
+    TString fileName_data = rootFilePath + "/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+    hData_ = Get_Hist( fileName_data, "ll/h_dXSec");
 
     // // -- Data: muon
     // TString fileName_mu = rootFilePath + "/ROOTFile_DiffXSec_FullUnc.root";
@@ -113,9 +145,7 @@ private:
 
 
     // -- covariance matrix
-    TCanvas *c2DCov = (TCanvas*)f_input->Get("cCovFin")->Clone();
-    TPad* pad = (TPad*)c2DCov->FindObject("cCovFin_1");
-    h2DCov_ = (TH2D*)pad->GetPrimitive("h2covFin")->Clone();
+    h2DCov_ = Get_Hist_2D( fileName_data, "ll/h_cov_tot" );
 
     // -- Theory
     TString fileName_theory = rootFilePath + "/ROOTFile_DiffXSec_FullUnc.root";
@@ -123,6 +153,7 @@ private:
 
     InitVector();
     InitCovMatrix();
+    InitCovMatrix_Theory();
   }
 
   void InitVector() {    
@@ -145,7 +176,7 @@ private:
     for(Int_t i=0; i<nBin; i++) {
       Int_t i_bin = i+1;
 
-      for(Int_t j=0; j<=i; j++) {
+      for(Int_t j=0; j<nBin; j++) {
         Int_t j_bin = j+1;
 
         Double_t covValue_ij = h2DCov_->GetBinContent(i_bin, j_bin);
@@ -154,6 +185,27 @@ private:
         mCov_[i][j] = covValue_ij;
       }
     }
+  }
+
+  void InitCovMatrix_Theory()
+  {
+    cout << "[InitCovMatrix_Theory]" << endl;
+    for(Int_t i=0; i<nBin; i++)
+    {
+      Int_t i_bin = i+1;
+      Double_t sigma_i = hTheory_->GetBinError(i_bin); // -- absolute error
+
+      for(Int_t j=0; j<nBin; j++)
+      {
+        Int_t j_bin = j+1;
+        Double_t sigma_j = hTheory_->GetBinError(j_bin); // -- absolute error
+
+        mCov_theory_[i][j] = sigma_i*sigma_j; // -- fully correlated between bins
+        printf("(%02d, %02d): sigma_i = %.3lf, sigma_j = %.3lf -> cov. = %.3lf\n", i_bin, j_bin, sigma_i, sigma_j, mCov_theory_[i][j]);
+      }
+    }
+
+    cout << endl;
   }
 };
 

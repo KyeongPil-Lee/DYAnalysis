@@ -140,8 +140,11 @@ private:
       massBinEdges_[i] = massBinEdges_temp[i];
 
     // -- data cross section & covariance matrices
-    TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
-    TString fileName_data = rootFilePath + "/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+    // TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
+    // TString fileName_data = rootFilePath + "/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
+    TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
+    TString fileName_data = analyzerPath+"/Combination/ROOTFile_Combination.root";
+
     h_dXSec_data_ = Get_Hist( fileName_data, "ll/h_dXSec");
     h_cov_data_   = Get_Hist_2D( fileName_data, "ll/h_cov_tot" );
 
@@ -149,6 +152,7 @@ private:
       Init_OldDataResult();
 
     // -- theory cross sections
+    TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
     TString fileName_theory = rootFilePath + "/ROOTFile_DiffXSec_FullUnc.root";
     h_dXSec_theory_ = Get_Hist( fileName_theory, "h_DiffXsec_FEWZ_NNPDF_NNLO" );
 
@@ -263,12 +267,7 @@ private:
 
 void pValue_dataTheory()
 {
-  pValueTool* tool_old = new pValueTool(kTRUE);
-  tool_old->pValue_NoCorrelation();
-  tool_old->pValue_WithCorrelation();
-
-  pValueTool* tool_new = new pValueTool(kFALSE);
-  tool_new->pValue_NoCorrelation();
-  tool_new->pValue_WithCorrelation();
-
+  pValueTool* tool = new pValueTool(kFALSE);
+  tool->pValue_NoCorrelation();
+  tool->pValue_WithCorrelation();
 }

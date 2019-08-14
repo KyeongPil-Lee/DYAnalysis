@@ -51,3 +51,6 @@ Outputs/
 *.exe
 *.out
 *.app
+
+# Others
+AutoDict*.cxx
