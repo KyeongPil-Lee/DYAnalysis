@@ -3,6 +3,7 @@
 
 #include <Include/DYAnalyzer.h> // -- has nMassBin
 #include <Include/SimplePlotTools.h>
+#include <ElecChannel/Include/DYElectronTool.h>
 
 class CombinationTool
 {
@@ -163,6 +164,9 @@ public:
     TH2D* h_cov_tot_ll = new TH2D(m_cov_tot_ll_);
     h_cov_tot_ll->SetName("h_cov_tot");
     h_cov_tot_ll->Write();
+
+    TH2D* h_corr_tot_ll = DYTool::Convert_CovMToCorrM(h_cov_tot_ll, "h_corr_tot");
+    h_corr_tot_ll->Write();
   }
 
   void Set_DXSec(TH1D* h_ee, TH1D* h_mm)
