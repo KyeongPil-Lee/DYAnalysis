@@ -68,7 +68,7 @@ private:
 
 void PrintEleInfo()
 {
-  TString fileName = "DY_2000to3000.root";
+  TString fileName = "Archive/DY_2000to3000.root";
   TreeReader* reader = new TreeReader(fileName, "ntupler/ElectronTree");
   reader->Print();
 }

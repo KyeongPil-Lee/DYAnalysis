@@ -86,6 +86,39 @@ public:
 		this->DrawComparisonPlot_Syst();
 	}
 
+	void Save_All()
+	{
+		TFile *f_output = TFile::Open("ROOTFile_ExpectedUnc_1D_Electron.root", "RECREATE");
+
+		f_output->cd();
+
+		this->h_RelUnc_Stat->SetName("h_RelUnc_Stat");	
+		this->h_RelUnc_Stat->Write();
+
+		this->h_RelUnc_Acc->SetName("h_RelUnc_Acc");
+		this->h_RelUnc_Acc->Write();
+
+		this->h_RelUnc_EffSF->SetName("h_RelUnc_EffSF");
+		this->h_RelUnc_EffSF->Write();
+
+		this->h_RelUnc_DetRes->SetName("h_RelUnc_DetRes");
+		this->h_RelUnc_DetRes->Write();
+
+		this->h_RelUnc_Bkg->SetName("h_RelUnc_Bkg");
+		this->h_RelUnc_Bkg->Write();
+
+		this->h_RelUnc_FSR->SetName("h_RelUnc_FSR");
+		this->h_RelUnc_FSR->Write();
+
+		this->h_RelUnc_Lumi->SetName("h_RelUnc_Lumi");
+		this->h_RelUnc_Lumi->Write();
+
+		this->h_RelUnc_Syst->SetName("h_RelUnc_Syst");
+		this->h_RelUnc_Syst->Write();
+
+		f_output->Close();
+	}
+
 protected:
 	void DrawSummaryPlot()
 	{
@@ -253,7 +286,7 @@ protected:
 	void SetUncHist_Stat()
 	{
 		TString AnalyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
-		TString FileName = AnalyzerPath+"/FeasibilityStudy_2016/StatUnc/ROOTFile_RelStatUnc_2016_Electron.root";
+		TString FileName = AnalyzerPath+"/FeasibilityStudy/Data2016/StatUnc/ROOTFile_RelStatUnc_2016_Electron.root";
 		TString HistName = "h_RelStatUnc_mass_DY";
 		this->h_RelUnc_Stat = Get_Hist(FileName, HistName);
 		this->h_RelUnc_Stat->Scale( 100 );
@@ -345,5 +378,6 @@ void Estimate2016_1D_Electron()
 {
 	UncTool2016_1D* tool = new UncTool2016_1D();
 	tool->Set_All();
-	tool->DrawPlots();	
+	tool->DrawPlots();
+	tool->Save_All();
 }

@@ -346,6 +346,35 @@ TH1D* QuadSum_NoError( TH1D* h1, TH1D* h2 )
   return h_QuadSum;
 }
 
+TH1D* QuadSum_HistVector( TString histName, vector<TH1D*> vec_hist )
+{
+  TH1D* h_quadSum = (TH1D*)vec_hist[0]->Clone();
+  // TString histName = "h_"+dataType_+"_relUnc_"+uncType;
+  h_quadSum->SetName(histName);
+
+  Int_t nHist = (Int_t)vec_hist.size();
+
+  Int_t nBin = vec_hist[0]->GetNbinsX();
+  for(Int_t i=0; i<nBin; i++)
+  {
+    Int_t i_bin = i+1;
+
+    Double_t quadSumSq = 0;
+    for(Int_t i_hist=0; i_hist<nHist; i_hist++)
+    {
+      Double_t binContent = vec_hist[i_hist]->GetBinContent(i_bin);
+      quadSumSq += binContent*binContent;
+    }
+
+    Double_t quadSum = sqrt(quadSumSq);
+
+    h_quadSum->SetBinContent(i_bin, quadSum);
+    h_quadSum->SetBinError(i_bin, 0);
+  }
+
+  return h_quadSum;
+}
+
 TH1D* Extract_RelUnc( TH1D* h, TString HistName = "", Bool_t ConvertToPercent = kFALSE )
 {
   TH1D* h_RelUnc = (TH1D*)h->Clone();
@@ -426,6 +455,59 @@ TH1D* HistOperation(TString histName, TH1D* h1, TH1D* h2, TString operation)
 
     h_return->SetBinContent(i_bin, value_return);
     h_return->SetBinError(i_bin, 0); // -- no error propagation considered for now
+  }
+
+  return h_return;
+}
+
+TH2D* Hist2DOperation(TString histName, TH2D* h1, TH2D* h2, TString operation)
+{
+  if( !(operation == "+" || operation == "-" || operation == "*" || operation == "/") )
+  {
+    cout << "[HistOperation] operation = " << operation << " is not supported ... return nullptr" << endl;
+    return nullptr;
+  }
+
+  Int_t nBinX1 = h1->GetNbinsX();
+  Int_t nBinX2 = h2->GetNbinsX();
+  if( nBinX1 != nBinX2 )
+  {
+    printf("[HistOperation] (nBinX1, nBinX2) = (%d, %d): not same ... return nullptr\n", nBinX1, nBinX2);
+    return nullptr;
+  }
+
+  Int_t nBinY1 = h1->GetNbinsY();
+  Int_t nBinY2 = h2->GetNbinsY();
+  if( nBinY1 != nBinY2 )
+  {
+    printf("[HistOperation] (nBinY1, nBinY2) = (%d, %d): not same ... return nullptr\n", nBinY1, nBinY2);
+    return nullptr;
+  }
+
+  TH2D* h_return = (TH2D*)h1->Clone();
+  h_return->SetName(histName);
+
+  for(Int_t i_x=0; i_x<nBinX1; i_x++)
+  {
+    Int_t i_binX = i_x+1;
+
+    for(Int_t i_y=0; i_y<nBinY1; i_y++)
+    {
+      Int_t i_binY = i_y+1;
+
+      Double_t value1 = h1->GetBinContent(i_binX, i_binY);
+      Double_t value2 = h2->GetBinContent(i_binX, i_binY);
+
+      Double_t value_return = -1;
+
+      if( operation == "+" ) value_return = value1 + value2;
+      if( operation == "-" ) value_return = value1 - value2;
+      if( operation == "*" ) value_return = value1 * value2;
+      if( operation == "/" ) value_return = value1 / value2;
+
+      h_return->SetBinContent(i_binX, i_binY, value_return);
+      h_return->SetBinError(i_binX, i_binY, 0); // -- no error propagation considered for now
+    }
   }
 
   return h_return;
@@ -665,7 +747,7 @@ public:
     canvasSizeY_ = 800;
 
     legendMinX_ = 0.50;
-    legendMinY_ = 0.70;
+    legendMinY_ = 0.82;
     legendMaxX_ = 0.95;
     legendMaxY_ = 0.95;
 
@@ -797,11 +879,14 @@ public:
 
   Double_t nRebin_;
   Bool_t setRebin_;
+  Bool_t setSmartRangeY_;
 
   HistCanvas()
   {
     // -- member variables are initialized by Init() in CanvasBase()
     setRebin_ = kFALSE;
+
+    setSmartRangeY_ = kFALSE;
   }
 
   HistCanvas(TString canvasName, Bool_t isLogX = kFALSE, Bool_t isLogY = kFALSE ): HistCanvas()
@@ -823,6 +908,11 @@ public:
     setRebin_ = kTRUE;
   }
 
+  void SmartRangeY()
+  {
+    setSmartRangeY_ = kTRUE;
+  }
+
   void Draw( TString drawOp = "EPSAME" )
   {
     if( !drawOp.Contains("SAME") ) drawOp = drawOp + "SAME";
@@ -830,6 +920,8 @@ public:
     TLegend *legend;
     PlotTool::SetLegend( legend, legendMinX_, legendMinY_, legendMaxX_, legendMaxY_ );
     if( setLegendColumn_ ) legend->SetNColumns(nLegendColumn_);
+
+    if( setSmartRangeY_ ) CalcSmartRangeY();
 
     // -- draw canvas
     SetCanvas_Square();
@@ -867,6 +959,44 @@ public:
 
     c_->SaveAs(".pdf");
   }
+
+  void CalcSmartRangeY()
+  {
+    if( setRangeY_ )
+      cout << "[PlotTool::HistCanvas::CalcSmartRangeY] y range set by hand will be replaced by the smart range" << endl;
+
+    Double_t minY = 1e10;
+    Double_t maxY = -1e10;
+
+    Int_t nHist = histInfos_.size();
+    for(Int_t i=0; i<nHist; i++)
+    {
+      TH1D*& h = histInfos_[i].h;
+
+      Double_t minY_temp = h->GetBinContent(h->GetMinimumBin());
+      Double_t maxY_temp = h->GetBinContent(h->GetMaximumBin());
+      if( minY_temp < minY ) minY = minY_temp;
+      if( maxY_temp > maxY ) maxY = maxY_temp;
+    }
+
+    setRangeY_ = kTRUE;
+
+    Double_t marginFactor = 0;
+    if( isLogY_ ) marginFactor = 0.3;
+    else          marginFactor = 0.03;
+
+    Double_t SF_min, SF_max;
+    if( minY > 0 ) SF_min = 1.0 - marginFactor;
+    else           SF_min = 1.0 + marginFactor;
+
+    if( maxY > 0 ) SF_max = 1.0 + marginFactor;
+    else           SF_max = 1.0 - marginFactor;
+
+    minY_ = minY * SF_min;
+    maxY_ = maxY * SF_max;
+
+    printf("[PlotTool::HistCanvas::CalcSmartRangeY] (minimum, maximum) = (%lf, %lf) -> y range: %lf < y < %lf\n", minY, maxY, minY_, maxY_);
+  }
 }; // -- class HistCanvas
 
 class HistCanvaswRatio: public HistCanvas
@@ -894,6 +1024,8 @@ public:
     TLegend *legend;
     PlotTool::SetLegend( legend, legendMinX_, legendMinY_, legendMaxX_, legendMaxY_ );
     if( setLegendColumn_ ) legend->SetNColumns(nLegendColumn_);
+
+    if( setSmartRangeY_ ) CalcSmartRangeY();
 
     // -- draw canvas
     SetCanvas_Ratio();

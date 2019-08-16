@@ -155,7 +155,7 @@ private:
     if( uncType_ == "sgnChange" || uncType_ == "bkgChange" ) sampleType = "data";
     if( uncType_ == "tagChange" || uncType_ == "nlo" )       sampleType = "mc";
 
-    hists_cen_  = new HistContainer( fileName_, "h_eff_"+sampleType,       vec_ptBinEdge_);
+    hists_cen_  = new HistContainer( fileName_, "h_eff_"+sampleType,              vec_ptBinEdge_);
     hists_alt_  = new HistContainer( fileName_, "h_eff_"+uncType_+"_"+sampleType, vec_ptBinEdge_);
   }
 
