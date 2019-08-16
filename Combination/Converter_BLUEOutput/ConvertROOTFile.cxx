@@ -203,10 +203,13 @@ private:
       TFile *f_input = TFile::Open(inputFileName_);
 
       TH2D* h_covEM_noLumi = GetTH2DInCanvas(f_input, "cEMCovTot_accOnly", "TMatrixDBase");
-      h_covEM_noLumi->SetName("h_covEM_noLumi");
 
       TH2D* h_cov_tot  = GetTH2DInCanvas(f_input, "cFinCov", "cFinCov_1", "h2finCov");
       TH2D* h_corr_tot = GetTH2DInCanvas(f_input, "cFinCov", "cFinCov_2", "h2finCov_corr");
+
+      h_covEM_noLumi->SetName("h_covEM_noLumi");
+      h_cov_tot->SetName("h_cov_tot");
+      h_corr_tot->SetName("h_corr_tot");
 
       f_output_->cd(channel);
       h_covEM_noLumi->Write();
@@ -323,15 +326,5 @@ void ConvertROOTFile()
   Converter* converter = new Converter(fileName);
   converter->AddLumiUnc(0.023); // -- add luminosity uncertainty on the total absolute uncertainty of each channel as it is not included in the original input file
   converter->Convert();
-
-
-  // TString rootFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
-  // TString inputFileName1 = rootFilePath+"/ROOTFile_hepdata__corr_wLumi-20190208.root";
-  // TString inputFileName2 = rootFilePath+"/dyll-combi-_corr_wLumi_inpYieldUnc-20190208hepdata.root"; // -- have final cov. for the combined results
-
-  // TString outputFileName = rootFilePath+"/ROOTFile_hepdata__corr_wLumi-20190208_converted.root";
-
-  // Converter *converter = new Converter(inputFileName1, inputFileName2, outputFileName);
-  // converter->Convert();
 
 }
