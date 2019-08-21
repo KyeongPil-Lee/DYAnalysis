@@ -1,7 +1,82 @@
 #include <Include/PlotTools.h>
 
-void AssignUncertainty_ElectronChannel( TH1D* h_DXSec, TH1D* h_RelUnc_Stat, TH1D* h_RelUnc_Syst, Double_t RelUnc_Lumi );
 void CreateInputROOTFileForRivet()
+{
+	TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
+
+	TString fileName_ee   = analyzerPath+"/OfficialStyle/ROOTFile_PrintNumbersInTable_Electron.root";
+	TString fileName_mumu = analyzerPath+"/OfficialStyle/ROOTFile_PrintNumbersInTable_Muon.root";
+	TString fileName_ll   = analyzerPath+"/OfficialStyle/ROOTFile_PrintNumbersInTable_Combined.root";
+
+	cout << "[Input files]" << endl;
+	cout << "  ee: " << fileName_ee << endl;
+	cout << "  mm: " << fileName_mumu << endl;
+	cout << "  ll: " << fileName_ll << endl;
+	cout << "=============" << endl;
+
+
+	TH1D* h_DXSec_ll           = Get_Hist(fileName_ll,   "h_dXSec" );
+	TH1D* h_DXSec_mumu         = Get_Hist(fileName_mumu, "h_dXSec");
+	TH1D* h_DXSecFiducial_mumu = Get_Hist(fileName_mumu, "h_FpoF_dXSec");
+	TH1D* h_DXSec_ee           = Get_Hist(fileName_ee,   "h_dXSec");
+	TH1D* h_DXSecFiducial_ee   = Get_Hist(fileName_ee,   "h_FpoF_dXSec");
+
+	// -- to be sure, the uncertainty is set. Total uncertainty = stat. + exp (including lumi.) + theory. (in case of the full phase space)
+	TH1D* h_relUnc_ll        = Get_Hist(fileName_ll,   "h_relUnc_tot" );
+	TH1D* h_relUnc_mumu      = Get_Hist(fileName_mumu, "h_relUnc_tot");
+	TH1D* h_FpoF_relUnc_mumu = Get_Hist(fileName_mumu, "h_FpoF_relUnc_tot");
+	TH1D* h_relUnc_ee        = Get_Hist(fileName_ee,   "h_relUnc_tot");
+	TH1D* h_FpoF_relUnc_ee   = Get_Hist(fileName_ee,   "h_FpoF_relUnc_tot");
+
+	Print_Histogram( h_relUnc_ll );
+	Print_Histogram( h_relUnc_mumu );
+	Print_Histogram( h_FpoF_relUnc_mumu );
+	Print_Histogram( h_relUnc_ee );
+	Print_Histogram( h_FpoF_relUnc_ee );
+
+	Bool_t isPercent = kTRUE;
+	AssignErrors( h_DXSec_ll,           h_relUnc_ll,        isPercent );
+	AssignErrors( h_DXSec_mumu,         h_relUnc_mumu,      isPercent );
+	AssignErrors( h_DXSecFiducial_mumu, h_FpoF_relUnc_mumu, isPercent );
+	AssignErrors( h_DXSec_ee,           h_relUnc_ee,        isPercent );
+	AssignErrors( h_DXSecFiducial_ee,   h_FpoF_relUnc_ee,   isPercent );
+
+
+	// -- multiply bin width to each bin content because root2yoda automatically divide bin content by bin width :( -- //
+	h_DXSec_ll           = MultiplyEachBin_byBinWidth( h_DXSec_ll );
+	h_DXSec_mumu         = MultiplyEachBin_byBinWidth( h_DXSec_mumu );
+	h_DXSecFiducial_mumu = MultiplyEachBin_byBinWidth( h_DXSecFiducial_mumu );
+	h_DXSec_ee           = MultiplyEachBin_byBinWidth( h_DXSec_ee );
+	h_DXSecFiducial_ee   = MultiplyEachBin_byBinWidth( h_DXSecFiducial_ee );
+
+	// -- 25 Oct.: full phase space result for electron channel & combine results will not be included in Rivet
+	// -- reference: https://gitlab.cern.ch/cms-gen/Rivet/merge_requests/127
+	TString outputFileName = "ROOTFile_InputForRivet.root";
+	TFile *f_output = TFile::Open(outputFileName, "RECREATE");
+	f_output->cd();
+	// h_DXSec_ll->SetName("h_DXSec_ll");
+	// h_DXSec_ll->Write();
+
+	h_DXSec_mumu->SetName("h_DXSec_mumu");
+	h_DXSec_mumu->Write();
+
+	h_DXSecFiducial_mumu->SetName("h_DXSecFiducial_mumu");
+	h_DXSecFiducial_mumu->Write();
+
+	// h_DXSec_ee->SetName("h_DXSec_ee");
+	// h_DXSec_ee->Write();
+
+	h_DXSecFiducial_ee->SetName("h_DXSecFiducial_ee");
+	h_DXSecFiducial_ee->Write();
+
+	f_output->Close();
+
+	cout << endl;
+	cout << outputFileName << " is created" << endl;
+}
+
+void AssignUncertainty_ElectronChannel( TH1D* h_DXSec, TH1D* h_RelUnc_Stat, TH1D* h_RelUnc_Syst, Double_t RelUnc_Lumi );
+void CreateInputROOTFileForRivet_Old()
 {
 	TString ROOTFilePath = gSystem->Getenv("KP_ROOTFILE_PATH");
 	TString fileName_ll = ROOTFilePath+"/dyll-combi-_corr_wLumi_inpYieldUnc-20171204.root";
