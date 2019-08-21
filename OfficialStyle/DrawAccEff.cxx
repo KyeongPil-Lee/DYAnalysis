@@ -74,11 +74,24 @@ public:
 		g_acc->GetXaxis()->SetTitleFont(42);
 		g_acc->GetXaxis()->SetLimits( 15, 3000 );
 
+		g_acc->GetXaxis()->SetLabelFont(42);
+		g_acc->GetXaxis()->SetLabelOffset(0.007);
+		g_acc->GetXaxis()->SetLabelSize(0.05);
+		g_acc->GetXaxis()->SetTitleOffset(0.95);
+		g_acc->GetXaxis()->SetTitleSize(0.06);
+		g_acc->GetXaxis()->SetTitleFont(42);
+
 		// -- Y-axis -- //
 		g_acc->GetYaxis()->SetTitle("Fraction of events");
 		g_acc->GetYaxis()->SetLabelFont(42);
 		g_acc->GetYaxis()->SetLabelOffset(0.007);
 		g_acc->GetYaxis()->SetLabelSize(0.04);
+		g_acc->GetYaxis()->SetTitleSize(0.06);
+		g_acc->GetYaxis()->SetTitleOffset(0.9);
+		g_acc->GetYaxis()->SetTitleFont(42);
+
+		g_acc->GetYaxis()->SetLabelOffset(0.007);
+		g_acc->GetYaxis()->SetLabelSize(0.05);
 		g_acc->GetYaxis()->SetTitleSize(0.06);
 		g_acc->GetYaxis()->SetTitleOffset(0.9);
 		g_acc->GetYaxis()->SetTitleFont(42);
