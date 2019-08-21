@@ -475,8 +475,8 @@ private:
     if( channel_ == "Combined" )
     {
       h_diffXSec_->SetName("h_dXSec");
-      TH1D* h_relUnc_tot = Extract_RelUnc(h_diffXSec_, "h_relUnc_tot");
-      TH1D* h_absUnc_tot = ConvertToAbsUnc(h_diffXSec_, h_relUnc_tot, kFALSE, "h_absUnc_tot");
+      TH1D* h_relUnc_tot = Extract_RelUnc(h_diffXSec_, "h_relUnc_tot"); h_relUnc_tot->Scale(100.0); // -- make it be percent; to be consistent with the others
+      TH1D* h_absUnc_tot = ConvertToAbsUnc(h_diffXSec_, h_relUnc_tot, kTRUE, "h_absUnc_tot");
 
       h_diffXSec_->Write();
       h_relUnc_tot->Write();
