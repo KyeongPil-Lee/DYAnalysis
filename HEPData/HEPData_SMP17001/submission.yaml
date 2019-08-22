@@ -1,0 +1,300 @@
+---
+comment: ''
+data_license:
+  description: The content can be shared and adapted but you must             give
+    appropriate credit and cannot restrict access to others.
+  name: cc-by-4.0
+  url: https://creativecommons.org/licenses/by/4.0/
+---
+data_file: table_1.yaml
+description: "Summary of the systematic uncertainties (%) for the $\rd\\sigma / \r\
+  d{m}$ (pb/GeV) measurement in the dimuon channel. The column labelled \"Total\"\
+  \ corresponds to the quadratic sum of all the experimental sources, except for that\
+  \ Acceptance+PDF."
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> MU+ MU- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Muon production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Table 1
+name: Table 1
+---
+data_file: table_2.yaml
+description: "Summary of the systematic uncertainties (%) for the $\rd\\sigma / \r\
+  d{m}$ (pb/GeV) measurement in the dielectron channel. The column labelled \"Total\"\
+  \ corresponds to the quadratic sum of all the experimental sources, except for that\
+  \ Acceptance+PDF."
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> E+ E- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Electron production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Table 2
+name: Table 2
+---
+data_file: table_3.yaml
+description: "Summary of the measured values of $\rd\\sigma / \rd{m}$ (pb/GeV) in\
+  \ the dimuon channel with the statistical ($\\delta_{\\text{stat}}$), experimental\
+  \ ($\\delta_{\\text{exp}}$) and theoretical ($\\delta_{\\text{theo}}$) uncertainties,\
+  \ respectively. Here, $\\delta_{\\text{tot}}$ is the quadratic sum of the three\
+  \ components."
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> MU+ MU- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Muon production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Table 3
+name: Table 3
+---
+data_file: table_4.yaml
+description: "Summary of the measured values of $\rd\\sigma / \rd{m}$ (pb/GeV) in\
+  \ the dielectron channel with the statistical ($\\delta_{\\text{stat}}$), experimental\
+  \ ($\\delta_{\\text{exp}}$) and theoretical ($\\delta_{\\text{theo}}$) uncertainties,\
+  \ respectively. Here, $\\delta_{\\text{tot}}$ is the quadratic sum of the three\
+  \ components."
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> E+ E- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Electron production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Table 4
+name: Table 4
+---
+data_file: table_5.yaml
+description: "Summary of the measured values of fiducial $\rd\\sigma / \rd{m}$ (pb/GeV)\
+  \ (with no FSR correction applied) in the dimuon channel with the statistical ($\\\
+  delta_{\\text{stat}}$) and experimental ($\\delta_{\\text{exp}}$) uncertainties\
+  \ shown separately. Here, $\\delta_{\\text{tot}}$ is the quadratic sum of the two\
+  \ components."
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> MU+ MU- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Muon production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Table 5
+name: Table 5
+---
+data_file: table_6.yaml
+description: " of the measured values of fiducial $\rd\\sigma / \rd{m}$ (pb/GeV) (with\
+  \ no FSR correction applied) in the dielectron channel with the statistical ($\\\
+  delta_{\\text{stat}}$) and experimental ($\\delta_{\\text{exp}}$) uncertainties\
+  \ shown separately. Here, $\\delta_{\\text{tot}}$ is the quadratic sum of the two\
+  \ components."
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> E+ E- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Electron production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Table 6
+name: Table 6
+---
+data_file: table_7.yaml
+description: "Summary of the combined values of $\rd\\sigma / \rd{m}$ (pb/GeV) using\
+  \ the results from both the dimuon and dielectron channels. Here, $\\delta_{\\text{tot}}$\
+  \ is the quadratic sum of the statistical, experimental and theoretical uncertainties."
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> MU+ MU- X
+  - P P --> E+ E- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Muon production
+  - Electron production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Table 7
+name: Table 7
+---
+data_file: table_8.yaml
+description: Covariance matrix of the Drell-Yan differential cross section as a function
+  of the dimuon invariant mass, measured in the full phase space, with FSR correction
+  is applied. Luminosity uncertainty is not included in the covariance.
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> MU+ MU- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Muon production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Covariance matrix of the data from figure 4 (top)
+name: Table 8
+---
+data_file: table_9.yaml
+description: Covariance matrix of the Drell-Yan differential cross section as a function
+  of the dielectron invariant mass, measured in the full phase space, with FSR correction
+  is applied. Luminosity uncertainty is not included in the covariance.
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> E+ E- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Electron production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Covariance matrix of the data from figure 4 (bottom)
+name: Table 9
+---
+data_file: table_10.yaml
+description: Covariance matrix of the differential DY cross section measured for the
+  combination of the two channels in the full phase space.
+keywords:
+- name: reactions
+  values:
+  - P P --> GAMMA* X
+  - P P --> Z0 X
+  - P P --> LEPTON+ LEPTON- X
+  - P P --> MU+ MU- X
+  - P P --> E+ E- X
+- name: phrases
+  values:
+  - Inclusive
+  - Single Differential Cross Section
+  - Proton-Proton Scattering
+  - Drell Yan
+  - Z Production
+  - Muon production
+  - Electron production
+- name: cmenergies
+  values:
+  - 13000
+- name: observables
+  values:
+  - DSIG/DM
+location: Covariance matrix of the data from figure 6
+name: Table 10

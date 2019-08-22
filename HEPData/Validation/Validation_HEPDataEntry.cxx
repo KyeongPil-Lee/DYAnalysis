@@ -111,9 +111,9 @@ private:
     h_HEPData_absUnc_tot_ = nullptr;
 
     TString fileName_ref = "";
-    if( type_.Contains("muon") )          fileName_ref = "../SignificantDigit/ROOTFile_InputForHEPData_Upto2SigDigits_muon.root";
-    else if( type_.Contains("electron") ) fileName_ref = "../SignificantDigit/ROOTFile_InputForHEPData_Upto2SigDigits_electron.root";
-    else if( type_ == "combined" )        fileName_ref = "../SignificantDigit/ROOTFile_InputForHEPData_Upto2SigDigits_combined.root";
+    if( type_.Contains("muon") )          fileName_ref = "../MakeInputFile/ROOTFile_InputForHEPData_Upto2SigDigits_muon.root";
+    else if( type_.Contains("electron") ) fileName_ref = "../MakeInputFile/ROOTFile_InputForHEPData_Upto2SigDigits_electron.root";
+    else if( type_ == "combined" )        fileName_ref = "../MakeInputFile/ROOTFile_InputForHEPData_Upto2SigDigits_combined.root";
 
     TString fileName_HEPData = "./HEPData_SMP17001.root";
     TString dirName_HEPData = "";
@@ -184,9 +184,9 @@ private:
   {
     TString analyzerPath = gSystem->Getenv("KP_ANALYZER_PATH");
     TString fileName_ref = "";
-    if( type_.Contains("muon") )          fileName_ref = analyzerPath+"/OfficialStyle/ROOTFile_covM_muon.root";
-    else if( type_.Contains("electron") ) fileName_ref = analyzerPath+"/OfficialStyle/ROOTFile_covM_electron.root";
-    else if( type_ == "combined" )        fileName_ref = analyzerPath+"/OfficialStyle/ROOTFile_covM_combined.root";
+    if( type_.Contains("muon") )          fileName_ref = "../MakeInputFile/ROOTFile_InputForHEPData_Upto2SigDigits_muon.root";
+    else if( type_.Contains("electron") ) fileName_ref = "../MakeInputFile/ROOTFile_InputForHEPData_Upto2SigDigits_electron.root";
+    else if( type_ == "combined" )        fileName_ref = "../MakeInputFile/ROOTFile_InputForHEPData_Upto2SigDigits_combined.root";
 
     TString fileName_HEPData = "./HEPData_SMP17001.root";
     TString dirName_HEPData = "";
