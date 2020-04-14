@@ -27,8 +27,8 @@ void Fraction_M40to50()
 {
   TString ntupleDir = "/data7/Users/kplee/backup/data4/Users/kplee/DYntuple/76X/v20160304_76X_MINIAODv2_DYLL_M10to50_25ns";
   TString tag = "DYMuMu_M10to50";
-  TString xSec = 18610.0/3.0;
-  TString sumWeight = 7506956.0;
+  Double_t xSec = 18610.0/3.0;
+  Double_t sumWeight = 7506956.0;
 
   DYAnalyzer *analyzer = new DYAnalyzer( "IsoMu20_OR_IsoTkMu20" );
 
@@ -52,11 +52,11 @@ void Fraction_M40to50()
     ntuple->GetEvent(i);
 
     Bool_t isMuMuEvent = kFALSE;
-    isMuMuEvent = analyzer->SeparateDYLLSample_isHardProcess(Tag[i_tup], ntuple);
+    isMuMuEvent = analyzer->SeparateDYLLSample_isHardProcess(tag, ntuple);
 
     if( isMuMuEvent )
     {
-      Double_t genWeight = ntuple->GENEvt_weight < 0 ? GenWeight = -1 : GenWeight = 1;
+      Double_t genWeight = ntuple->GENEvt_weight < 0 ? -1 : 1;
 
       vector<GenLepton> vec_genLepton;
       Int_t nGenLepton = ntuple->gnpair;
@@ -64,7 +64,7 @@ void Fraction_M40to50()
       {
         GenLepton genLepton;
         genLepton.FillFromNtuple(ntuple, i_gen);
-        if( genLepton.isMuon() && genlep.isHardProcess )
+        if( genLepton.isMuon() && genLepton.isHardProcess )
           vec_genLepton.push_back( genLepton );
       }
 
@@ -77,8 +77,8 @@ void Fraction_M40to50()
 
       Double_t diMuM = (vec_genLepton[0].Momentum + vec_genLepton[1].Momentum).M();
 
-      sumWeight_tot += sumWeight;
-      if( 40.0 <= diMuM && diMuM <= 50.0 ) sumWeight_M40to50 += sumWeight;
+      sumWeight_tot += genWeight;
+      if( 40.0 <= diMuM && diMuM <= 50.0 ) sumWeight_M40to50 += genWeight;
 
     }
 
@@ -88,4 +88,31 @@ void Fraction_M40to50()
 
   printf("[sum of weight] (total, 40 < M < 50 GeV) = (%.1lf, %.1lf)\n", sumWeight_M40to50, sumWeight_tot);
   printf("   ---> fraction = %lf\n", frac_M40to50);
+}
+
+static inline void loadBar(int x, int n, int r, int w)
+{
+    // Only update r times.
+    if( x == n )
+      cout << endl;
+
+    if ( x % (n/r +1) != 0 ) return;
+
+ 
+    // Calculuate the ratio of complete-to-incomplete.
+    float ratio = x/(float)n;
+    int   c     = ratio * w;
+ 
+    // Show the percentage complete.
+    printf("%3d%% [", (int)(ratio*100) );
+ 
+    // Show the load bar.
+    for (int x=0; x<c; x++) cout << "=";
+ 
+    for (int x=c; x<w; x++) cout << " ";
+ 
+    // ANSI Control codes to go back to the
+    // previous line and clear it.
+  cout << "]\r" << flush;
+
 }
