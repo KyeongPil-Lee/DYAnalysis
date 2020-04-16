@@ -25,6 +25,8 @@ static inline void loadBar(int x, int n, int r, int w);
 
 void Fraction_M40to50()
 {
+  TH1D* h_diMuM = new TH1D("h_diMuM", "", 10000, 0, 10000);
+
   TString ntupleDir = "/data7/Users/kplee/backup/data4/Users/kplee/DYntuple/76X/v20160304_76X_MINIAODv2_DYLL_M10to50_25ns";
   TString tag = "DYMuMu_M10to50";
   Double_t xSec = 18610.0/3.0;
@@ -76,6 +78,7 @@ void Fraction_M40to50()
       }
 
       Double_t diMuM = (vec_genLepton[0].Momentum + vec_genLepton[1].Momentum).M();
+      h_diMuM->Fill( diMuM, genWeight );
 
       sumWeight_tot += genWeight;
       if( 40.0 <= diMuM && diMuM <= 50.0 ) sumWeight_M40to50 += genWeight;
@@ -88,6 +91,11 @@ void Fraction_M40to50()
 
   printf("[sum of weight] (total, 40 < M < 50 GeV) = (%.1lf, %.1lf)\n", sumWeight_M40to50, sumWeight_tot);
   printf("   ---> fraction = %lf\n", frac_M40to50);
+
+  TFile *f_output = TFile::Open("ROOTFile_GenDimuonMass.root", "RECREATE");
+  f_output->cd();
+  h_diMuM->Write();
+  f_output->Close();
 }
 
 static inline void loadBar(int x, int n, int r, int w)
