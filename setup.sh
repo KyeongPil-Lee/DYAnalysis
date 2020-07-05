@@ -17,7 +17,7 @@ export ROOT_INCLUDE_PATH=${KP_ANALYZER_PATH}:${ROOT_INCLUDE_PATH}
 export KP_DATA_PATH=""
 if [ $HOSTNAME == "tamsa2" ]; # -- 147.47.242.67 -- # 
 then 
-	KP_DATA_PATH="/data4/Users/kplee/DYntuple" # -- now it is /data7/Users/kplee/backup/data4/Users/kplee/DYntuple
+	KP_DATA_PATH="/data7/Users/kplee/backup/data4/Users/kplee/DYntuple"
 
 	# # -- cmssw setup (for ROOT6 & compatible with RooUnfold in tamsa2) -- #
 	# export SCRAM_ARCH=slc6_amd64_gcc493
